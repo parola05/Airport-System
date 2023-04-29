@@ -1,17 +1,18 @@
 import uuid
 import datetime
 from spade import agent
-
+from GlobalTypes.Types import SpotType, StatusType
 
 class AirplaneAgent(agent.Agent):
 
     id : str = ""
     airline : str = ""              # tap, ryanair
-    typeTransport : str = ""        # merchandise, commercial
+    typeTransport : SpotType
     origin : str = ""
     destination : str = ""
     date : datetime.date
-    time: datetime.time
+    time : datetime.time
+    status : StatusType
 
     def __init__(self, jid, password, airline, typeTransport, origin, destination, date, time):
         super.__init__(jid,password)

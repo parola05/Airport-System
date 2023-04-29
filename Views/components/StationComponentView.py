@@ -33,19 +33,19 @@ class StationComponentView(customtkinter.CTkFrame):
         # Create the first row
         labelID = customtkinter.CTkLabel(master=stationsTable, text="Station ID")
         labelID.grid(row=0, column=0, padx=10, pady=(0, 20))
-        labelCommercialSpots = customtkinter.CTkLabel(master=stationsTable, text="Commercial Spots Capacity")
+        labelCommercialSpots = customtkinter.CTkLabel(master=stationsTable, text="Commercial Capacity")
         labelCommercialSpots.grid(row=0, column=1, padx=10, pady=(0, 20))
-        labelMerchandiseSpots = customtkinter.CTkLabel(master=stationsTable, text="Merchandise Sposts Capacity")
+        labelMerchandiseSpots = customtkinter.CTkLabel(master=stationsTable, text="Merchandise Capacity")
         labelMerchandiseSpots.grid(row=0, column=2, padx=10, pady=(0, 20))
 
         # Create the n rows
         for rowIndex,station in enumerate(stations):
             labelID = customtkinter.CTkLabel(master=stationsTable, text=station["id"])
-            labelID.grid(row=rowIndex+1, column=0, padx=10, pady=(0, 20))
+            labelID.grid(row=rowIndex+1, column=0, padx=7, pady=(0, 20))
             labelCommercialSpots = customtkinter.CTkLabel(master=stationsTable, text=str(station["commercialSpots"]))
-            labelCommercialSpots.grid(row=rowIndex+1, column=1, padx=10, pady=(0, 20))
+            labelCommercialSpots.grid(row=rowIndex+1, column=1, padx=7, pady=(0, 20))
             labelMerchandiseSpots = customtkinter.CTkLabel(master=stationsTable, text=str(station["merchandiseSpots"]))
-            labelMerchandiseSpots.grid(row=rowIndex+1, column=2, padx=10, pady=(0, 20))
+            labelMerchandiseSpots.grid(row=rowIndex+1, column=2, padx=7, pady=(0, 20))
 
         # Create the button to add more stations
         createStationButton = customtkinter.CTkButton(self, text="Add Station", command=self.openAddStationsForm)
@@ -61,12 +61,14 @@ class CreateStationFormView(customtkinter.CTkToplevel):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
         
+        self.title("Create a new station")
+
         # Create the form widgets
         self.labelStationID = customtkinter.CTkLabel(self, text="Station ID")
         self.entryStationID = customtkinter.CTkEntry(self)
-        self.labelCommercialSpotsCapacity = customtkinter.CTkLabel(self, text="Nº commercial spots")
+        self.labelCommercialSpotsCapacity = customtkinter.CTkLabel(self, text="No. commercial spots")
         self.entryCommercialSpotsCapacity = customtkinter.CTkEntry(self)
-        self.labelMerchandiseSpotsCapacity = customtkinter.CTkLabel(self, text="Nº merchandise spots")
+        self.labelMerchandiseSpotsCapacity = customtkinter.CTkLabel(self, text="No. merchandise spots")
         self.entryMerchandiseSpotsCapacity = customtkinter.CTkEntry(self)
         self.buttonCreateStation = customtkinter.CTkButton(self, text="Create Station", command=self.sendForm)
         

@@ -1,4 +1,5 @@
 #from .StationManager.StationManager import StationManagerAgent
+#from .RunwayManager.RunwayManager import RunwayManagerAgent
 
 class Agents():
     _instance = None
@@ -14,6 +15,9 @@ class Agents():
         '''
         #self.stationManager = StationManagerAgent()
         self.stationManager = None
+        #self.runwayManager = RunwayManagerAgent()
+        self.runwayManager = None
+        self.airplaines = []
         # TODO: init rest of agents
         # self.airplaines = []
         # self.airlines = []
