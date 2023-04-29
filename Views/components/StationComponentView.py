@@ -1,7 +1,13 @@
 import customtkinter
 import sys
-sys.path.append("..\..")
-from Controllers.StationComponentController import StationComponentController
+import platform
+
+if platform.system() == "Darwin":  # macOS
+    sys.path.append("../")
+elif platform.system() == "Windows":
+    sys.path.append("..\..")
+else:
+    print("Unsupported operating system")
 
 class StationComponentView(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
