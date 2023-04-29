@@ -9,6 +9,8 @@ elif platform.system() == "Windows":
 else:
     print("Unsupported operating system")
 
+from Controllers.StationComponentController import StationComponentController
+    
 class StationComponentView(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
