@@ -4,6 +4,8 @@ import customtkinter
 from .components.StationComponentView import StationComponentView
 from .components.RunwayComponentView import RunwayComponentView
 from .components.AirplanesComponentView import AirplanesComponentView
+from .components.AirlinesComponentView import AirlinesComponentView
+from .components.SpotsNegotiationComponentView import SpotsNegotiationComponentView
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("green")
@@ -23,7 +25,8 @@ class MainView(customtkinter.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
         self.grid_columnconfigure(3, weight=1)
-        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        self.grid_rowconfigure((0, 2, 3), weight=1)
+        self.grid_rowconfigure((1), weight=3)
 
         # create sidebar frame with widgets
         self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
@@ -59,48 +62,36 @@ class MainView(customtkinter.CTk):
 
         # Airplanes Component
         self.airplanesComponent = AirplanesComponentView(master=self)
-        self.airplanesComponent.grid(row=1, column=1, padx=20, pady=(20, 0), sticky="nsew")
+        self.airplanesComponent.grid(row=2, column=1, padx=20, pady=(20, 0), sticky="nsew")
         self.airplanesComponent.grid_columnconfigure(0, weight=1)
         self.airplanesComponent.grid_rowconfigure(1, weight=1)
 
         # Runway Component
         self.runwayComponent = RunwayComponentView(master=self)
-        self.runwayComponent.grid(row=1, column=2, padx=20, pady=(20, 0), sticky="nsew")
+        self.runwayComponent.grid(row=2, column=2, padx=20, pady=(20, 0), sticky="nsew")
         self.runwayComponent.grid_columnconfigure(0, weight=1)
         self.runwayComponent.grid_rowconfigure(1, weight=1)
 
-        # create tabview
-        self.tabview = customtkinter.CTkTabview(self, width=250)
-        self.tabview.grid(row=0, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
-        self.tabview.add("CTkTabview")
-        self.tabview.add("Tab 2")
-        self.tabview.add("Tab 3")
-        self.tabview.tab("CTkTabview").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
-        self.tabview.tab("Tab 2").grid_columnconfigure(0, weight=1)
-
-        self.optionmenu_1 = customtkinter.CTkOptionMenu(self.tabview.tab("CTkTabview"), dynamic_resizing=False,
-                                                        values=["Value 1", "Value 2", "Value Long Long Long"])
-        self.optionmenu_1.grid(row=0, column=0, padx=20, pady=(20, 10))
-        self.combobox_1 = customtkinter.CTkComboBox(self.tabview.tab("CTkTabview"),
-                                                    values=["Value 1", "Value 2", "Value Long....."])
-        self.combobox_1.grid(row=1, column=0, padx=20, pady=(10, 10))
-        self.string_input_button = customtkinter.CTkButton(self.tabview.tab("CTkTabview"), text="Open CTkInputDialog",
-                                                           command=self.open_input_dialog_event)
-        self.string_input_button.grid(row=2, column=0, padx=20, pady=(10, 10))
-        self.label_tab_2 = customtkinter.CTkLabel(self.tabview.tab("Tab 2"), text="CTkLabel on Tab 2")
-        self.label_tab_2.grid(row=0, column=0, padx=20, pady=20)
-
         # Station Component
         self.stationComponent = StationComponentView(master=self)
-        self.stationComponent.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.stationComponent.grid(row=2, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
         self.stationComponent.grid_columnconfigure(0, weight=1)
         self.stationComponent.grid_rowconfigure(1, weight=1)
+
+        # Airlines Component
+        self.airlinesComponent = AirlinesComponentView(master=self)
+        self.airlinesComponent.grid(row=0, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.airlinesComponent.grid_columnconfigure(0, weight=1)
+        self.airlinesComponent.grid_rowconfigure(1, weight=1)
+
+        # SpotsNegotiation Component
+        self.spotsNegotiation = SpotsNegotiationComponentView(master=self)
+        self.spotsNegotiation.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        #self.spotsNegotiation.grid_columnconfigure(0, weight=1)
 
         # set default values
         self.appearance_mode_optionemenu.set("Dark")
         self.scaling_optionemenu.set("100%")
-        self.optionmenu_1.set("CTkOptionmenu")
-        self.combobox_1.set("CTkComboBox")
         self.textbox.insert("0.0", "CTkTextbox\n\n" + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\n" * 20)
 
     def openAutomaticSimulation(self):
