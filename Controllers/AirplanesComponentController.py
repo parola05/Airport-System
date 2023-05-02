@@ -9,6 +9,7 @@ else:
     print("Unsupported operating system")
 
 from Agents.Agents import Agents
+from GlobalTypes.Types import SpotType, StatusType, Priority
 
 class AirplanesComponentController():
     def __init__(self) -> None:
@@ -23,90 +24,100 @@ class AirplanesComponentController():
                 - Airplanes ID
                 - Airplanes Airline
                 - Airplanes Type
+                - Airplanes Priority
                 - Airplanes Origin
                 - Airplanes Destiny
                 - Airplanes Date
                 - Airplanes Time
+                - Airplanes Status
         '''
         return [
             {
                 "id": "TODO",
                 "airline": "TODO",
                 "type": "TODO",
+                "priority": "TODO",
                 "origin": "TODO",
                 "destiny": "TODO",
                 "date": "TODO",
                 "time": "TODO",
-                "stauts": "TODO",
+                "status": StatusType.IN_STATION,
             },
             {
                 "id":"TODO",
                 "airline": "TODO",
                 "type": "TODO",
+                "priority": "TODO",
                 "origin": "TODO",
                 "destiny": "TODO",
                 "date": "TODO",
                 "time": "TODO",
-                "stauts": "TODO",
+                "status": "TODO",
             },
             {
                 "id":"TODO",
                 "airline": "TODO",
                 "type": "TODO",
+                "priority": "TODO",
                 "origin": "TODO",
                 "destiny": "TODO",
                 "date": "TODO",
                 "time": "TODO",
-                "stauts": "TODO",
+                "status": StatusType.FLYING,
             },
             {
                 "id":"TODO",
                 "airline": "TODO",
                 "type": "TODO",
+                "priority": "TODO",
                 "origin": "TODO",
                 "destiny": "TODO",
                 "date": "TODO",
                 "time": "TODO",
-                "stauts": "TODO",
+                "status": "TODO",
             },
             {
                 "id":"TODO",
                 "airline": "TODO",
                 "type": "TODO",
+                "priority": "TODO",
                 "origin": "TODO",
                 "destiny": "TODO",
                 "date": "TODO",
                 "time": "TODO",
-                "stauts": "TODO",
+                "status": "TODO",
             },
             {
                 "id":"TODO",
                 "airline": "TODO",
                 "type": "TODO",
+                "priority": "TODO",
                 "origin": "TODO",
                 "destiny": "TODO",
                 "date": "TODO",
                 "time": "TODO",
-                "stauts": "TODO",
+                "status": "TODO",
             },
              {
                 "id":"TODO",
                 "airline": "TODO",
                 "type": "TODO",
+                "priority": "TODO",
                 "origin": "TODO",
                 "destiny": "TODO",
                 "date": "TODO",
                 "time": "TODO",
-                "stauts": "TODO",
+                "status": "TODO",
             },
              {
                 "id":"TODO",
                 "airline": "TODO",
                 "type": "TODO",
+                "priority": "TODO",
                 "origin": "TODO",
                 "destiny": "TODO",
                 "date": "TODO",
                 "time": "TODO",
-                "stauts": "TODO",
+                "status": "TODO",
             },
         ]

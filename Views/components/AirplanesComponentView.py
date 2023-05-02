@@ -21,7 +21,7 @@ class AirplanesComponentView(customtkinter.CTkFrame):
         self.toplevel_window = None
 
         # Create the Title of the Frame
-        labelID = customtkinter.CTkLabel(master=self, text="Airplanes")
+        labelID = customtkinter.CTkLabel(master=self, text="\U0001F6EA Airplanes", font=("Helvetica", 18, "bold"))
         labelID.grid(row=0, column=0)
 
         # Create the "Table" that will show the list of airplanes
@@ -33,21 +33,50 @@ class AirplanesComponentView(customtkinter.CTkFrame):
         labelID.grid(row=0, column=0, padx=20, pady=(0, 20))
         labelTakeOff = customtkinter.CTkLabel(master=airplanesTable, text="Action")
         labelTakeOff.grid(row=0, column=1, padx=20, pady=(0, 20))
+        labelTakeOff = customtkinter.CTkLabel(master=airplanesTable, text="Status")
+        labelTakeOff.grid(row=0, column=2, padx=20, pady=(0, 20))
 
         # Create the n rows
         for rowIndex, airplane in enumerate(airplanes):
             labelID = customtkinter.CTkLabel(master=airplanesTable, text=airplane["id"])
             labelID.grid(row=rowIndex+1, column=0, padx=10, pady=(0, 20))
-            labelTakeOff = customtkinter.CTkButton(master=airplanesTable, command=lambda airplaneID=airplane["id"]: self.requestToTakeOff(airplaneID))
-            labelTakeOff.grid(row=rowIndex+1, column=1, padx=20, pady=10)
-            labelTakeOff.configure(text="Take Off")
+            if airplane["status"] == 1:
+                labelAction = customtkinter.CTkButton(master=airplanesTable, command=lambda airplaneID=airplane["id"]: self.requestToTakeOff(airplaneID))
+                labelAction.grid(row=rowIndex+1, column=1, padx=20, pady=10)
+                labelAction.configure(text="Take Off")
+            elif airplane["status"] == 2:
+                labelAction = customtkinter.CTkButton(master=airplanesTable, command=lambda airplaneID=airplane["id"]: self.requestToLand(airplaneID))
+                labelAction.grid(row=rowIndex+1, column=1, padx=20, pady=10)
+                labelAction.configure(text="Land")
+            else:
+                labelAction = customtkinter.CTkLabel(master=airplanesTable, text="--None--")
+                labelAction.grid(row=rowIndex+1, column=1, padx=20, pady=10)
+            labelID = customtkinter.CTkLabel(master=airplanesTable, text=self.airplaneStatus(airplane["status"]))
+            labelID.grid(row=rowIndex+1, column=2, padx=10, pady=(0, 20))
 
         # Create the button to add more stations
         createStationButton = customtkinter.CTkButton(self, text="Create Airplane", command=self.openCreateAirplanesForm)
         createStationButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
 
+    def airplaneStatus(self,statusType):
+        if statusType == 1:
+            return "In Station"
+        elif statusType == 2:
+            return "Flying"
+        elif statusType == 3:
+            return "Landing"
+        elif statusType == 4:
+            return "Waiting to take off"
+        elif statusType == 5:
+            return "Waiting to land"
+        elif statusType == 6:
+            return "Going to another airport"
+        
     def requestToTakeOff(self, airplaneID):
         print(f"Airplane {airplaneID} has request to take off")
+
+    def requestToLand(self, airplaneID):
+        print(f"Airplane {airplaneID} has request to land")
 
     def openCreateAirplanesForm(self):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
@@ -79,7 +108,7 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
         self.entryDate = customtkinter.CTkEntry(self)
         self.labelTime = customtkinter.CTkLabel(self, text="Time (hh:mm)")
         self.entryTime = customtkinter.CTkEntry(self)
-        self.buttonCreateAirplane = customtkinter.CTkButton(self, text="Create + Land", command=self.sendForm)
+        self.buttonCreateAirplane = customtkinter.CTkButton(self, text="Create", command=self.sendForm)
         
         # Lay out the form widgets using grid
         self.labelAirplaneAirline.grid(row=0, column=0, padx=10, pady=10)
