@@ -67,6 +67,10 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
         self.labelTypeTransport = customtkinter.CTkLabel(self, text="Type of Transport")
         self.labelCommercial = customtkinter.CTkCheckBox(self, text="Commercial", command=self.checkOnlyOneType, onvalue="on", offvalue="off")
         self.labelMerchandise = customtkinter.CTkCheckBox(self, text="Merchandise", command=self.checkOnlyOneType, onvalue="on", offvalue="off")
+        self.labelPriority = customtkinter.CTkLabel(self, text="Priority")
+        self.labelHigh= customtkinter.CTkCheckBox(self, text="High", command=self.checkOnlyOneType, onvalue="on", offvalue="off")
+        self.labelMedium = customtkinter.CTkCheckBox(self, text="Medium", command=self.checkOnlyOneType, onvalue="on", offvalue="off")
+        self.labelLow = customtkinter.CTkCheckBox(self, text="Low", command=self.checkOnlyOneType, onvalue="on", offvalue="off")
         self.labelOrigin = customtkinter.CTkLabel(self, text="Origin")
         self.entryOrigin = customtkinter.CTkEntry(self)
         self.labelDestiny = customtkinter.CTkLabel(self, text="Destiny")
@@ -83,15 +87,19 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
         self.labelTypeTransport.grid(row=1, column=0, padx=10, pady=10)
         self.labelCommercial.grid(row=1, column=1, padx=10, pady=10)
         self.labelMerchandise.grid(row=1, column=2, padx=10, pady=10)
-        self.labelOrigin.grid(row=2, column=0, padx=10, pady=10)
-        self.entryOrigin.grid(row=2, column=1, padx=10, pady=10)
-        self.labelDestiny.grid(row=3, column=0, padx=10, pady=10)
-        self.entryDestiny.grid(row=3, column=1, padx=10, pady=10)
-        self.labelDate.grid(row=4, column=0, padx=10, pady=10)
-        self.entryDate.grid(row=4, column=1, padx=10, pady=10)
-        self.labelTime.grid(row=5, column=0, padx=10, pady=10)
-        self.entryTime.grid(row=5, column=1, padx=10, pady=10)
-        self.buttonCreateAirplane.grid(row=6, column=1, padx=10, pady=10)
+        self.labelPriority.grid(row=2, column=0, padx=10, pady=10)
+        self.labelHigh.grid(row=2, column=1, padx=10, pady=10)
+        self.labelMedium.grid(row=2, column=2, padx=10, pady=10)
+        self.labelLow.grid(row=2, column=3, padx=10, pady=10)
+        self.labelOrigin.grid(row=3, column=0, padx=10, pady=10)
+        self.entryOrigin.grid(row=3, column=1, padx=10, pady=10)
+        self.labelDestiny.grid(row=4, column=0, padx=10, pady=10)
+        self.entryDestiny.grid(row=4, column=1, padx=10, pady=10)
+        self.labelDate.grid(row=5, column=0, padx=10, pady=10)
+        self.entryDate.grid(row=5, column=1, padx=10, pady=10)
+        self.labelTime.grid(row=6, column=0, padx=10, pady=10)
+        self.entryTime.grid(row=6, column=1, padx=10, pady=10)
+        self.buttonCreateAirplane.grid(row=7, column=1, padx=10, pady=10)
 
     def checkOnlyOneType(self):
         if self.labelCommercial.get() == 'on':
@@ -101,9 +109,22 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
             self.labelCommercial.deselect()
             self.labelMerchandise.select()
 
+        if self.labelLow.get() == 'on':
+            self.labelLow.select()
+            self.labelHigh.deselect()
+            self.labelMedium.deselect()
+        elif self.labelMedium.get() == 'on':
+            self.labelMedium.select()
+            self.labelHigh.deselect()
+            self.labelLow.deselect()
+        elif self.labelHigh.get() == 'on':
+            self.labelHigh.select()
+            self.labelMedium.deselect()
+            self.labelLow.deselect()
+
 
     def sendForm(self):
-        # Get the form data
+
         airplaneAirline = self.entryAirline.get()
         if self.labelCommercial.get() == 'on':
             airplaneType = 2
@@ -111,6 +132,14 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
             airplaneType = 1
         else:
             airplaneType = ''
+        if self.labelLow.get() == 'on':
+            priority = 3
+        elif self.labelMedium.get() == 'on':
+            priority = 2
+        elif self.labelHigh.get() == 'on':
+            priority = 1
+        else:
+            priority = ''
         airplaneOrigin = self.entryOrigin.get()
         airplaneDestiny = self.entryDestiny.get()
         airplaneDate = self.entryDate.get()
