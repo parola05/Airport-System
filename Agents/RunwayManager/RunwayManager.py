@@ -27,7 +27,7 @@ class RunwayManagerAgent(Agent):
             raise ValueError("This identifier was already taken by another runway")
         self.runways[runway.id] = runway
 
-    def getStationsAvailable(self):
+    def getRunwaysAvailable(self):
         '''
             return: list of the id's of the stations that have spot availablen for the airline 
         '''
