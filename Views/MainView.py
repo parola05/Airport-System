@@ -115,12 +115,10 @@ class CreateAutomaticSimulationView(customtkinter.CTkToplevel):
         self.title("Automatic Simulation")
         self.geometry(f"{1000}x{800}")
 
-        # configure grid layout (4x4)
         self.grid_columnconfigure(1, weight=2)
         self.grid_columnconfigure(2, weight=1)
         self.grid_rowconfigure((0, 1, 2), weight=1)
 
-        # create slider and progressbar frame
         self.slider_progressbar_frame = customtkinter.CTkFrame(self, fg_color="transparent")
         self.slider_progressbar_frame.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
         self.slider_progressbar_frame.grid_columnconfigure(0, weight=1)

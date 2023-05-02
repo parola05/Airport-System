@@ -1,7 +1,7 @@
 from spade.behaviour import OneShotBehaviour
 from spade.message import Message
 
-import sys, platform
+import sys, platform, datetime
 
 if platform.system() == "Darwin":  # macOS
     sys.path.append("../")
@@ -21,9 +21,9 @@ class WantsToTakeOffBehaviour(OneShotBehaviour):
     async def run(self):
         msg = Message(to=self.get("control_tower_jid"))
         msg.set_metadata("performative", "request")
+        now = datetime.now()
 
-        requestToTakeOff = RequestFromAirplane(2, AirplaneAgent.typeTransport, AirplaneAgent.airline, datetime.now(), AirplaneAgent.id, AirplaneAgent.priority)
-
+        requestToTakeOff = RequestFromAirplane(2, AirplaneAgent.typeTransport, AirplaneAgent.airline, now, AirplaneAgent.priority, None, None)
         msg.body = requestToTakeOff
 
         await self.send(msg)

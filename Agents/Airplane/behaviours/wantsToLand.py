@@ -23,7 +23,7 @@ class WantsToLandBehaviour(OneShotBehaviour):
         msg.set_metadata("performative", "request")
         now = datetime.now()
 
-        requestToLand = RequestFromAirplane(1, AirplaneAgent.typeTransport, AirplaneAgent.airline, now, AirplaneAgent.id, AirplaneAgent.priority)
+        requestToLand = RequestFromAirplane(1, AirplaneAgent.typeTransport, AirplaneAgent.airline, now, AirplaneAgent.priority, None, None)
         msg.body = requestToLand
 
         await self.send(msg)

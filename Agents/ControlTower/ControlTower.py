@@ -10,11 +10,17 @@ else:
     print("Unsupported operating system")
     
 from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
+from MessagesProtocol.InfoForAirplaneAction import InfoForAirplaneAction
 
 class ControlTower(Agent):
-    async def setup(self):
-        self.queueInTheAir: Dict[str:List[RequestFromAirplane]] 
 
+    def __init__(self, queueInTheAir, requestsInProcess):
+        self.queueInTheAir = queueInTheAir
+        self.requestsInProcess = requestsInProcess
+
+    async def setup(self):
+        self.queueInTheAir: Dict[str:List[RequestFromAirplane]]
+        self.requestsInProcess: Dict[str:RequestFromAirplane] # sender_name : RequestFromAirplane
     '''
     def addRunway(self, runway: Runway):
         if runway.id in self.runways:

@@ -8,9 +8,9 @@ else:
     print("Unsupported operating system")
 
 from GlobalTypes.Types import SpotType
+from GlobalTypes.Coord import Coord
 
-class BuySpots():
-    def __init__(self, n_spots: int, price_per_spot: float, spotType: SpotType) -> None:
-        self.n_spots: int = n_spots
-        self.price_per_spot: float = price_per_spot
-        self.spotType: SpotType = spotType 
+class RunwayAvailable():
+    def __init__(self, runwayID: str, coordinates: Coord) -> None:
+        self.runwayID: str = runwayID
+        self.coord: Coord = coordinates 

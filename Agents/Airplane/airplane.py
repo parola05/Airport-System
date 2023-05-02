@@ -1,5 +1,4 @@
-import uuid
-import datetime
+import uuid, datetime
 from spade import agent
 from GlobalTypes.Types import SpotType, StatusType, Priority
 

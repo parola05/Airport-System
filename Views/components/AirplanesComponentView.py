@@ -21,15 +21,12 @@ class AirplanesComponentView(customtkinter.CTkFrame):
 
         self.toplevel_window = None
         
-        # Create the Title of the Frame
         labelID = customtkinter.CTkLabel(master=self, text="\U0001F6EA Airplanes", font=("Helvetica", 18, "bold"))
         labelID.grid(row=0, column=0)
 
-        # Create the "Table" that will show the list of airplanes
         airplanesTable = customtkinter.CTkScrollableFrame(master=self)
         airplanesTable.grid(row=1,column=0,padx=10,pady=10,sticky="nsew")
 
-        # Create the first row
         labelID = customtkinter.CTkLabel(master=airplanesTable, text="Airplane ID")
         labelID.grid(row=0, column=0, padx=10, pady=(0, 10))
         labelTakeOff = customtkinter.CTkLabel(master=airplanesTable, text="Action")
@@ -37,7 +34,6 @@ class AirplanesComponentView(customtkinter.CTkFrame):
         labelTakeOff = customtkinter.CTkLabel(master=airplanesTable, text="Status")
         labelTakeOff.grid(row=0, column=2, padx=10, pady=(0, 10))
 
-        # Create the n rows
         for rowIndex, airplane in enumerate(airplanes):
             labelID = customtkinter.CTkLabel(master=airplanesTable, text=airplane["id"])
             labelID.grid(row=rowIndex+1, column=0, padx=10, pady=(0,10), sticky="ew")
@@ -55,7 +51,6 @@ class AirplanesComponentView(customtkinter.CTkFrame):
             labelID = customtkinter.CTkLabel(master=airplanesTable, text=self.airplaneStatus(airplane["status"]))
             labelID.grid(row=rowIndex+1, column=2, padx=10, pady=(0,10), sticky="ew")
 
-        # Create the button to add more stations
         createStationButton = customtkinter.CTkButton(self, text="Create Airplane", command=self.openCreateAirplanesForm)
         createStationButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
 
@@ -93,7 +88,6 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
         
         self.title("Create a new airplane")
 
-        # Create the form widgets
         self.labelAirplaneAirline = customtkinter.CTkLabel(self, text="Airline")
         self.entryAirline = customtkinter.CTkEntry(self)
         self.labelTypeTransport = customtkinter.CTkLabel(self, text="Type of Transport")
@@ -113,7 +107,6 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
         self.entryTime = customtkinter.CTkEntry(self)
         self.buttonCreateAirplane = customtkinter.CTkButton(self, text="Create", command=self.sendForm)
         
-        # Lay out the form widgets using grid
         self.labelAirplaneAirline.grid(row=0, column=0, padx=10, pady=10)
         self.entryAirline.grid(row=0, column=1, padx=10, pady=10)
         self.labelTypeTransport.grid(row=1, column=0, padx=10, pady=10)
@@ -179,5 +172,4 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
         
         # TODO: Send the form data to a server or do something else with it
         
-        # Close the form window
         self.destroy()

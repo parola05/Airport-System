@@ -1,5 +1,4 @@
-import sys
-import platform
+import sys, platform, datetime
 
 if platform.system() == "Darwin":  # macOS
     sys.path.append("../")
@@ -9,21 +8,23 @@ else:
     print("Unsupported operating system")
 
 from GlobalTypes.Types import SpotType, Priority, RequestType
-import datetime
+from GlobalTypes.Coord import Coord
 
 class RequestFromAirplane():
-    def __init__(self, typeRequest: RequestType, spotType: SpotType, airlineID: str, requestTime: datetime, airplaneID: str, priority: Priority) -> None:
+    def __init__(self, typeRequest: RequestType, spotType: SpotType, airlineID: str, requestTime: datetime, priority: Priority, stationCoord: Coord, runwayCoord: Coord) -> None:
         '''
             typeRequest: levantar voo ou aterrar
             spotType: tipo da vaga requerida pelo avião (comercial ou mercadoria)
             airlineID: ID da companhia aérea do avião
-            requestTime: hora que o avião pediu a aterragem. Critério de desempate para avioes da mesma companhia com o 
-            mesmo nível de prioridade
-            airplaneID: ID do avião
+            requestTime: hora em que o pedido foi feito e critério de desempate para avioes da mesma companhia com o mesmo nível de prioridade
+            priority: grau de prioridade do avião
+            stationCoord: coordenadas da gare para a concretização do pedido
+            runwayCoord: coordenadas da pista mais próxima da gare para a concretização do pedido
         '''
         self.typeRequest: RequestType = typeRequest
         self.spotType: SpotType = spotType 
         self.airlineID: str = airlineID 
         self.requestTime: datetime = requestTime 
-        self.airplaneID:str = airplaneID
         self.priority: Priority = priority
+        self.stationCoord: Coord = stationCoord
+        self.runwayCoord: Coord = runwayCoord
