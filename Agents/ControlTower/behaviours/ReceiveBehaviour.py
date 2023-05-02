@@ -3,6 +3,19 @@ from spade.behaviour import CyclicBehaviour
 from spade.message import Message
 from ControlTower.ControlTower import ControlTower
 
+import platform, sys
+
+if platform.system() == "Darwin":  # macOS
+    sys.path.append("../")
+elif platform.system() == "Windows":
+    sys.path.append("..\\..")
+else:
+    print("Unsupported operating system")
+
+from MessagesProtocol.StationAvailable import StationAvailable
+from MessagesProtocol.InfoForAirplaneAction import InfoForAirplaneAction
+from GlobalTypes.Types import RequestType
+
 class ReceiveBehaviour(CyclicBehaviour):
 
     def isQueueFull(queueInTheAir: Dict):
@@ -30,7 +43,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                 airlineID = receiveMsg.body.airlineID
 
                 # Recebe um pedido do avião para aterrar
-                if requestType == 1:
+                if requestType == RequestType.LAND:
                     isFull = self.isQueueFull(ControlTower.queueInTheAir)
 
                     if not isFull:
@@ -48,7 +61,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                         await self.send(checkStationsAvailable)
 
                 # Recebe um pedido do avião para levantar voo
-                elif requestType == 2:
+                elif requestType == RequestType.TAKEOFF:
                     checkRunwaysAvailable = Message(to=self.get("runway_manager_jid"))
                     checkRunwaysAvailable.set_metadata("performative", "query-if")
                     checkRunwaysAvailable.body("Are there any runways available?")
@@ -65,7 +78,19 @@ class ReceiveBehaviour(CyclicBehaviour):
 
             # Recebe a informação de que existem gares ou pistas disponíveis
             elif performative == "confirm":
-                pass
+
+                if isinstance(receiveMsg.body, StationAvailable):
+                    checkRunwaysAvailable = Message(to="runway_manager_jid")
+                    checkRunwaysAvailable.set_metadata("performative", "query-if")
+                    checkRunwaysAvailable.body("Are there any runways available?")
+
+                    await self.send(checkRunwaysAvailable)
+                """
+                elif isinstance(receiveMsg.body, RunwayAvailable):
+                    confirmAirplane = Message(to=sender_name)
+                    confirmAirplane.set_metadata("performative", "confirm")
+                    confirmAirplane.body = InfoForAirplaneAction()
+                """
 
             # Outras performativas
             # inform do airplane - realizou ação, ou foi para outro aeroporto
