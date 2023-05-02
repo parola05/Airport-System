@@ -20,38 +20,27 @@ class ReceiveBehaviour(CyclicBehaviour):
                 print("Agent {}".format(str(self.agent.jid)) + "is informed that queue in air is full")
                 sendMsg.set_metadata("performative", "cancel")
                 sendMsg.body = "Going to another airport"
-                AirplaneAgent.status = StatusType.TO_ANOTHER_AIRPORT
 
             # Recebe indicação de que deve esperar (porque não existe gare ou pista disponível)
             elif performative == 'inform':
                 print("Agent {}".format(str(self.agent.jid)) + "is waiting..")
                 if "land" in receiveMsg.body:
-                    AirplaneAgent.status = StatusType.WAITING_LAND
+                    self.agent.status = StatusType.WAITING_LAND
                 else:
-                    AirplaneAgent.status = StatusType.WAITING_TAKEOFF
+                    self.agent.status = StatusType.WAITING_TAKEOFF
 
             # Recebe informação da gare e da pista selecionadas para a aterragem ou a partida
             elif performative == 'confirm':
-                """
-                InfoForAirplaneAction:
-                    requestType : LAND or TAKEOFF
-                    stationCoord : Coord            # None se o tipo for 'LAND'
-                    runwayCoord : Coord
-                """
-                #sendMsg.set_metadata("performative", "inform")
                 if receiveMsg.body.requestType == RequestType.TAKEOFF:
-                    #sendMsg.body = "Flying"
-                    AirplaneAgent.status = StatusType.FLYING
+                    self.agent.status = StatusType.FLYING
                 else:
-                    #sendMsg.body = "Landing"
-                    AirplaneAgent.status = StatusType.LANDING
+                    self.agent.status = StatusType.LANDING
                     time.sleep(30)
-                    AirplaneAgent.status = StatusType.IN_STATION
-                    #time.sleep(60)
-                    #AirplaneAgent.status = StatusType.PARKED
+                    self.agent.status = StatusType.IN_STATION
 
         else:
             print("Agent {}".format(str(self.agent.jid)) + "did not receive any message after 1 minute")
             sendMsg.set_metadata("performative", "cancel")
             sendMsg.body = "Going to another airport"
-            AirplaneAgent.status = StatusType.TO_ANOTHER_AIRPORT
+
+        await self.send(sendMsg)

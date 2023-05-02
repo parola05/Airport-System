@@ -65,10 +65,6 @@ class AirplanesComponentView(customtkinter.CTkFrame):
             return "Waiting to take off"
         elif statusType == 5:
             return "Waiting to land"
-        elif statusType == 6:
-            return "Going to another airport"
-        #elif statusType == 7:
-        #    return "Parked"
         
     def requestToTakeOff(self, airplaneID):
         print(f"Airplane {airplaneID} has request to take off")
@@ -147,7 +143,6 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
             self.labelHigh.deselect()
             self.labelMedium.deselect()
 
-
     def sendForm(self):
         airplaneAirline = self.entryAirline.get()
         if self.labelCommercial.get() == 'on':
@@ -168,7 +163,7 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
         airplaneDestiny = self.entryDestiny.get()
         airplaneDate = self.entryDate.get()
         airplaneTime = self.entryTime.get()
-        airplaneStatus = StatusType.IN_STATION #StatusType.PARKED
+        airplaneStatus = StatusType.FLYING
         
         # TODO: Send the form data to a server or do something else with it
         
