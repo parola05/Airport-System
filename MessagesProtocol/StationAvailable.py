@@ -1,6 +1,14 @@
 import sys
-sys.path.append("..\\..")
-from GlobalTypes import SpotType
+import platform
+
+if platform.system() == "Darwin":  # macOS
+    sys.path.append("../")
+elif platform.system() == "Windows":
+    sys.path.append("..\\..")
+else:
+    print("Unsupported operating system")
+
+from GlobalTypes.Types import SpotType
 
 class StationAvailable():
     def __init__(self, airline: str, spotType: SpotType) -> None:

@@ -8,3 +8,8 @@ class StatusType:
     WAITING_TAKEOFF = 3
     WAITING_LAND = 4
     INRUNWAY = 5
+
+class Priority:
+    HIGH = 1
+    MEDIUM = 2
+    LOW = 3

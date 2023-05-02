@@ -20,5 +20,5 @@ class Agents():
         self.airplaines = []
         # TODO: init rest of agents
         # self.airplaines = []
-        # self.airlines = []
+        self.airlines = []
         # self.controlTower = ControlTower()
