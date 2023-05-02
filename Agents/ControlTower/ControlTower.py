@@ -10,11 +10,11 @@ elif platform.system() == "Windows":
 else:
     print("Unsupported operating system")
     
-from MessagesProtocol.LandRequest import LandRequest
+from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
 
 class ControlTower(Agent):
     async def setup(self):
-        self.queueInTheAir: Dict[str:List[LandRequest]] 
+        self.queueInTheAir: Dict[str:List[RequestFromAirplane]] 
 
     '''
     def addRunway(self, runway: Runway):

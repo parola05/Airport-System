@@ -11,21 +11,15 @@ class ReceiveBehaviour(CyclicBehaviour):
 
         if receiveMsg:
             performative = receiveMsg.get_metadata('performative')
-            stationRunway = receiveMsg.body
 
             # Recebe informação de que a fila de espera está cheia ou quase cheia
             if performative == 'refuse':
                 sendMsg.set_metadata("performative", "inform")
                 sendMsg.body = "Going to another airport"
-            
-            # Recebe informação de que não existem gares ou pistas disponíveis
-            elif performative == 'inform':
-                print("Agent {}".format(str(self.agent.jid)) + "keeps waiting..")
 
             # Recebe informação da gare e da pista selecionadas para a aterragem ou a partida
             elif performative == 'confirm':
                 pass
-                
 
         else:
             print("Agent {}".format(str(self.agent.jid)) + "did not receive any message after 1 minute")
