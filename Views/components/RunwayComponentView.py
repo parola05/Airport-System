@@ -22,7 +22,7 @@ class RunwayComponentView(customtkinter.CTkFrame):
         self.toplevel_window = None
 
         # Create the title of the frame
-        labelID = customtkinter.CTkLabel(master=self, text="Runways")
+        labelID = customtkinter.CTkLabel(master=self, text="🛬 Runways", font=("Helvetica", 18, "bold"))
         labelID.grid(row=0, column=0)
 
         # Create the "Table" that will show the list of runways
