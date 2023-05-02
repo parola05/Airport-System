@@ -1,7 +1,7 @@
 import sys
 sys.path.append("..\\..")
 from spade.behaviour import OneShotBehaviour
-from MessagesProtocol import BuySpots
+from MessagesProtocol.BuySpots import BuySpots
 from spade.message import Message
 import jsonpickle
 

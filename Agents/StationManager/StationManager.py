@@ -2,7 +2,7 @@ from spade import Agent
 from typing import Dict, List
 import sys
 sys.path.append("..")
-from GlobalTypes import Coord
+from GlobalTypes.Coord import Coord
 from GlobalTypes.Types import SpotType
 
 class Station():
