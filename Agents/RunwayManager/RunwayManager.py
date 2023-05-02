@@ -2,7 +2,7 @@ from spade import Agent
 from typing import Dict, List
 import sys
 sys.path.append("..")
-from GlobalTypes import Coord, SpotType
+from GlobalTypes.Coord import Coord
 
 class Runway():
     def __init__(self, id: str, coord: Coord, available: bool) -> None:
@@ -33,6 +33,6 @@ class RunwayManagerAgent(Agent):
         '''
         runwaysAvailable: List[str] = []
         for runway in self.runways:
-            if runway.isSpotAvailable():
-                runwaysAvailable.append(runway.id)
+            if self.runways[runway].isSpotAvailable():
+                runwaysAvailable.append(self.runways[runway].id)
         return runwaysAvailable

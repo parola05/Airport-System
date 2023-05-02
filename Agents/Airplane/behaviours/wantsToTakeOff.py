@@ -1,8 +1,7 @@
 from spade.behaviour import OneShotBehaviour
 from spade.message import Message
 
-import sys
-import platform
+import sys, platform
 
 if platform.system() == "Darwin":  # macOS
     sys.path.append("../")

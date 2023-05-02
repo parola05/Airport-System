@@ -10,6 +10,7 @@ else:
     print("Unsupported operating system")
 
 from Controllers.AirplanesComponentController import AirplanesComponentController
+from GlobalTypes.Types import StatusType, Priority, SpotType
 
 class AirplanesComponentView(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -19,40 +20,40 @@ class AirplanesComponentView(customtkinter.CTkFrame):
         airplanes = self.controller.getAirplanes()
 
         self.toplevel_window = None
-
+        
         # Create the Title of the Frame
         labelID = customtkinter.CTkLabel(master=self, text="\U0001F6EA Airplanes", font=("Helvetica", 18, "bold"))
         labelID.grid(row=0, column=0)
 
         # Create the "Table" that will show the list of airplanes
         airplanesTable = customtkinter.CTkScrollableFrame(master=self)
-        airplanesTable.grid(row=1,column=0,padx=10, pady=10,sticky="nsew")
+        airplanesTable.grid(row=1,column=0,padx=10,pady=10,sticky="nsew")
 
         # Create the first row
         labelID = customtkinter.CTkLabel(master=airplanesTable, text="Airplane ID")
-        labelID.grid(row=0, column=0, padx=20, pady=(0, 20))
+        labelID.grid(row=0, column=0, padx=10, pady=(0, 10))
         labelTakeOff = customtkinter.CTkLabel(master=airplanesTable, text="Action")
-        labelTakeOff.grid(row=0, column=1, padx=20, pady=(0, 20))
+        labelTakeOff.grid(row=0, column=1, padx=10, pady=(0, 10))
         labelTakeOff = customtkinter.CTkLabel(master=airplanesTable, text="Status")
-        labelTakeOff.grid(row=0, column=2, padx=20, pady=(0, 20))
+        labelTakeOff.grid(row=0, column=2, padx=10, pady=(0, 10))
 
         # Create the n rows
         for rowIndex, airplane in enumerate(airplanes):
             labelID = customtkinter.CTkLabel(master=airplanesTable, text=airplane["id"])
-            labelID.grid(row=rowIndex+1, column=0, padx=10, pady=(0, 20))
-            if airplane["status"] == 1:
+            labelID.grid(row=rowIndex+1, column=0, padx=10, pady=(0,10), sticky="ew")
+            if airplane["status"] == StatusType.IN_STATION: #StatusType.PARKED:
                 labelAction = customtkinter.CTkButton(master=airplanesTable, command=lambda airplaneID=airplane["id"]: self.requestToTakeOff(airplaneID))
-                labelAction.grid(row=rowIndex+1, column=1, padx=20, pady=10)
+                labelAction.grid(row=rowIndex+1, column=1, padx=20, pady=(0,10))
                 labelAction.configure(text="Take Off")
-            elif airplane["status"] == 2:
+            elif airplane["status"] == StatusType.FLYING:
                 labelAction = customtkinter.CTkButton(master=airplanesTable, command=lambda airplaneID=airplane["id"]: self.requestToLand(airplaneID))
-                labelAction.grid(row=rowIndex+1, column=1, padx=20, pady=10)
+                labelAction.grid(row=rowIndex+1, column=1, padx=20, pady=(0,10))
                 labelAction.configure(text="Land")
             else:
                 labelAction = customtkinter.CTkLabel(master=airplanesTable, text="--None--")
-                labelAction.grid(row=rowIndex+1, column=1, padx=20, pady=10)
+                labelAction.grid(row=rowIndex+1, column=1, padx=20, pady=(0,10))
             labelID = customtkinter.CTkLabel(master=airplanesTable, text=self.airplaneStatus(airplane["status"]))
-            labelID.grid(row=rowIndex+1, column=2, padx=10, pady=(0, 20))
+            labelID.grid(row=rowIndex+1, column=2, padx=10, pady=(0,10), sticky="ew")
 
         # Create the button to add more stations
         createStationButton = customtkinter.CTkButton(self, text="Create Airplane", command=self.openCreateAirplanesForm)
@@ -71,6 +72,8 @@ class AirplanesComponentView(customtkinter.CTkFrame):
             return "Waiting to land"
         elif statusType == 6:
             return "Going to another airport"
+        #elif statusType == 7:
+        #    return "Parked"
         
     def requestToTakeOff(self, airplaneID):
         print(f"Airplane {airplaneID} has request to take off")
@@ -128,7 +131,7 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
         self.entryDate.grid(row=5, column=1, padx=10, pady=10)
         self.labelTime.grid(row=6, column=0, padx=10, pady=10)
         self.entryTime.grid(row=6, column=1, padx=10, pady=10)
-        self.buttonCreateAirplane.grid(row=7, column=1, padx=10, pady=10)
+        self.buttonCreateAirplane.grid(row=7, column=0, padx=10, pady=10, columnspan=4)
 
     def checkOnlyOneType(self):
         if self.labelCommercial.get() == 'on':
@@ -138,42 +141,41 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
             self.labelCommercial.deselect()
             self.labelMerchandise.select()
 
-        if self.labelLow.get() == 'on':
-            self.labelLow.select()
-            self.labelHigh.deselect()
+        if self.labelHigh.get() == 'on':
+            self.labelHigh.select()
             self.labelMedium.deselect()
+            self.labelLow.deselect()
         elif self.labelMedium.get() == 'on':
             self.labelMedium.select()
             self.labelHigh.deselect()
             self.labelLow.deselect()
-        elif self.labelHigh.get() == 'on':
-            self.labelHigh.select()
+        elif self.labelLow.get() == 'on':
+            self.labelLow.select()
+            self.labelHigh.deselect()
             self.labelMedium.deselect()
-            self.labelLow.deselect()
 
 
     def sendForm(self):
-
         airplaneAirline = self.entryAirline.get()
         if self.labelCommercial.get() == 'on':
-            airplaneType = 2
+            airplaneType = SpotType.COMMERCIAL
         elif self.labelMerchandise.get() == 'on':
-            airplaneType = 1
+            airplaneType = SpotType.MERCHANDISE
         else:
             airplaneType = ''
         if self.labelLow.get() == 'on':
-            priority = 3
+            priority = Priority.LOW
         elif self.labelMedium.get() == 'on':
-            priority = 2
+            priority = Priority.MEDIUM
         elif self.labelHigh.get() == 'on':
-            priority = 1
+            priority = Priority.HIGH
         else:
             priority = ''
         airplaneOrigin = self.entryOrigin.get()
         airplaneDestiny = self.entryDestiny.get()
         airplaneDate = self.entryDate.get()
         airplaneTime = self.entryTime.get()
-        airplaneStatus = 4
+        airplaneStatus = StatusType.IN_STATION #StatusType.PARKED
         
         # TODO: Send the form data to a server or do something else with it
         

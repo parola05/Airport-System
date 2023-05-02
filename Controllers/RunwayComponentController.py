@@ -9,6 +9,7 @@ else:
     print("Unsupported operating system")
 
 from Agents.Agents import Agents
+from GlobalTypes.Coord import Coord
 
 class RunwayComponentController():
     def __init__(self) -> None:
@@ -21,47 +22,48 @@ class RunwayComponentController():
         '''
             Get a list where each item have:
                 - Runways ID
-                - Runways Coordinates
+                - Runways Coordinates (Coord)
+                - Runways Availability (bool)
         '''
         return [
             {
                 "id": "TODO",
-                "x": "TODO",
-                "y": "TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
             },
             {
                 "id":"TODO",
-                "x": "TODO",
-                "y": "TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
             },
             {
                 "id":"TODO",
-                "x": "TODO",
-                "y": "TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
             },
             {
                 "id":"TODO",
-                "x": "TODO",
-                "y": "TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
             },
             {
                 "id":"TODO",
-                "x": "TODO",
-                "y": "TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
             },
             {
                 "id":"TODO",
-                "x": "TODO",
-                "y": "TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
             },
              {
                 "id":"TODO",
-                "x": "TODO",
-                "y": "TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
             },
              {
                 "id":"TODO",
-                "x": "TODO",
-                "y": "TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
             },
         ]

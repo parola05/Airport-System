@@ -1,7 +1,5 @@
 from spade.behaviour import CyclicBehaviour
-import jsonpickle
-import sys 
-import platform
+import jsonpickle, sys, platform
 
 if platform.system() == "Darwin":  # macOS
     sys.path.append("../")
@@ -9,7 +7,7 @@ elif platform.system() == "Windows":
     sys.path.append("..\\..")
 else:
     print("Unsupported operating system")
-    
+
 from MessagesProtocol.StationAvailable import StationAvailable
 from typing import List
 from spade.message import Message

@@ -47,6 +47,8 @@ class ReceiveBehaviour(CyclicBehaviour):
                     AirplaneAgent.status = StatusType.LANDING
                     time.sleep(30)
                     AirplaneAgent.status = StatusType.IN_STATION
+                    #time.sleep(60)
+                    #AirplaneAgent.status = StatusType.PARKED
 
         else:
             print("Agent {}".format(str(self.agent.jid)) + "did not receive any message after 1 minute")
