@@ -101,7 +101,6 @@ class Station():
         
 class StationManagerAgent(Agent):
     async def setup(self):
-        print("aaaaa!!!")
         receiveAirlinesProposals = ReceiveAirlinesProposalsBehaviour()
         evaluateAirlinesProposals = EvaluateAirlinesProposalsBehaviour(period=5,start_at=(datetime.datetime.now() + datetime.timedelta(seconds=5)))
         receiveSpotsQueryBehaviour = ReceiveSpotQueryBehaviour()
@@ -111,8 +110,6 @@ class StationManagerAgent(Agent):
         template1.set_metadata("performative","propose")
         template2 = Template()
         template2.set_metadata("performative","query-if")
-
-        print("hhuuu!!!")
         
         self.add_behaviour(receiveAirlinesProposals,template1)
         self.add_behaviour(evaluateAirlinesProposals)

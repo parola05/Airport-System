@@ -43,11 +43,11 @@ class MainView(customtkinter.CTk):
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         self.sidebar_automatic = customtkinter.CTkButton(self.sidebar_frame, command=self.openAutomaticSimulation)
-        self.sidebar_automatic.grid(row=4, column=0, padx=20, pady=10)
+        self.sidebar_automatic.grid(row=1, column=0, padx=20, pady=10)
         self.sidebar_automatic.configure(text="Configure Simulation")
 
         self.sidebar_automatic = customtkinter.CTkButton(self.sidebar_frame, command=self.simulate)
-        self.sidebar_automatic.grid(row=5, column=0, padx=20, pady=10)
+        self.sidebar_automatic.grid(row=2, column=0, padx=20, pady=10)
         self.sidebar_automatic.configure(text="Start Simulation")
 
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")

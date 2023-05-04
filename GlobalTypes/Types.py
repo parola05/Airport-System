@@ -20,3 +20,4 @@ class Priority:
 
 class DashboardAirlineUpdate:
     NEGOTIATION = 1
+    INFO = 2

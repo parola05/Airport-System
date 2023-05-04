@@ -20,6 +20,7 @@ class DashboardAirline(Agent):
         super().__init__(agent_name,password)
         self.view = AirlinesComponentView(master=master)
         self.line = 0
+        self.rowIndex = 0
 
 class AirlinesComponentView(customtkinter.CTkTabview):
     def __init__(self, master, **kwargs):
@@ -45,20 +46,13 @@ class Airlines(customtkinter.CTkFrame):
 
         self.toplevel_window = None
 
-        self.airlines = []
-
         # Create the "Table" that will show the list of airlines
-        airlinesTable = customtkinter.CTkScrollableFrame(master=self)
-        airlinesTable.grid(row=1,column=0,padx=10, pady=10,sticky="nsew")
+        self.airlinesTable = customtkinter.CTkScrollableFrame(master=self)
+        self.airlinesTable.grid(row=1,column=0,padx=10, pady=10,sticky="nsew")
 
         # Create the first row
-        labelID = customtkinter.CTkLabel(master=airlinesTable, text="Airline ID")
+        labelID = customtkinter.CTkLabel(master=self.airlinesTable, text="Airline ID")
         labelID.grid(row=0, column=0, padx=10, pady=(0, 20))
-
-        # Create the n rows
-        for rowIndex,airline in enumerate(self.airlines):
-            labelID = customtkinter.CTkLabel(master=airlinesTable, text=airline["id"])
-            labelID.grid(row=rowIndex+1, column=0, padx=10, pady=(0, 20))
 
         # Create the button to add more airline
         createAirlineButton = customtkinter.CTkButton(self, text="Add Airline", command=self.openAddAirlineForm)
@@ -97,16 +91,10 @@ class SpotsNegotiation(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.grid_columnconfigure(1, weight=8)
-        self.grid_columnconfigure(0, weight=2)
-
-        labelTimer = customtkinter.CTkLabel(master=self, text="00:01",font=("Helvetica", 28, "bold"))
-        labelTimer.grid(row=1, column=0,padx=2,pady=2,sticky="nw")
-
         progressbar = customtkinter.CTkProgressBar(master=self)
-        progressbar.grid(row=0, column=1, padx=2, pady=2, sticky="ew")
+        progressbar.grid(row=0, column=0, padx=2, pady=2, sticky="nsew")
         progressbar.configure(mode="indeterminnate")
         progressbar.start()
 
         self.textbox = customtkinter.CTkTextbox(master=self)
-        self.textbox.grid(row=1,column=1,sticky="nsew")
+        self.textbox.grid(row=1,column=0,sticky="nsew")
