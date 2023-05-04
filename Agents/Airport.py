@@ -1,6 +1,7 @@
 from .StationManager.StationManager import StationManagerAgent
 from .Airline.Airline import AirlineAgent
 import random
+from Conf import Conf
 
 class Airport():
     _instance = None
@@ -20,20 +21,21 @@ class Airport():
 
         # INIT Stations
         self.stationManager:StationManagerAgent = StationManagerAgent(
-            "station@laptop-vun6ls3v.lan",
-            "12345678",
+            "station@" + Conf().get_openfire_server(),
+            Conf().get_openfire_password(),
             nStations=nStations,
             nMerchandiseSpotsPerStation=nMerchandiseSpotsPerStation,
             nCommercialSpotsPerStation=nCommercialSpotsPerStation                                      
             )           
 
         # INIT Airlines
+        print("server:",Conf().get_openfire_server())
         self.airlines = []
         for i in range(0,nAirlines):
             airlineID = "Airline_" + str(i)
             airline = AirlineAgent(
-                agent_name=airlineID+"@laptop-vun6ls3v.lan",
-                password="12345678",
+                agent_name=airlineID+"@" + Conf().get_openfire_server(),
+                password=Conf().get_openfire_password(),
                 airlineID=airlineID,
                 n_spots=random.randint(1, 10),
                 price_per_spot=random.randint(1000, 10000),
@@ -51,6 +53,7 @@ class Airport():
         # TODO
 
     def simulate(self):
-        self.stationManager.start()
+        future = self.stationManager.start()
+        future.result()
         for airline in self.airlines:
             airline.start()

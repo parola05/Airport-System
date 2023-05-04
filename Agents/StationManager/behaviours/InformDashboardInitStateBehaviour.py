@@ -2,13 +2,14 @@ from spade.behaviour import OneShotBehaviour
 from MessagesProtocol.InitStateStations import InitStateStations, StationInfo
 from spade.message import Message
 import jsonpickle
+from Conf import Conf
 
 class InformDashBoardInitStateBehaviour(OneShotBehaviour):
     async def on_start(self):
         print("Starting Inform Dashboard Init State Behaviour . . .")
 
     async def run(self):
-        msg = Message(to="dashboardStation@laptop-vun6ls3v.lan")
+        msg = Message(to="dashboardStation@" + Conf().get_openfire_server())
         msg.set_metadata("performative", "inform")
         
         initStateStations:InitStateStations = InitStateStations()

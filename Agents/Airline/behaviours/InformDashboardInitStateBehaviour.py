@@ -3,13 +3,14 @@ from MessagesProtocol.DashboardAirlines import DashboardAirlines, AirlineInfo
 from GlobalTypes.Types import DashboardAirlineUpdate
 from spade.message import Message
 import jsonpickle
+from Conf import Conf
 
 class InformDashBoardInitStateBehaviour(OneShotBehaviour):
     async def on_start(self):
         print("Starting Inform Dashboard Init State Behaviour . . .")
 
     async def run(self):
-        msg = Message(to="dashboardAirline@laptop-vun6ls3v.lan")
+        msg = Message(to="dashboardAirline@" + Conf().get_openfire_server())
         msg.set_metadata("performative", "inform")
         
         airlineInfo:AirlineInfo = AirlineInfo(

@@ -4,6 +4,7 @@ from MessagesProtocol.DashboardAirlines import DashboardAirlines
 from GlobalTypes.Types import DashboardAirlineUpdate
 from spade.message import Message
 import jsonpickle
+from Conf import Conf
 
 class BuySpotsBehaviour(OneShotBehaviour):
     async def on_start(self):
@@ -11,7 +12,8 @@ class BuySpotsBehaviour(OneShotBehaviour):
 
     async def run(self):
         ############### Send proposal ###################
-        msg = Message(to="station@laptop-vun6ls3v.lan")
+        print(Conf().get_openfire_server())
+        msg = Message(to="station@" + Conf().get_openfire_server())
         msg.set_metadata("performative", "propose")
         bodyMessage:BuySpots = BuySpots(
             self.agent.n_spots,
@@ -23,7 +25,7 @@ class BuySpotsBehaviour(OneShotBehaviour):
         await self.send(msg)
 
         ############### Update Dashboard ###############
-        msg = Message(to="dashboardAirline@laptop-vun6ls3v.lan")
+        msg = Message(to="dashboardAirline@" + Conf().get_openfire_server())
         msg.set_metadata("performative", "inform")
         bodyMessage:DashboardAirlines = DashboardAirlines(
             type=DashboardAirlineUpdate.NEGOTIATION,

@@ -8,7 +8,6 @@ class AirlineAgent(Agent):
         receiveSpotsQueryBehaviour = ReceiveProposalAnswerBehaviour()
         buySpotsBehaviour = BuySpotsBehaviour()
         informDashBoardInitStateBehaviour = InformDashBoardInitStateBehaviour()
-
         self.add_behaviour(receiveSpotsQueryBehaviour)
         self.add_behaviour(buySpotsBehaviour)
         self.add_behaviour(informDashBoardInitStateBehaviour)

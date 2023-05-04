@@ -4,6 +4,7 @@ from Agents.Dashboard.DashboardAirline.DashboardAirline import DashboardAirline
 from Agents.Dashboard.DashboardRunway.DashboardRunway import DashboardRunway
 from Agents.Dashboard.DashboardAirplane.DashboardAirplane import DashboardAirplane
 from Agents.Airport import Airport
+from Conf import Conf
 
 customtkinter.set_appearance_mode("System") 
 customtkinter.set_default_color_theme("green")
@@ -70,25 +71,25 @@ class MainView(customtkinter.CTk):
         self.textbox.grid(row=0, column=1, columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
         # Station Component
-        self.dashboardStation = DashboardStation("dashboardStation@laptop-vun6ls3v.lan","12345678",master=self)
+        self.dashboardStation = DashboardStation("dashboardStation@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
         self.dashboardStation.view.grid(row=2, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
         self.dashboardStation.view.grid_columnconfigure(0, weight=1)
         self.dashboardStation.view.grid_rowconfigure(1, weight=1)
         self.dashboardStation.start()
 
         # Airlines Component
-        self.dashboardAirline = DashboardAirline("dashboardAirline@laptop-vun6ls3v.lan","12345678",master=self)
+        self.dashboardAirline = DashboardAirline("dashboardAirline@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
         self.dashboardAirline.view.grid(row=0, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
         self.dashboardAirline.start()
 
         # Airplanes Component
-        self.airplanesComponent = DashboardAirplane("dashboardAirplane@laptop-vun6ls3v.lan","12345678",master=self)
+        self.airplanesComponent = DashboardAirplane("dashboardAirplane@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
         self.airplanesComponent.view.grid(row=2, column=1, padx=20, pady=(20, 0), sticky="nsew")
         self.airplanesComponent.view.grid_columnconfigure(0, weight=1)
         self.airplanesComponent.view.grid_rowconfigure(1, weight=1)
 
         # Runway Component
-        self.runwayComponent = DashboardRunway("dashboardRunway@laptop-vun6ls3v.lan","12345678",master=self)
+        self.runwayComponent = DashboardRunway("dashboardRunway@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
         self.runwayComponent.view.grid(row=2, column=2, padx=20, pady=(20, 0), sticky="nsew")
         self.runwayComponent.view.grid_columnconfigure(0, weight=1)
         self.runwayComponent.view.grid_rowconfigure(1, weight=1)
