@@ -1,6 +1,5 @@
-from Dashboard import Dashboard
-import time
+from UI import UI
 
 if __name__ == "__main__":
-    dashboard = Dashboard()
-    dashboard.start()
+    ui = UI()
+    ui.start()

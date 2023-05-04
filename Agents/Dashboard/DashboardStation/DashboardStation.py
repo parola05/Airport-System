@@ -17,13 +17,8 @@ class DashboardStation(Agent):
         self.add_behaviour(receiveUpdatesBehaviour)
 
     def __init__(self,agent_name,password,master):
-        '''
-            view: tkinter Frame
-            stations: content of tkinter frame that receive updates thought behaviour
-        '''
         super().__init__(agent_name,password)
         self.view = StationComponentView(master=master)
-        self.stations = []
     
 class StationComponentView(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):

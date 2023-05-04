@@ -1,5 +1,4 @@
 import customtkinter
-from spade.agent import Agent
 from Agents.Dashboard.DashboardStation.DashboardStation import DashboardStation
 from Agents.Dashboard.DashboardAirline.DashboardAirline import DashboardAirline
 from Agents.Dashboard.DashboardRunway.DashboardRunway import DashboardRunway
@@ -9,7 +8,7 @@ from Agents.Airport import Airport
 customtkinter.set_appearance_mode("System") 
 customtkinter.set_default_color_theme("green")
 
-class Dashboard():
+class UI():
     def __init__(self):
         self.app = MainView()
 
@@ -31,8 +30,8 @@ class MainView(customtkinter.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
         self.grid_columnconfigure(3, weight=1)
-        self.grid_rowconfigure((0, 2, 3), weight=1)
-        self.grid_rowconfigure((1), weight=3)
+        self.grid_rowconfigure((0, 1), weight=1)
+        self.grid_rowconfigure((2), weight=3)
 
         # create sidebar frame with widgets
         self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
