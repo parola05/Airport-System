@@ -1,4 +1,5 @@
 import customtkinter, sys, platform, tkinter
+from spade.agent import Agent
 
 if platform.system() == "Darwin":  # macOS
     sys.path.append("../")
@@ -7,15 +8,62 @@ elif platform.system() == "Windows":
 else:
     print("Unsupported operating system")
 
-from Controllers.RunwayComponentController import RunwayComponentController
 from GlobalTypes.Coord import Coord
     
+class DashboardRunway(Agent):
+    async def setup(self):
+        pass
+
+    def __init__(self,agent_name,password,master):
+        super().__init__(agent_name,password)
+        self.view = RunwayComponentView(master=master)
+
 class RunwayComponentView(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.controller = RunwayComponentController()
-        runways = self.controller.getRunways()
+        runways = [
+            {
+                "id": "TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
+            },
+            {
+                "id":"TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
+            },
+            {
+                "id":"TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
+            },
+            {
+                "id":"TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
+            },
+            {
+                "id":"TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
+            },
+            {
+                "id":"TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
+            },
+             {
+                "id":"TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
+            },
+             {
+                "id":"TODO",
+                "position": Coord(0,0),
+                "available": "TODO",
+            },
+        ]
 
         self.toplevel_window = None
 

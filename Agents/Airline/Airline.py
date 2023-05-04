@@ -1,15 +1,18 @@
-from spade import Agent
-import sys, platform
+from spade.agent import Agent
+from .behaviours.BuySpotsBehaviour import BuySpotsBehaviour
+from .behaviours.ReceiveProposalAnswerBehaviour import ReceiveProposalAnswerBehaviour
 
-if platform.system() == "Darwin":  # macOS
-    sys.path.append("../")
-elif platform.system() == "Windows":
-    sys.path.append("..\\..")
-else:
-    print("Unsupported operating system")
+class AirlineAgent(Agent):
+    async def setup(self):
+        receiveSpotsQueryBehaviour = ReceiveProposalAnswerBehaviour()
+        buySpotsBehaviour = BuySpotsBehaviour()
 
-from GlobalTypes.Types import SpotType
+        self.add_behaviour(receiveSpotsQueryBehaviour)
+        self.add_behaviour(buySpotsBehaviour)
 
-class Airline(Agent):
-    async def setup(self,id):
-        self.id = id
+    def __init__(self,agent_name,password,airlineID,n_spots=None,price_per_spot=None,spotType=None) -> None:
+        super().__init__(agent_name,password)
+        self.airlineID = airlineID
+        self.n_spots: int = n_spots
+        self.price_per_spot: float = price_per_spot
+        self.spotType = spotType 

@@ -1,6 +1,7 @@
 import customtkinter
 import sys
 import platform
+from spade.agent import Agent
 
 if platform.system() == "Darwin":  # macOS
     sys.path.append("../")
@@ -9,15 +10,110 @@ elif platform.system() == "Windows":
 else:
     print("Unsupported operating system")
 
-from Controllers.AirplanesComponentController import AirplanesComponentController
 from GlobalTypes.Types import StatusType, Priority, SpotType
+
+class DashboardAirplane(Agent):
+    async def setup(self):
+        pass
+
+    def __init__(self,agent_name,password,master):
+        super().__init__(agent_name,password)
+        self.view = AirplanesComponentView(master=master)
 
 class AirplanesComponentView(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.controller = AirplanesComponentController()
-        airplanes = self.controller.getAirplanes()
+        airplanes = [
+            {
+                "id": "TODO",
+                "airline": "TODO",
+                "type": "TODO",
+                "priority": "TODO",
+                "origin": "TODO",
+                "destiny": "TODO",
+                "date": "TODO",
+                "time": "TODO",
+                "status": StatusType.IN_STATION,
+            },
+            {
+                "id":"TODO",
+                "airline": "TODO",
+                "type": "TODO",
+                "priority": "TODO",
+                "origin": "TODO",
+                "destiny": "TODO",
+                "date": "TODO",
+                "time": "TODO",
+                "status": "TODO",
+            },
+            {
+                "id":"TODO",
+                "airline": "TODO",
+                "type": "TODO",
+                "priority": "TODO",
+                "origin": "TODO",
+                "destiny": "TODO",
+                "date": "TODO",
+                "time": "TODO",
+                "status": StatusType.FLYING,
+            },
+            {
+                "id":"TODO",
+                "airline": "TODO",
+                "type": "TODO",
+                "priority": "TODO",
+                "origin": "TODO",
+                "destiny": "TODO",
+                "date": "TODO",
+                "time": "TODO",
+                "status": "TODO",
+            },
+            {
+                "id":"TODO",
+                "airline": "TODO",
+                "type": "TODO",
+                "priority": "TODO",
+                "origin": "TODO",
+                "destiny": "TODO",
+                "date": "TODO",
+                "time": "TODO",
+                "status": "TODO",
+            },
+            {
+                "id":"TODO",
+                "airline": "TODO",
+                "type": "TODO",
+                "priority": "TODO",
+                "origin": "TODO",
+                "destiny": "TODO",
+                "date": "TODO",
+                "time": "TODO",
+                "status": "TODO",
+            },
+             {
+                "id":"TODO",
+                "airline": "TODO",
+                "type": "TODO",
+                "priority": "TODO",
+                "origin": "TODO",
+                "destiny": "TODO",
+                "date": "TODO",
+                "time": "TODO",
+                "status": "TODO",
+            },
+             {
+                "id":"TODO",
+                "airline": "TODO",
+                "type": "TODO",
+                "priority": "TODO",
+                "origin": "TODO",
+                "destiny": "TODO",
+                "date": "TODO",
+                "time": "TODO",
+                "status": "TODO",
+            },
+        ]
 
         self.toplevel_window = None
         

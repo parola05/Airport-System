@@ -1,6 +1,8 @@
 import customtkinter
 import sys
 import platform
+from spade.agent import Agent
+from .behaviours.ReceiveUpdates import ReceiveUpdatesBehaviour
 
 if platform.system() == "Darwin":  # macOS
     sys.path.append("../")
@@ -9,38 +11,56 @@ elif platform.system() == "Windows":
 else:
     print("Unsupported operating system")
 
-from Controllers.StationComponentController import StationComponentController
+class DashboardStation(Agent):
+    async def setup(self):
+        receiveUpdatesBehaviour = ReceiveUpdatesBehaviour()
+        self.add_behaviour(receiveUpdatesBehaviour)
+
+    def __init__(self,agent_name,password,master):
+        '''
+            view: tkinter Frame
+            stations: content of tkinter frame that receive updates thought behaviour
+        '''
+        super().__init__(agent_name,password)
+        self.view = StationComponentView(master=master)
+        self.stations = []
     
 class StationComponentView(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.controller = StationComponentController()
-        stations = self.controller.getStations()
-
         self.toplevel_window = None
 
-        labelID = customtkinter.CTkLabel(master=self, text="\U0001F689 Stations", font=("Helvetica", 18, "bold"))
+        stations = []
+
+        # Create the Title of the Frame
+        labelID = customtkinter.CTkLabel(master=self, text="Stations")
         labelID.grid(row=0, column=0)
 
-        stationsTable = customtkinter.CTkScrollableFrame(master=self)
-        stationsTable.grid(row=1,column=0,padx=10, pady=10,sticky="nsew")
+        # Create the "Table" that will show the list of stations
+        self.stationsTable = customtkinter.CTkScrollableFrame(master=self)
+        self.stationsTable.grid(row=1,column=0,padx=10, pady=10,sticky="nsew")
 
-        labelID = customtkinter.CTkLabel(master=stationsTable, text="Station ID")
+        # Create the first row
+        labelID = customtkinter.CTkLabel(master=self.stationsTable, text="Station ID")
         labelID.grid(row=0, column=0, padx=10, pady=(0, 20))
-        labelCommercialSpots = customtkinter.CTkLabel(master=stationsTable, text="Commercial Capacity")
+        labelCommercialSpots = customtkinter.CTkLabel(master=self.stationsTable, text="Commercial Capacity")
         labelCommercialSpots.grid(row=0, column=1, padx=10, pady=(0, 20))
-        labelMerchandiseSpots = customtkinter.CTkLabel(master=stationsTable, text="Merchandise Capacity")
+        labelMerchandiseSpots = customtkinter.CTkLabel(master=self.stationsTable, text="Merchandise Capacity")
         labelMerchandiseSpots.grid(row=0, column=2, padx=10, pady=(0, 20))
 
+        self.labelDict = {}
+
+        # Create the n rows
         for rowIndex,station in enumerate(stations):
-            labelID = customtkinter.CTkLabel(master=stationsTable, text=station["id"])
+            labelID = customtkinter.CTkLabel(master=self.stationsTable, text=station["id"])
             labelID.grid(row=rowIndex+1, column=0, padx=7, pady=(0, 20))
-            labelCommercialSpots = customtkinter.CTkLabel(master=stationsTable, text=str(station["commercialSpots"]))
+            labelCommercialSpots = customtkinter.CTkLabel(master=self.stationsTable, text=str(station["commercialSpots"]))
             labelCommercialSpots.grid(row=rowIndex+1, column=1, padx=7, pady=(0, 20))
-            labelMerchandiseSpots = customtkinter.CTkLabel(master=stationsTable, text=str(station["merchandiseSpots"]))
+            labelMerchandiseSpots = customtkinter.CTkLabel(master=self.stationsTable, text=str(station["merchandiseSpots"]))
             labelMerchandiseSpots.grid(row=rowIndex+1, column=2, padx=7, pady=(0, 20))
 
+        # Create the button to add more stations
         createStationButton = customtkinter.CTkButton(self, text="Add Station", command=self.openAddStationsForm)
         createStationButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
 
@@ -56,6 +76,7 @@ class CreateStationFormView(customtkinter.CTkToplevel):
         
         self.title("Create a new station")
 
+        # Create the form widgets
         self.labelStationID = customtkinter.CTkLabel(self, text="Station ID")
         self.entryStationID = customtkinter.CTkEntry(self)
         self.labelCommercialSpotsCapacity = customtkinter.CTkLabel(self, text="No. commercial spots")
@@ -64,6 +85,7 @@ class CreateStationFormView(customtkinter.CTkToplevel):
         self.entryMerchandiseSpotsCapacity = customtkinter.CTkEntry(self)
         self.buttonCreateStation = customtkinter.CTkButton(self, text="Create Station", command=self.sendForm)
         
+        # Lay out the form widgets using grid
         self.labelStationID.grid(row=0, column=0, padx=10, pady=10)
         self.entryStationID.grid(row=0, column=1, padx=10, pady=10)
         self.labelCommercialSpotsCapacity.grid(row=1, column=0, padx=10, pady=10)
@@ -73,10 +95,12 @@ class CreateStationFormView(customtkinter.CTkToplevel):
         self.buttonCreateStation.grid(row=3, column=1, padx=10, pady=10)
         
     def sendForm(self):
+        # Get the form data
         stationID = self.entryStationID.get()
         commericialSpotsCapacity = self.entryCommercialSpotsCapacity.get()
         merchandiseSpotsCapacity = self.entryMerchandiseSpotsCapacity.get()
         
         # TODO: Send the form data to a server or do something else with it
         
+        # Close the form window
         self.destroy()

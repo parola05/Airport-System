@@ -1,90 +1,100 @@
-import tkinter
-import tkinter.messagebox
 import customtkinter
-from .components.StationComponentView import StationComponentView
-from .components.RunwayComponentView import RunwayComponentView
-from .components.AirplanesComponentView import AirplanesComponentView
-from .components.AirlinesComponentView import AirlinesComponentView
-from .components.SpotsNegotiationComponentView import SpotsNegotiationComponentView
+from spade.agent import Agent
+from Agents.Dashboard.DashboardStation.DashboardStation import DashboardStation
+from Agents.Dashboard.DashboardAirline.DashboardAirline import DashboardAirline
+from Agents.Dashboard.DashboardRunway.DashboardRunway import DashboardRunway
+from Agents.Dashboard.DashboardAirplane.DashboardAirplane import DashboardAirplane
+from Agents.Airport import Airport
 
-customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
+customtkinter.set_appearance_mode("System") 
 customtkinter.set_default_color_theme("green")
 
+class Dashboard():
+    def __init__(self):
+        self.app = MainView()
+
+    def start(self):
+        self.app.mainloop()
+        
 class MainView(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
         self.toplevel_window = None
 
+        # configure window
         self.title("Airport System")
         self.geometry(f"{1400}x{780}")
 
+        # configure grid layout (4x4)
         self.grid_rowconfigure(0, weight=2)
-        self.grid_columnconfigure(0, weight=0)
-        self.grid_columnconfigure(1, weight=2)
+        self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
         self.grid_columnconfigure(3, weight=1)
         self.grid_rowconfigure((0, 2, 3), weight=1)
         self.grid_rowconfigure((1), weight=3)
 
+        # create sidebar frame with widgets
         self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
 
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
         
-        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="Simulation", font=("Helvetica", 18, "bold"))
+        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="Simulation", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         self.sidebar_automatic = customtkinter.CTkButton(self.sidebar_frame, command=self.openAutomaticSimulation)
         self.sidebar_automatic.grid(row=4, column=0, padx=20, pady=10)
-        self.sidebar_automatic.configure(text="Automatic\nSimulation")
+        self.sidebar_automatic.configure(text="Configure Simulation")
+
+        self.sidebar_automatic = customtkinter.CTkButton(self.sidebar_frame, command=self.simulate)
+        self.sidebar_automatic.grid(row=5, column=0, padx=20, pady=10)
+        self.sidebar_automatic.configure(text="Start Simulation")
 
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark", "System"],
                                                                        command=self.change_appearance_mode_event)
-        self.appearance_mode_optionemenu.grid(row=6, column=0, padx=20, pady=(10, 10))
+        self.appearance_mode_optionemenu.grid(row=7, column=0, padx=20, pady=(10, 10))
         self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
-        self.scaling_label.grid(row=7, column=0, padx=20, pady=(10, 0))
+        self.scaling_label.grid(row=8, column=0, padx=20, pady=(10, 0))
         self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["80%", "90%", "100%", "110%", "120%"],
                                                                command=self.change_scaling_event)
-        self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
+        self.scaling_optionemenu.grid(row=9, column=0, padx=20, pady=(10, 20))
 
+        # create main entry and button
         self.entry = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
         self.entry.grid(row=3, column=1, columnspan=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
+        # create textbox
         self.textbox = customtkinter.CTkTextbox(self, width=250)
-        self.textbox.grid(row=0, column=1, columnspan=2, rowspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
-
-        # Airplanes Component
-        self.airplanesComponent = AirplanesComponentView(master=self)
-        self.airplanesComponent.grid(row=2, column=1, padx=20, pady=(20, 0), sticky="nsew")
-        self.airplanesComponent.grid_columnconfigure(0, weight=1)
-        self.airplanesComponent.grid_rowconfigure(1, weight=1)
-
-        # Runway Component
-        self.runwayComponent = RunwayComponentView(master=self)
-        self.runwayComponent.grid(row=2, column=2, padx=20, pady=(20, 0), sticky="nsew")
-        self.runwayComponent.grid_columnconfigure(0, weight=1)
-        self.runwayComponent.grid_rowconfigure(1, weight=1)
+        self.textbox.grid(row=0, column=1, columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
         # Station Component
-        self.stationComponent = StationComponentView(master=self)
-        self.stationComponent.grid(row=2, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
-        self.stationComponent.grid_columnconfigure(0, weight=1)
-        self.stationComponent.grid_rowconfigure(1, weight=1)
+        self.dashboardStation = DashboardStation("dashboardStation@laptop-vun6ls3v.lan","12345678",master=self)
+        self.dashboardStation.view.grid(row=2, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.dashboardStation.view.grid_columnconfigure(0, weight=1)
+        self.dashboardStation.view.grid_rowconfigure(1, weight=1)
+        self.dashboardStation.start()
 
         # Airlines Component
-        self.airlinesComponent = AirlinesComponentView(master=self)
-        self.airlinesComponent.grid(row=0, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
-        self.airlinesComponent.grid_columnconfigure(0, weight=1)
-        self.airlinesComponent.grid_rowconfigure(1, weight=1)
+        self.dashboardAirline = DashboardAirline("dashboardAirline@laptop-vun6ls3v.lan","12345678",master=self)
+        self.dashboardAirline.view.grid(row=0, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.dashboardAirline.start()
 
-        # SpotsNegotiation Component
-        self.spotsNegotiation = SpotsNegotiationComponentView(master=self)
-        self.spotsNegotiation.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
-        #self.spotsNegotiation.grid_columnconfigure(0, weight=1)
+        # Airplanes Component
+        self.airplanesComponent = DashboardAirplane("dashboardAirplane@laptop-vun6ls3v.lan","12345678",master=self)
+        self.airplanesComponent.view.grid(row=2, column=1, padx=20, pady=(20, 0), sticky="nsew")
+        self.airplanesComponent.view.grid_columnconfigure(0, weight=1)
+        self.airplanesComponent.view.grid_rowconfigure(1, weight=1)
 
+        # Runway Component
+        self.runwayComponent = DashboardRunway("dashboardRunway@laptop-vun6ls3v.lan","12345678",master=self)
+        self.runwayComponent.view.grid(row=2, column=2, padx=20, pady=(20, 0), sticky="nsew")
+        self.runwayComponent.view.grid_columnconfigure(0, weight=1)
+        self.runwayComponent.view.grid_rowconfigure(1, weight=1)
+
+        # set default values
         self.appearance_mode_optionemenu.set("Dark")
         self.scaling_optionemenu.set("100%")
         self.textbox.insert("0.0", "CTkTextbox\n\n" + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\n" * 20)
@@ -94,6 +104,10 @@ class MainView(customtkinter.CTk):
             self.toplevel_window = CreateAutomaticSimulationView(self)  
         else:
             self.toplevel_window.focus()  
+
+    def simulate(self):
+        airport = Airport()
+        airport.simulate() 
 
     def open_input_dialog_event(self):
         dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
@@ -115,10 +129,12 @@ class CreateAutomaticSimulationView(customtkinter.CTkToplevel):
         self.title("Automatic Simulation")
         self.geometry(f"{1000}x{800}")
 
+        # configure grid layout (4x4)
         self.grid_columnconfigure(1, weight=2)
         self.grid_columnconfigure(2, weight=1)
         self.grid_rowconfigure((0, 1, 2), weight=1)
 
+        # create slider and progressbar frame
         self.slider_progressbar_frame = customtkinter.CTkFrame(self, fg_color="transparent")
         self.slider_progressbar_frame.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
         self.slider_progressbar_frame.grid_columnconfigure(0, weight=1)

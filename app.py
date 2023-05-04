@@ -1,5 +1,6 @@
-from Views.MainView import MainView
+from Dashboard import Dashboard
+import time
 
 if __name__ == "__main__":
-    app = MainView()
-    app.mainloop()
+    dashboard = Dashboard()
+    dashboard.start()
