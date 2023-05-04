@@ -43,7 +43,7 @@ class MainView(customtkinter.CTk):
         self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="Simulation", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-        self.sidebar_automatic = customtkinter.CTkButton(self.sidebar_frame, command=self.openAutomaticSimulation)
+        self.sidebar_automatic = customtkinter.CTkButton(self.sidebar_frame, command=self.openConfigureSimulation)
         self.sidebar_automatic.grid(row=1, column=0, padx=20, pady=10)
         self.sidebar_automatic.configure(text="Configure Simulation")
 
@@ -75,7 +75,8 @@ class MainView(customtkinter.CTk):
         self.dashboardStation.view.grid(row=2, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
         self.dashboardStation.view.grid_columnconfigure(0, weight=1)
         self.dashboardStation.view.grid_rowconfigure(1, weight=1)
-        self.dashboardStation.start()
+        future = self.dashboardStation.start()
+        future.result()
 
         # Airlines Component
         self.dashboardAirline = DashboardAirline("dashboardAirline@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
@@ -99,15 +100,20 @@ class MainView(customtkinter.CTk):
         self.scaling_optionemenu.set("100%")
         self.textbox.insert("0.0", "CTkTextbox\n\n" + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\n" * 20)
 
-    def openAutomaticSimulation(self):
+    def openConfigureSimulation(self):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
-            self.toplevel_window = CreateAutomaticSimulationView(self)  
+            self.toplevel_window = ConfigureSimulationView(self)  
         else:
             self.toplevel_window.focus()  
 
     def simulate(self):
-        airport = Airport()
-        airport.simulate() 
+        # With Airport not configured, default values are used. Otherwise the singleton
+        # class already being created is used
+        airport = Airport._instance
+        if airport is not None:
+            airport.simulate()
+        else:
+            Airport().simulate()
 
     def open_input_dialog_event(self):
         dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
@@ -123,46 +129,104 @@ class MainView(customtkinter.CTk):
     def sidebar_button_event(self):
         print("sidebar_button click")
 
-class CreateAutomaticSimulationView(customtkinter.CTkToplevel):
+class ConfigureSimulationView(customtkinter.CTkToplevel):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
         self.title("Automatic Simulation")
-        self.geometry(f"{1000}x{800}")
+        self.geometry(f"{600}x{600}")
 
-        # configure grid layout (4x4)
-        self.grid_columnconfigure(1, weight=2)
-        self.grid_columnconfigure(2, weight=1)
-        self.grid_rowconfigure((0, 1, 2), weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
 
-        # create slider and progressbar frame
-        self.slider_progressbar_frame = customtkinter.CTkFrame(self, fg_color="transparent")
-        self.slider_progressbar_frame.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        self.slider_progressbar_frame.grid_columnconfigure(0, weight=1)
-        self.slider_progressbar_frame.grid_rowconfigure(4, weight=1)
+        self.saveButton = customtkinter.CTkButton(self, command=self.save)
+        self.saveButton.grid(row=4, column=0, padx=20, pady=10)
+        self.saveButton.configure(text="Save")
 
-        self.seg_button_1 = customtkinter.CTkSegmentedButton(self.slider_progressbar_frame)
-        self.seg_button_1.grid(row=0, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
+        ################ Number of Stations ##################
 
-        self.seg_button_1.configure(values=["CTkSegmentedButton", "Value 2", "Value 3"])
-        self.seg_button_1.set("Value 2")
+        self.nStationsFrame = customtkinter.CTkFrame(master=self)
+        self.nStationsFrame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
 
-        self.progressbar_1 = customtkinter.CTkProgressBar(self.slider_progressbar_frame)
-        self.progressbar_1.grid(row=1, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.nStationsLabel = customtkinter.CTkLabel(self.nStationsFrame, text="Number of Stations", font=customtkinter.CTkFont(size=12, weight="bold"))
+        self.nStationsLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
 
-        self.progressbar_2 = customtkinter.CTkProgressBar(self.slider_progressbar_frame)
-        self.progressbar_2.grid(row=2, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.nStationsSelectedLabel = customtkinter.CTkLabel(self.nStationsFrame, text="0", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nStationsSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
 
-        self.slider_1 = customtkinter.CTkSlider(self.slider_progressbar_frame, from_=0, to=1, number_of_steps=4)
-        self.slider_1.grid(row=3, column=0, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.nStations = customtkinter.CTkSlider(self.nStationsFrame, from_=1, to=10, number_of_steps=10)
+        self.nStations.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
+
+        ################ Merchandise Spots ##################
+
+        self.nMerchandiseSpotsPerStationFrame = customtkinter.CTkFrame(master=self)
+        self.nMerchandiseSpotsPerStationFrame.grid(row=1, column=0, padx=(10, 10), pady=(10, 10))
+
+        self.nMerchandiseSpotsPerStationLabel = customtkinter.CTkLabel(self.nMerchandiseSpotsPerStationFrame, text="Number of Merchandise Spots per Station", font=customtkinter.CTkFont(size=12, weight="bold"))
+        self.nMerchandiseSpotsPerStationLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
+
+        self.nMerchandiseSpotsPerStationSelectedLabel = customtkinter.CTkLabel(self.nMerchandiseSpotsPerStationFrame, text="0", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nMerchandiseSpotsPerStationSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
         
-        self.slider_2 = customtkinter.CTkSlider(self.slider_progressbar_frame, orientation="vertical")
-        self.slider_2.grid(row=0, column=1, rowspan=5, padx=(10, 10), pady=(10, 10), sticky="ns")
+        self.nMerchandiseSpotsPerStation = customtkinter.CTkSlider(self.nMerchandiseSpotsPerStationFrame, from_=10, to=50, number_of_steps=20)
+        self.nMerchandiseSpotsPerStation.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
 
-        self.progressbar_3 = customtkinter.CTkProgressBar(self.slider_progressbar_frame, orientation="vertical")
-        self.progressbar_3.grid(row=0, column=2, rowspan=5, padx=(10, 20), pady=(10, 10), sticky="ns")
+        ################ Commercial Spots ##################
 
-        self.slider_1.configure(command=self.progressbar_2.set)
-        self.slider_2.configure(command=self.progressbar_3.set)
+        self.nCommercialSpotsPerStationFrame = customtkinter.CTkFrame(master=self)
+        self.nCommercialSpotsPerStationFrame.grid(row=2, column=0, padx=(10, 10), pady=(10, 10))
 
-        self.progressbar_1.configure(mode="indeterminnate")
-        self.progressbar_1.start()
+        self.nCommercialSpotsPerStationLabel = customtkinter.CTkLabel(self.nCommercialSpotsPerStationFrame, text="Number of Commercial Spots per Station", font=customtkinter.CTkFont(size=12, weight="bold"))
+        self.nCommercialSpotsPerStationLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
+
+        self.nCommercialSpotsPerStationSelectedLabel = customtkinter.CTkLabel(self.nCommercialSpotsPerStationFrame, text="0", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nCommercialSpotsPerStationSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
+
+        self.nCommercialSpotsPerStation = customtkinter.CTkSlider(self.nCommercialSpotsPerStationFrame, from_=10, to=50, number_of_steps=20)
+        self.nCommercialSpotsPerStation.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
+
+        ################ Airlines ###########################
+
+        self.nAirlinesFrame = customtkinter.CTkFrame(master=self)
+        self.nAirlinesFrame.grid(row=3, column=0, padx=(10, 10), pady=(10, 10))
+
+        self.nAirlinesLabel = customtkinter.CTkLabel(self.nAirlinesFrame, text="Number of Airlines", font=customtkinter.CTkFont(size=12, weight="bold"))
+        self.nAirlinesLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
+
+        self.nAirlinesSelectedLabel = customtkinter.CTkLabel(self.nAirlinesFrame, text="0", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nAirlinesSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
+        
+        self.nAirlines = customtkinter.CTkSlider(self.nAirlinesFrame, from_=1, to=20, number_of_steps=20)
+        self.nAirlines.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
+
+        ############### Callback functions for each slider
+
+        self.nStations.configure(command=self.nStationsUpdate)
+        self.nCommercialSpotsPerStation.configure(command=self.nCommercialSpotsPerStationUpdate)
+        self.nMerchandiseSpotsPerStation.configure(command=self.nMerchandiseSpotsPerStationUpdate)
+        self.nAirlines.configure(command=self.nAirlinesUpdate)
+
+    def nStationsUpdate(self,value):
+        # Update label text
+        self.nStationsSelectedLabel.configure(text=str(int(value)))
+
+    def nMerchandiseSpotsPerStationUpdate(self,value):
+        # Update label text
+        self.nMerchandiseSpotsPerStationSelectedLabel.configure(text=str(int(value)))
+
+    def nCommercialSpotsPerStationUpdate(self,value):
+        # Update label text
+        self.nCommercialSpotsPerStationSelectedLabel.configure(text=str(int(value)))
+
+    def nAirlinesUpdate(self,value):
+        # Update label text
+        self.nAirlinesSelectedLabel.configure(text=str(int(value)))
+
+    def save(self):
+        # Instantiate airport with configuration values
+        airport = Airport(
+            nStations=int(self.nStations.get()),
+            nMerchandiseSpotsPerStation=int(self.nMerchandiseSpotsPerStation.get()),
+            nCommercialSpotsPerStation=int(self.nCommercialSpotsPerStation.get()),
+            nAirlines=int(self.nAirlines.get())
+        )
+        print("Saved!")
