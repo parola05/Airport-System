@@ -1,7 +1,7 @@
 from spade.behaviour import OneShotBehaviour
 from MessagesProtocol.BuySpots import BuySpots
 from MessagesProtocol.DashboardAirlines import DashboardAirlines
-from GlobalTypes.Types import DashboardAirlineUpdate
+from GlobalTypes.Types import DashboardAirlineUpdate, NegotiationStatus
 from spade.message import Message
 import jsonpickle
 from Conf import Conf
@@ -29,6 +29,7 @@ class BuySpotsBehaviour(OneShotBehaviour):
         msg.set_metadata("performative", "inform")
         bodyMessage:DashboardAirlines = DashboardAirlines(
             type=DashboardAirlineUpdate.NEGOTIATION,
+            negotiationStatus=NegotiationStatus.PROPOSE,
             negotiationText=self.agent.airlineID + " proposal " + str(self.agent.price_per_spot) + " for " + str(self.agent.n_spots) + " spots" 
         )
         msg.body = jsonpickle.encode(bodyMessage)

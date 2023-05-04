@@ -1,11 +1,12 @@
-from GlobalTypes.Types import DashboardAirlineUpdate
+from GlobalTypes.Types import DashboardAirlineUpdate, NegotiationStatus
 
 class AirlineInfo():
     def __init__(self,id) -> None:
         self.id = id 
 
 class DashboardAirlines():
-    def __init__(self,type:DashboardAirlineUpdate,negotiationText:str=None,airlineInfo:AirlineInfo=None) -> None:
+    def __init__(self,type:DashboardAirlineUpdate,negotiationText:str=None,airlineInfo:AirlineInfo=None,negotiationStatus:NegotiationStatus=None) -> None:
         self.type: DashboardAirlineUpdate = type 
         self.negotiationtext = negotiationText
+        self.negotiationStatus = negotiationStatus
         self.airlineInfo:AirlineInfo = airlineInfo 

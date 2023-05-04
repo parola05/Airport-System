@@ -150,7 +150,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nStationsLabel = customtkinter.CTkLabel(self.nStationsFrame, text="Number of Stations", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nStationsLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
 
-        self.nStationsSelectedLabel = customtkinter.CTkLabel(self.nStationsFrame, text="0", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nStationsSelectedLabel = customtkinter.CTkLabel(self.nStationsFrame, text="5", font=customtkinter.CTkFont(size=18, weight="bold"))
         self.nStationsSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
 
         self.nStations = customtkinter.CTkSlider(self.nStationsFrame, from_=1, to=10, number_of_steps=10)
@@ -164,7 +164,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nMerchandiseSpotsPerStationLabel = customtkinter.CTkLabel(self.nMerchandiseSpotsPerStationFrame, text="Number of Merchandise Spots per Station", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nMerchandiseSpotsPerStationLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
 
-        self.nMerchandiseSpotsPerStationSelectedLabel = customtkinter.CTkLabel(self.nMerchandiseSpotsPerStationFrame, text="0", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nMerchandiseSpotsPerStationSelectedLabel = customtkinter.CTkLabel(self.nMerchandiseSpotsPerStationFrame, text="30", font=customtkinter.CTkFont(size=18, weight="bold"))
         self.nMerchandiseSpotsPerStationSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
         
         self.nMerchandiseSpotsPerStation = customtkinter.CTkSlider(self.nMerchandiseSpotsPerStationFrame, from_=10, to=50, number_of_steps=20)
@@ -178,7 +178,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nCommercialSpotsPerStationLabel = customtkinter.CTkLabel(self.nCommercialSpotsPerStationFrame, text="Number of Commercial Spots per Station", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nCommercialSpotsPerStationLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
 
-        self.nCommercialSpotsPerStationSelectedLabel = customtkinter.CTkLabel(self.nCommercialSpotsPerStationFrame, text="0", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nCommercialSpotsPerStationSelectedLabel = customtkinter.CTkLabel(self.nCommercialSpotsPerStationFrame, text="30", font=customtkinter.CTkFont(size=18, weight="bold"))
         self.nCommercialSpotsPerStationSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
 
         self.nCommercialSpotsPerStation = customtkinter.CTkSlider(self.nCommercialSpotsPerStationFrame, from_=10, to=50, number_of_steps=20)
@@ -192,7 +192,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nAirlinesLabel = customtkinter.CTkLabel(self.nAirlinesFrame, text="Number of Airlines", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nAirlinesLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
 
-        self.nAirlinesSelectedLabel = customtkinter.CTkLabel(self.nAirlinesFrame, text="0", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nAirlinesSelectedLabel = customtkinter.CTkLabel(self.nAirlinesFrame, text="10", font=customtkinter.CTkFont(size=18, weight="bold"))
         self.nAirlinesSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
         
         self.nAirlines = customtkinter.CTkSlider(self.nAirlinesFrame, from_=1, to=20, number_of_steps=20)
@@ -229,4 +229,4 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
             nCommercialSpotsPerStation=int(self.nCommercialSpotsPerStation.get()),
             nAirlines=int(self.nAirlines.get())
         )
-        print("Saved!")
+        self.destroy()

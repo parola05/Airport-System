@@ -1,6 +1,6 @@
 from spade.behaviour import CyclicBehaviour
 import jsonpickle
-from MessagesProtocol.DashboardAirlines import DashboardAirlines
+from MessagesProtocol.DashboardAirlines import DashboardAirlines, NegotiationStatus
 from GlobalTypes.Types import DashboardAirlineUpdate
 import customtkinter
 
@@ -14,7 +14,17 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
             dashboardAirlines:DashboardAirlines = jsonpickle.decode(msg.body)
 
             if dashboardAirlines.type == DashboardAirlineUpdate.NEGOTIATION:
-                self.agent.view.tab_2.textbox.insert(str(self.agent.line) + ".0", dashboardAirlines.negotiationtext + "\n")
+
+                # SET tag for text color
+                tag = ""
+                if dashboardAirlines.negotiationStatus == NegotiationStatus.PROPOSE:
+                    tag = "tag1"
+                elif dashboardAirlines.negotiationStatus == NegotiationStatus.SUCCESS:
+                    tag = "tag2"
+                elif dashboardAirlines.negotiationStatus == NegotiationStatus.FAIL:
+                    tag = "tag3"
+
+                self.agent.view.tab_2.textbox.insert(str(self.agent.line) + ".0", "> " + dashboardAirlines.negotiationtext + "\n",tag)
                 self.agent.line += 1 
 
             elif dashboardAirlines.type == DashboardAirlineUpdate.INFO:

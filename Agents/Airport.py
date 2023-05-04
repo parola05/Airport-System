@@ -6,9 +6,10 @@ from Conf import Conf
 class Airport():
     _instance = None
 
-    def __new__(cls):
+    def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
+            cls._instance.__init__(*args, **kwargs)
         return cls._instance
     
     def __init__ (
