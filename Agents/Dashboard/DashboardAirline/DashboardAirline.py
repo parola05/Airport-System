@@ -20,7 +20,7 @@ class DashboardAirline(Agent):
         super().__init__(agent_name,password)
         self.view = AirlinesComponentView(master=master)
         self.line = 0
-        self.rowIndex = 0
+        self.rowIndex = 1
 
 class AirlinesComponentView(customtkinter.CTkTabview):
     def __init__(self, master, **kwargs):
@@ -46,13 +46,20 @@ class Airlines(customtkinter.CTkFrame):
 
         self.toplevel_window = None
 
+        # instance variable to use in behaviour
+        self.labels = {}
+
         # Create the "Table" that will show the list of airlines
         self.airlinesTable = customtkinter.CTkScrollableFrame(master=self)
         self.airlinesTable.grid(row=1,column=0,padx=10, pady=10,sticky="nsew")
 
         # Create the first row
-        labelID = customtkinter.CTkLabel(master=self.airlinesTable, text="Airline ID")
+        labelID = customtkinter.CTkLabel(master=self.airlinesTable, text="Airline ID", font=("Helvetica", 12, "bold"))
         labelID.grid(row=0, column=0, padx=10, pady=(0, 20))
+        labelID = customtkinter.CTkLabel(master=self.airlinesTable, text="Commercial Spots", font=("Helvetica", 12, "bold"))
+        labelID.grid(row=0, column=1, padx=10, pady=(0, 20))
+        labelID = customtkinter.CTkLabel(master=self.airlinesTable, text="Merchandise Spots", font=("Helvetica", 12, "bold"))
+        labelID.grid(row=0, column=2, padx=10, pady=(0, 20))
 
         # Create the button to add more airline
         createAirlineButton = customtkinter.CTkButton(self, text="Add Airline", command=self.openAddAirlineForm)

@@ -21,6 +21,7 @@ class Priority:
 class DashboardAirlineUpdate:
     NEGOTIATION = 1
     INFO = 2
+    UPDATE = 3
 
 class NegotiationStatus:
     PROPOSE = 1

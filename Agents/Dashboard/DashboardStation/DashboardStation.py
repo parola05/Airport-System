@@ -29,7 +29,7 @@ class StationComponentView(customtkinter.CTkFrame):
         stations = []
 
         # Create the Title of the Frame
-        labelID = customtkinter.CTkLabel(master=self, text="Stations")
+        labelID = customtkinter.CTkLabel(master=self, text="\U0001F689 Stations", font=("Helvetica", 18, "bold"))
         labelID.grid(row=0, column=0)
 
         # Create the "Table" that will show the list of stations

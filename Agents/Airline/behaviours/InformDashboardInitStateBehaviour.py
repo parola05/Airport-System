@@ -14,7 +14,9 @@ class InformDashBoardInitStateBehaviour(OneShotBehaviour):
         msg.set_metadata("performative", "inform")
         
         airlineInfo:AirlineInfo = AirlineInfo(
-            id=self.agent.airlineID
+            id=self.agent.airlineID,
+            nSpotsCommercial=0,
+            nSpotsMerchandise=0,
         )
 
         body:DashboardAirlines = DashboardAirlines(
