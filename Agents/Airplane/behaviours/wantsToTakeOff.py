@@ -23,7 +23,7 @@ class WantsToTakeOffBehaviour(OneShotBehaviour):
         msg.set_metadata("performative", "request")
         now = datetime.now()
 
-        requestToTakeOff = RequestFromAirplane(2, AirplaneAgent.typeTransport, AirplaneAgent.airline, now, AirplaneAgent.priority, None, None)
+        requestToTakeOff = RequestFromAirplane(2, self.agent.id, self.agent.typeTransport, self.agent.airline, now, self.agent.priority, None, None)
         msg.body = requestToTakeOff
 
         await self.send(msg)

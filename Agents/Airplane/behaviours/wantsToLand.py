@@ -10,7 +10,6 @@ elif platform.system() == "Windows":
 else:
     print("Unsupported operating system")
 
-from Airplane.Airplane import AirplaneAgent
 from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
 
 class WantsToLandBehaviour(OneShotBehaviour):
@@ -23,7 +22,7 @@ class WantsToLandBehaviour(OneShotBehaviour):
         msg.set_metadata("performative", "request")
         now = datetime.now()
 
-        requestToLand = RequestFromAirplane(1, AirplaneAgent.typeTransport, AirplaneAgent.airline, now, AirplaneAgent.priority, None, None)
+        requestToLand = RequestFromAirplane(1, self.agent.id, self.agent.typeTransport, self.agent.airline, now, self.agent.priority, None, None)
         msg.body = requestToLand
 
         await self.send(msg)

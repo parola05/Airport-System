@@ -37,11 +37,11 @@ class StationComponentView(customtkinter.CTkFrame):
         self.stationsTable.grid(row=1,column=0,padx=10, pady=10,sticky="nsew")
 
         # Create the first row
-        labelID = customtkinter.CTkLabel(master=self.stationsTable, text="Station ID")
+        labelID = customtkinter.CTkLabel(master=self.stationsTable, text="Station ID", font=("Helvetica", 12, "bold"))
         labelID.grid(row=0, column=0, padx=10, pady=(0, 20))
-        labelCommercialSpots = customtkinter.CTkLabel(master=self.stationsTable, text="Commercial Capacity")
+        labelCommercialSpots = customtkinter.CTkLabel(master=self.stationsTable, text="Commercial Capacity", font=("Helvetica", 12, "bold"))
         labelCommercialSpots.grid(row=0, column=1, padx=10, pady=(0, 20))
-        labelMerchandiseSpots = customtkinter.CTkLabel(master=self.stationsTable, text="Merchandise Capacity")
+        labelMerchandiseSpots = customtkinter.CTkLabel(master=self.stationsTable, text="Merchandise Capacity", font=("Helvetica", 12, "bold"))
         labelMerchandiseSpots.grid(row=0, column=2, padx=10, pady=(0, 20))
 
         self.labelDict = {}

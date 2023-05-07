@@ -1,4 +1,4 @@
-import uuid, datetime
+import uuid, datetime, random, json
 from spade import agent
 from GlobalTypes.Types import SpotType, StatusType, Priority
 
@@ -9,21 +9,41 @@ class AirplaneAgent(agent.Agent):
     typeTransport : SpotType
     origin : str = ""
     destination : str = ""
-    date : datetime.date
-    time : datetime.time
+    datetime : datetime.datetime
     status : StatusType
     priority : Priority
 
-    def __init__(self, jid, password, airline, typeTransport, origin, destination, date, time, priority):
+    def __init__(self, jid, password, id, airline, typeTransport, origin, destination, datetime, priority):
         super.__init__(jid,password)
-        self.id = str(uuid.uuid4())
+        self.id = id
         self.airline = airline
         self.typeTransport = typeTransport
         self.origin = origin
         self.destination = destination
-        self.date = date
-        self.time = time
+        self.datetime = datetime
         self.priority = priority
-    
+
     async def setup(self):
         print("Agent {}".format(str(self.jid)) + " starting...")
+
+    def getRandomTypeTransport():
+        random = random.randint(0,9)
+        if random % 2 == 0:
+            return SpotType.COMMERCIAL
+        else:
+            return SpotType.MERCHANDISE
+        
+    def getRandomPriority():
+        random = random.randint(0,15)
+        if random % 3 == 0:
+            return Priority.LOW
+        elif random % 2 == 0:
+            return Priority.MEDIUM
+        else:
+            return Priority.HIGH
+    
+    def getRandomOrigin(self, cities):
+        return random.choice(cities)
+
+    def getRandomDestiny(self, cities, origin):
+        return random.choice(cities.remove(origin))

@@ -73,9 +73,9 @@ class RunwayComponentView(customtkinter.CTkFrame):
         runwaysTable = customtkinter.CTkScrollableFrame(master=self)
         runwaysTable.grid(row=1,column=0,padx=10, pady=10,sticky="nsew")
 
-        labelID = customtkinter.CTkLabel(master=runwaysTable, text="Runway ID")
+        labelID = customtkinter.CTkLabel(master=runwaysTable, text="Runway ID", font=("Helvetica", 12, "bold"))
         labelID.grid(row=0, column=0, padx=20, pady=(0, 20),sticky="nsew")
-        labelSpots = customtkinter.CTkLabel(master=runwaysTable, text="Position")
+        labelSpots = customtkinter.CTkLabel(master=runwaysTable, text="Position", font=("Helvetica", 12, "bold"))
         labelSpots.grid(row=0, column=1, padx=20, pady=(0, 20),sticky="nsew")
 
         for rowIndex, runway in enumerate(runways):

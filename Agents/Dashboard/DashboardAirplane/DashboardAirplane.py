@@ -123,11 +123,11 @@ class AirplanesComponentView(customtkinter.CTkFrame):
         airplanesTable = customtkinter.CTkScrollableFrame(master=self)
         airplanesTable.grid(row=1,column=0,padx=10,pady=10,sticky="nsew")
 
-        labelID = customtkinter.CTkLabel(master=airplanesTable, text="Airplane ID")
+        labelID = customtkinter.CTkLabel(master=airplanesTable, text="Airplane ID", font=("Helvetica", 12, "bold"))
         labelID.grid(row=0, column=0, padx=10, pady=(0, 10))
-        labelTakeOff = customtkinter.CTkLabel(master=airplanesTable, text="Action")
+        labelTakeOff = customtkinter.CTkLabel(master=airplanesTable, text="Action", font=("Helvetica", 12, "bold"))
         labelTakeOff.grid(row=0, column=1, padx=10, pady=(0, 10))
-        labelTakeOff = customtkinter.CTkLabel(master=airplanesTable, text="Status")
+        labelTakeOff = customtkinter.CTkLabel(master=airplanesTable, text="Status", font=("Helvetica", 12, "bold"))
         labelTakeOff.grid(row=0, column=2, padx=10, pady=(0, 10))
 
         for rowIndex, airplane in enumerate(airplanes):
@@ -257,8 +257,7 @@ class CreateAirplaneFormView(customtkinter.CTkToplevel):
             priority = ''
         airplaneOrigin = self.entryOrigin.get()
         airplaneDestiny = self.entryDestiny.get()
-        airplaneDate = self.entryDate.get()
-        airplaneTime = self.entryTime.get()
+        airplaneDatetime = self.entryDate.get() + " " + self.entryTime.get()
         airplaneStatus = StatusType.FLYING
         
         # TODO: Send the form data to a server or do something else with it
