@@ -8,11 +8,11 @@ from Conf import Conf
 
 class BuySpotsBehaviour(OneShotBehaviour):
     async def on_start(self):
-        print("Starting Buy Spot Behaviour Behaviour . . .")
+        #print("Starting Buy Spot Behaviour Behaviour . . .")
+        pass
 
     async def run(self):
         ############### Send proposal ###################
-        print(Conf().get_openfire_server())
         msg = Message(to="station@" + Conf().get_openfire_server())
         msg.set_metadata("performative", "propose")
         bodyMessage:BuySpots = BuySpots(

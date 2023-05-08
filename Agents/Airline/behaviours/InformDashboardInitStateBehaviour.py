@@ -7,7 +7,8 @@ from Conf import Conf
 
 class InformDashBoardInitStateBehaviour(OneShotBehaviour):
     async def on_start(self):
-        print("Starting Inform Dashboard Init State Behaviour . . .")
+        #print("Starting Inform Dashboard Init State Behaviour from Airline . . .")
+        pass
 
     async def run(self):
         msg = Message(to="dashboardAirline@" + Conf().get_openfire_server())

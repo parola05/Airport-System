@@ -7,7 +7,8 @@ import jsonpickle
 
 class ReceiveProposalAnswerBehaviour(CyclicBehaviour):
     async def on_start(self):
-        print("Starting Receive Proposal Answer Behaviour . . .")
+        #print("Starting Receive Proposal Answer Behaviour . . .")
+        pass
 
     async def run(self):
         msg = await self.receive(timeout=100) 
