@@ -1,20 +1,21 @@
 from spade.behaviour import OneShotBehaviour
-from MessagesProtocol.InitStateStations import InitStateStations, StationInfo
+from MessagesProtocol.DashboardStationMessage import DashboardStationMessage, StationInfo
+from GlobalTypes.Types import DashboardStationMessageType
 from spade.message import Message
 import jsonpickle
 from Conf import Conf
 
 class InformDashBoardInitStateBehaviour(OneShotBehaviour):
     async def on_start(self):
-        print("Starting Inform Dashboard Init State Behaviour . . .")
+        print("[StationManager] Starting InformDashBoardInitStateBehaviour")
 
     async def run(self):
         msg = Message(to="dashboardStation@" + Conf().get_openfire_server())
         msg.set_metadata("performative", "inform")
         
-        initStateStations:InitStateStations = InitStateStations()
+        dashboardStationMessage:DashboardStationMessage = DashboardStationMessage(type=DashboardStationMessageType.INFO)
         for station in self.agent.stations.values():
-            initStateStations.stations.append(
+            dashboardStationMessage.stations.append(
                 StationInfo(
                     id=station.id,
                     merchandise_capacity=station.spots_available_merchandise,  
@@ -22,5 +23,5 @@ class InformDashBoardInitStateBehaviour(OneShotBehaviour):
                 )
             )
             
-        msg.body = jsonpickle.encode(initStateStations)
+        msg.body = jsonpickle.encode(dashboardStationMessage)
         await self.send(msg)

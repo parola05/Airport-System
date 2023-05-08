@@ -1,13 +1,13 @@
 from spade.behaviour import CyclicBehaviour
 from spade.message import Message
-from MessagesProtocol.DashboardAirlines import DashboardAirlines, AirlineInfo
-from GlobalTypes.Types import DashboardAirlineUpdate, SpotType
+from MessagesProtocol.DashboardAirlinesMessage import DashboardAirlinesMessage, AirlineInfo
+from GlobalTypes.Types import DashboardAirlineMessageType, SpotType
 from Conf import Conf
 import jsonpickle
 
 class ReceiveProposalAnswerBehaviour(CyclicBehaviour):
     async def on_start(self):
-        #print("Starting Receive Proposal Answer Behaviour . . .")
+        #print("[Airline] ReceiveProposalAnswerBehaviour")
         pass
 
     async def run(self):
@@ -35,8 +35,8 @@ class ReceiveProposalAnswerBehaviour(CyclicBehaviour):
                     nSpotsMerchandise=nSpotsMerchandise,
                 )
 
-                body:DashboardAirlines = DashboardAirlines(
-                    type=DashboardAirlineUpdate.UPDATE,
+                body:DashboardAirlinesMessage = DashboardAirlinesMessage(
+                    type=DashboardAirlineMessageType.UPDATE,
                     airlineInfo=airlineInfo
                 )
 

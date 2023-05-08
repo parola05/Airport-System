@@ -14,9 +14,7 @@ from MessagesProtocol.StationAvailable import StationAvailable
 
 class ReceiveSpotQueryBehaviour(CyclicBehaviour):
     async def on_start(self):
-        print("Starting Receive Spot Query Behaviour . . .")
-        with open("output.txt", "w") as f:
-            print("Starting Receive Spot Query Behaviour", file=f)
+        print("[StationManager] Starting ReceiveSpotQueryBehaviour")
 
     async def run(self):
         msg = await self.receive(timeout=100) 

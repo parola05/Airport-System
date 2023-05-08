@@ -1,22 +1,25 @@
 from spade.behaviour import CyclicBehaviour
 import jsonpickle
-from MessagesProtocol.InitStateStations import InitStateStations,StationInfo
+from MessagesProtocol.DashboardStationMessage import DashboardStationMessage
+from GlobalTypes.Types import DashboardStationMessageType
 import customtkinter
 
 class ReceiveUpdatesBehaviour(CyclicBehaviour):
     async def on_start(self):
-        print("Starting Receive Updates from Stations behaviour . . .")
+        print("[DashboardStation] Starting ReceiveUpdatesBehaviour")
 
     async def run(self):
         msg = await self.receive(timeout=100) 
         if msg:
-            initStateStations:InitStateStations = jsonpickle.decode(msg.body)
+            dashboardStationMessage:DashboardStationMessage = jsonpickle.decode(msg.body)
 
-            # Create the n rows
-            for rowIndex,station in enumerate(initStateStations.stations):
-                labelID = customtkinter.CTkLabel(master=self.agent.view.stationsTable, text=station.id)
-                labelID.grid(row=rowIndex+1, column=0, padx=7, pady=(0, 20))
-                labelCommercialSpots = customtkinter.CTkLabel(master=self.agent.view.stationsTable, text=str(station.merchandise_capacity))
-                labelCommercialSpots.grid(row=rowIndex+1, column=1, padx=7, pady=(0, 20))
-                labelMerchandiseSpots = customtkinter.CTkLabel(master=self.agent.view.stationsTable, text=str(station.commercial_capacity))
-                labelMerchandiseSpots.grid(row=rowIndex+1, column=2, padx=7, pady=(0, 20))
+            if dashboardStationMessage.type == DashboardStationMessageType.INFO:
+                
+                # Create the n rows
+                for rowIndex,station in enumerate(dashboardStationMessage.stations):
+                    labelID = customtkinter.CTkLabel(master=self.agent.view.stationsTable, text=station.id)
+                    labelID.grid(row=rowIndex+1, column=0, padx=7, pady=(0, 20))
+                    labelCommercialSpots = customtkinter.CTkLabel(master=self.agent.view.stationsTable, text=str(station.merchandise_capacity))
+                    labelCommercialSpots.grid(row=rowIndex+1, column=1, padx=7, pady=(0, 20))
+                    labelMerchandiseSpots = customtkinter.CTkLabel(master=self.agent.view.stationsTable, text=str(station.commercial_capacity))
+                    labelMerchandiseSpots.grid(row=rowIndex+1, column=2, padx=7, pady=(0, 20))

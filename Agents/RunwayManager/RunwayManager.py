@@ -31,13 +31,16 @@ class Runway():
 
 class RunwayManagerAgent(Agent):
     async def setup(self):
-        receiveSpotsQueryBehaviour = ReceiveSpotQueryBehaviour()
+        #receiveSpotsQueryBehaviour = ReceiveSpotQueryBehaviour()
         informDashBoardInitRunway = InformDashboardInitRunway()
 
+        '''
         template = Template()
         template.set_metadata("performative","query-if")
         
         self.add_behaviour(receiveSpotsQueryBehaviour,template)
+        '''
+
         self.add_behaviour(informDashBoardInitRunway)
 
     def __init__(self, agent_name, password, nRunways = None):

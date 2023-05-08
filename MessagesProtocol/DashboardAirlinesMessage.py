@@ -1,4 +1,4 @@
-from GlobalTypes.Types import DashboardAirlineUpdate, NegotiationStatus, SpotType
+from GlobalTypes.Types import DashboardAirlineMessageType, NegotiationStatus
 
 class AirlineInfo():
     def __init__(self,id,nSpotsCommercial,nSpotsMerchandise) -> None:
@@ -6,15 +6,21 @@ class AirlineInfo():
         self.nSpotsCommercial = nSpotsCommercial,
         self.nSpotsMerchandise = nSpotsMerchandise
 
-class DashboardAirlines():
+class DashboardAirlinesMessage():
     def __init__(
             self,
-            type:DashboardAirlineUpdate,
+            type:DashboardAirlineMessageType,
             negotiationText:str=None,
             airlineInfo:AirlineInfo=None,
             negotiationStatus:NegotiationStatus=None,
             ) -> None:
-        self.type: DashboardAirlineUpdate = type 
+        self.type: DashboardAirlineMessageType = type 
+
+        # This variable will be active when type is NEGOTIATION
         self.negotiationtext = negotiationText
+
+        # This variable will be active when type is NEGOTIATION
         self.negotiationStatus = negotiationStatus
+
+        # This variable will be active when type is INFO
         self.airlineInfo:AirlineInfo = airlineInfo 

@@ -1,13 +1,13 @@
 from spade.behaviour import OneShotBehaviour
-from MessagesProtocol.DashboardAirplane import DashboardAirplane, AirplaneInfo
-from GlobalTypes.Types import DashboardAirplaneUpdate
+from MessagesProtocol.DashboardAirplaneMessage import DashboardAirplaneMessage, AirplaneInfo
+from GlobalTypes.Types import DashboardAirplaneMessageType
 from spade.message import Message
 import jsonpickle
 from Conf import Conf
 
 class InformDashBoardInitStateBehaviour(OneShotBehaviour):
     async def on_start(self):
-        print("Starting Inform Dashboard Init State Behaviour from Airplane. . .")
+        print("[Airplane] starting InformDashBoardInitStateBehaviour")
 
     async def run(self):
         msg = Message(to="dashboardAirplane@" + Conf().get_openfire_server())
@@ -19,8 +19,8 @@ class InformDashBoardInitStateBehaviour(OneShotBehaviour):
             airlineID=self.agent.airline
         )
 
-        body:DashboardAirplane = DashboardAirplane(
-            type=DashboardAirplaneUpdate.INFO,
+        body:DashboardAirplaneMessage = DashboardAirplaneMessage(
+            type=DashboardAirplaneMessageType.INFO,
             airplaneInfo=airplaneInfo
         )
             

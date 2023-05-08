@@ -4,7 +4,7 @@ import jsonpickle
 
 class ReceiveAirlinesProposalsBehaviour(CyclicBehaviour):
     async def on_start(self):
-        print("Starting Receive Airline Proposal Behaviour . . .")
+        print("[StationManager] Starting ReceiveAirlinesProposalBehaviour")
 
     async def run(self):
         msg = await self.receive(timeout=100) 

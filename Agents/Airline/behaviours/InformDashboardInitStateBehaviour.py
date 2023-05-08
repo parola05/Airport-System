@@ -1,13 +1,13 @@
 from spade.behaviour import OneShotBehaviour
-from MessagesProtocol.DashboardAirlines import DashboardAirlines, AirlineInfo
-from GlobalTypes.Types import DashboardAirlineUpdate
+from MessagesProtocol.DashboardAirlinesMessage import DashboardAirlinesMessage, AirlineInfo
+from GlobalTypes.Types import DashboardAirlineMessageType
 from spade.message import Message
 import jsonpickle
 from Conf import Conf
 
 class InformDashBoardInitStateBehaviour(OneShotBehaviour):
     async def on_start(self):
-        #print("Starting Inform Dashboard Init State Behaviour from Airline . . .")
+        #print("[Airline] Starting  InformDashboardInitStateBehaviour"")
         pass
 
     async def run(self):
@@ -20,8 +20,8 @@ class InformDashBoardInitStateBehaviour(OneShotBehaviour):
             nSpotsMerchandise=0,
         )
 
-        body:DashboardAirlines = DashboardAirlines(
-            type=DashboardAirlineUpdate.INFO,
+        body:DashboardAirlinesMessage = DashboardAirlinesMessage(
+            type=DashboardAirlineMessageType.INFO,
             airlineInfo=airlineInfo
         )
             

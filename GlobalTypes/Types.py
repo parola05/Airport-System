@@ -18,12 +18,18 @@ class Priority:
     MEDIUM = 2
     LOW = 3
 
-class DashboardAirlineUpdate:
+class DashboardAirlineMessageType:
     NEGOTIATION = 1
     INFO = 2
     UPDATE = 3
 
-class DashboardAirplaneUpdate:
+class DashboardAirplaneMessageType:
+    INFO = 1
+
+class DashboardRunwayMessageType:
+    INFO = 1
+
+class DashboardStationMessageType:
     INFO = 1
 
 class NegotiationStatus:

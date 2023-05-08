@@ -1,5 +1,6 @@
 from spade.behaviour import OneShotBehaviour
-from MessagesProtocol.InitStateRunways import InitStateRunways, RunwayInfo
+from MessagesProtocol.DashboardRunwayMessage import DashboardRunwayMessage, RunwayInfo
+from GlobalTypes.Types import DashboardRunwayMessageType
 from spade.message import Message
 import jsonpickle
 from Conf import Conf
@@ -12,9 +13,12 @@ class InformDashboardInitRunway(OneShotBehaviour):
         msg = Message(to="dashboardRunway@" + Conf().get_openfire_server())
         msg.set_metadata("performative", "inform")
         
-        initStateRunways:InitStateRunways = InitStateRunways()
+        # create message object with type INFO
+        dashboardRunwayMessage:DashboardRunwayMessage = DashboardRunwayMessage(type=DashboardRunwayMessageType.INFO)
+        
+        # fill runway's list in message
         for runway in self.agent.runways.values():
-            initStateRunways.stations.append(
+            dashboardRunwayMessage.runways.append(
                 RunwayInfo(
                     id=runway.id,
                     coord=runway.coord,  
@@ -22,5 +26,5 @@ class InformDashboardInitRunway(OneShotBehaviour):
                 )
             )
             
-        msg.body = jsonpickle.encode(initStateRunways)
+        msg.body = jsonpickle.encode(dashboardRunwayMessage)
         await self.send(msg)

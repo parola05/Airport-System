@@ -1,13 +1,13 @@
 from spade.behaviour import PeriodicBehaviour
 from spade.message import Message
-from MessagesProtocol.DashboardAirlines import DashboardAirlines
-from GlobalTypes.Types import DashboardAirlineUpdate, NegotiationStatus
+from MessagesProtocol.DashboardAirlinesMessage import DashboardAirlinesMessage
+from GlobalTypes.Types import DashboardAirlineMessageType, NegotiationStatus
 import jsonpickle
 from Conf import Conf
 
 class EvaluateAirlinesProposalsBehaviour(PeriodicBehaviour):
     async def on_start(self):
-        print("Starting Evaluate Airlines Proposals Behaviour . . .")
+        print("[StationManager] Starting EvaluateAirlinesProposalsBehaviour")
 
     async def run(self):
 
@@ -39,8 +39,8 @@ class EvaluateAirlinesProposalsBehaviour(PeriodicBehaviour):
                 ############### Update Dashboard ###############
                 msg = Message(to="dashboardAirline@" + Conf().get_openfire_server())
                 msg.set_metadata("performative", "inform")
-                bodyMessage:DashboardAirlines = DashboardAirlines(
-                    type=DashboardAirlineUpdate.NEGOTIATION,
+                bodyMessage:DashboardAirlinesMessage = DashboardAirlinesMessage(
+                    type=DashboardAirlineMessageType.NEGOTIATION,
                     negotiationStatus=NegotiationStatus.SUCCESS,
                     negotiationText="Accepted proposal by " + proposal["proposal"].airlineID
                 )
@@ -56,8 +56,8 @@ class EvaluateAirlinesProposalsBehaviour(PeriodicBehaviour):
                 ############### Update Dashboard ###############
                 msg = Message(to="dashboardAirline@" + Conf().get_openfire_server())
                 msg.set_metadata("performative", "inform")
-                bodyMessage:DashboardAirlines = DashboardAirlines(
-                    type=DashboardAirlineUpdate.NEGOTIATION,
+                bodyMessage:DashboardAirlinesMessage = DashboardAirlinesMessage(
+                    type=DashboardAirlineMessageType.NEGOTIATION,
                     negotiationStatus=NegotiationStatus.FAIL,
                     negotiationText="Refuse proposal by " + proposal["proposal"].airlineID
                 )

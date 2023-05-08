@@ -1,20 +1,20 @@
 from spade.behaviour import CyclicBehaviour
 import jsonpickle
-from MessagesProtocol.DashboardAirplane import DashboardAirplane
-from GlobalTypes.Types import DashboardAirplaneUpdate, StatusType
+from MessagesProtocol.DashboardAirplaneMessage import DashboardAirplaneMessage
+from GlobalTypes.Types import DashboardAirplaneMessageType, StatusType
 import customtkinter
 
 class ReceiveUpdatesBehaviour(CyclicBehaviour):
     async def on_start(self):
-        print("Starting Receive Updates from Airplanes behaviour . . .")
+        print("[DashboardAirplane] Starting ReceiveUpdatesBehaviour")
 
     async def run(self):
         msg = await self.receive(timeout=100) 
         if msg:
-            dashboardAirplane:DashboardAirplane = jsonpickle.decode(msg.body)
+            dashboardAirplane:DashboardAirplaneMessage = jsonpickle.decode(msg.body)
 
             # add airplane in airplanes list
-            if dashboardAirplane.type == DashboardAirplaneUpdate.INFO:
+            if dashboardAirplane.type == DashboardAirplaneMessageType.INFO:
 
                 # add label entry for airplane ID
                 labelID = customtkinter.CTkLabel(master=self.agent.view.airplanesTable, text=dashboardAirplane.airplaneInfo.id) 

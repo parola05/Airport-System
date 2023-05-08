@@ -91,10 +91,11 @@ class MainView(customtkinter.CTk):
         self.dashboardAirplane.start()
 
         # Runway Component
-        self.runwayComponent = DashboardRunway("dashboardRunway@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
-        self.runwayComponent.view.grid(row=2, column=2, padx=20, pady=(20, 0), sticky="nsew")
-        self.runwayComponent.view.grid_columnconfigure(0, weight=1)
-        self.runwayComponent.view.grid_rowconfigure(1, weight=1)
+        self.dashboardRunway = DashboardRunway("dashboardRunway@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
+        self.dashboardRunway.view.grid(row=2, column=2, padx=20, pady=(20, 0), sticky="nsew")
+        self.dashboardRunway.view.grid_columnconfigure(0, weight=1)
+        self.dashboardRunway.view.grid_rowconfigure(1, weight=1)
+        self.dashboardRunway.start()
 
         # set default values
         self.appearance_mode_optionemenu.set("Dark")
@@ -140,7 +141,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.grid_rowconfigure((0, 1, 2, 3), weight=1)
 
         self.saveButton = customtkinter.CTkButton(self, command=self.save)
-        self.saveButton.grid(row=5, column=0, padx=20, pady=10)
+        self.saveButton.grid(row=6, column=0, padx=20, pady=10)
         self.saveButton.configure(text="Save")
 
         ################ Number of Stations ##################
@@ -213,6 +214,20 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nAirplanes = customtkinter.CTkSlider(self.nAirplanesFrame, from_=1, to=30, number_of_steps=30)
         self.nAirplanes.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
 
+        ################ Runway ###########################
+
+        self.nRunwaysFrame = customtkinter.CTkFrame(master=self)
+        self.nRunwaysFrame.grid(row=5, column=0, padx=(10, 10), pady=(10, 10))
+
+        self.nRunwaysLabel = customtkinter.CTkLabel(self.nRunwaysFrame, text="Number of Runways", font=customtkinter.CTkFont(size=12, weight="bold"))
+        self.nRunwaysLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
+
+        self.nRunwaysSelectedLabel = customtkinter.CTkLabel(self.nRunwaysFrame, text="15", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nRunwaysSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
+        
+        self.nRunways = customtkinter.CTkSlider(self.nRunwaysFrame, from_=1, to=30, number_of_steps=30)
+        self.nRunways.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
+
         ############### Callback functions for each slider
 
         self.nStations.configure(command=self.nStationsUpdate)
@@ -220,6 +235,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nMerchandiseSpotsPerStation.configure(command=self.nMerchandiseSpotsPerStationUpdate)
         self.nAirlines.configure(command=self.nAirlinesUpdate)
         self.nAirplanes.configure(command=self.nAirplanesUpdate)
+        self.nRunways.configure(command=self.nRunwaysUpdate)
 
     def nStationsUpdate(self,value):
         # Update label text
@@ -241,6 +257,10 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         # Update label text
         self.nAirplanesSelectedLabel.configure(text=str(int(value)))
 
+    def nRunwaysUpdate(self,value):
+        # Update label text
+        self.nRunwaysSelectedLabel.configure(text=str(int(value)))
+
     def save(self):
         # Instantiate airport with configuration values
         airport = Airport(
@@ -248,6 +268,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
             nMerchandiseSpotsPerStation=int(self.nMerchandiseSpotsPerStation.get()),
             nCommercialSpotsPerStation=int(self.nCommercialSpotsPerStation.get()),
             nAirlines=int(self.nAirlines.get()),
-            nAirplanes=int(self.nAirplanes.get())
+            nAirplanes=int(self.nAirplanes.get()),
+            nRunways=int(self.nRunways.get())
         )
         self.destroy()

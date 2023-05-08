@@ -1,5 +1,5 @@
 from .StationManager.StationManager import StationManagerAgent
-#from .RunwayManager.RunwayManager import RunwayManagerAgent
+from .RunwayManager.RunwayManager import RunwayManagerAgent
 from .Airline.Airline import AirlineAgent
 from .Airplane.Airplane import AirplaneAgent
 import random, json, datetime
@@ -19,9 +19,9 @@ class Airport():
             nStations = 3, 
             nMerchandiseSpotsPerStation = 10, 
             nCommercialSpotsPerStation = 10,
-            nAirlines = 20,
-            nRunways = 10,
-            nAirplanes = 1,
+            nAirlines = 5,
+            nRunways = 5,
+            nAirplanes = 10,
         ) -> None:
 
         with open('cities.json') as f:
@@ -66,14 +66,12 @@ class Airport():
             )
             self.airplanes.append(airplane)
 
-        '''
         # INIT Runways
         self.runwayManager:RunwayManagerAgent = RunwayManagerAgent(
             "runway@" + Conf().get_openfire_server(),
             Conf().get_openfire_password(),
             nRunways=nRunways                                     
         )    
-        '''
 
         # INIT Control Tower
         # TODO
@@ -85,3 +83,4 @@ class Airport():
             airline.start()
         for airplane in self.airplanes:
             airplane.start()
+        self.runwayManager.start()
