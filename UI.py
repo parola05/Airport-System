@@ -84,10 +84,11 @@ class MainView(customtkinter.CTk):
         self.dashboardAirline.start()
 
         # Airplanes Component
-        self.airplanesComponent = DashboardAirplane("dashboardAirplane@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
-        self.airplanesComponent.view.grid(row=2, column=1, padx=20, pady=(20, 0), sticky="nsew")
-        self.airplanesComponent.view.grid_columnconfigure(0, weight=1)
-        self.airplanesComponent.view.grid_rowconfigure(1, weight=1)
+        self.dashboardAirplane = DashboardAirplane("dashboardAirplane@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
+        self.dashboardAirplane.view.grid(row=2, column=1, padx=20, pady=(20, 0), sticky="nsew")
+        self.dashboardAirplane.view.grid_columnconfigure(0, weight=1)
+        self.dashboardAirplane.view.grid_rowconfigure(1, weight=1)
+        self.dashboardAirplane.start()
 
         # Runway Component
         self.runwayComponent = DashboardRunway("dashboardRunway@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
@@ -139,7 +140,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.grid_rowconfigure((0, 1, 2, 3), weight=1)
 
         self.saveButton = customtkinter.CTkButton(self, command=self.save)
-        self.saveButton.grid(row=4, column=0, padx=20, pady=10)
+        self.saveButton.grid(row=5, column=0, padx=20, pady=10)
         self.saveButton.configure(text="Save")
 
         ################ Number of Stations ##################
@@ -198,12 +199,27 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nAirlines = customtkinter.CTkSlider(self.nAirlinesFrame, from_=1, to=20, number_of_steps=20)
         self.nAirlines.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
 
+        ################ Airplanes ###########################
+
+        self.nAirplanesFrame = customtkinter.CTkFrame(master=self)
+        self.nAirplanesFrame.grid(row=4, column=0, padx=(10, 10), pady=(10, 10))
+
+        self.nAirplanesLabel = customtkinter.CTkLabel(self.nAirplanesFrame, text="Number of Airplanes", font=customtkinter.CTkFont(size=12, weight="bold"))
+        self.nAirplanesLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
+
+        self.nAirplanesSelectedLabel = customtkinter.CTkLabel(self.nAirplanesFrame, text="15", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nAirplanesSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
+        
+        self.nAirplanes = customtkinter.CTkSlider(self.nAirplanesFrame, from_=1, to=30, number_of_steps=30)
+        self.nAirplanes.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
+
         ############### Callback functions for each slider
 
         self.nStations.configure(command=self.nStationsUpdate)
         self.nCommercialSpotsPerStation.configure(command=self.nCommercialSpotsPerStationUpdate)
         self.nMerchandiseSpotsPerStation.configure(command=self.nMerchandiseSpotsPerStationUpdate)
         self.nAirlines.configure(command=self.nAirlinesUpdate)
+        self.nAirplanes.configure(command=self.nAirplanesUpdate)
 
     def nStationsUpdate(self,value):
         # Update label text
@@ -221,12 +237,17 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         # Update label text
         self.nAirlinesSelectedLabel.configure(text=str(int(value)))
 
+    def nAirplanesUpdate(self,value):
+        # Update label text
+        self.nAirplanesSelectedLabel.configure(text=str(int(value)))
+
     def save(self):
         # Instantiate airport with configuration values
         airport = Airport(
             nStations=int(self.nStations.get()),
             nMerchandiseSpotsPerStation=int(self.nMerchandiseSpotsPerStation.get()),
             nCommercialSpotsPerStation=int(self.nCommercialSpotsPerStation.get()),
-            nAirlines=int(self.nAirlines.get())
+            nAirlines=int(self.nAirlines.get()),
+            nAirplanes=int(self.nAirplanes.get())
         )
         self.destroy()

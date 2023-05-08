@@ -2,6 +2,7 @@ import customtkinter
 import sys
 import platform
 from spade.agent import Agent
+from .behaviours.ReceiveUpdates import ReceiveUpdatesBehaviour
 
 if platform.system() == "Darwin":  # macOS
     sys.path.append("../")
@@ -14,138 +15,34 @@ from GlobalTypes.Types import StatusType, Priority, SpotType
 
 class DashboardAirplane(Agent):
     async def setup(self):
-        pass
+        receiveUpdatesBehaviour = ReceiveUpdatesBehaviour()
+        self.add_behaviour(receiveUpdatesBehaviour)
 
     def __init__(self,agent_name,password,master):
         super().__init__(agent_name,password)
         self.view = AirplanesComponentView(master=master)
+        self.rowIndex = 1
 
 class AirplanesComponentView(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-
-        airplanes = [
-            {
-                "id": "TODO",
-                "airline": "TODO",
-                "type": "TODO",
-                "priority": "TODO",
-                "origin": "TODO",
-                "destiny": "TODO",
-                "date": "TODO",
-                "time": "TODO",
-                "status": StatusType.IN_STATION,
-            },
-            {
-                "id":"TODO",
-                "airline": "TODO",
-                "type": "TODO",
-                "priority": "TODO",
-                "origin": "TODO",
-                "destiny": "TODO",
-                "date": "TODO",
-                "time": "TODO",
-                "status": "TODO",
-            },
-            {
-                "id":"TODO",
-                "airline": "TODO",
-                "type": "TODO",
-                "priority": "TODO",
-                "origin": "TODO",
-                "destiny": "TODO",
-                "date": "TODO",
-                "time": "TODO",
-                "status": StatusType.FLYING,
-            },
-            {
-                "id":"TODO",
-                "airline": "TODO",
-                "type": "TODO",
-                "priority": "TODO",
-                "origin": "TODO",
-                "destiny": "TODO",
-                "date": "TODO",
-                "time": "TODO",
-                "status": "TODO",
-            },
-            {
-                "id":"TODO",
-                "airline": "TODO",
-                "type": "TODO",
-                "priority": "TODO",
-                "origin": "TODO",
-                "destiny": "TODO",
-                "date": "TODO",
-                "time": "TODO",
-                "status": "TODO",
-            },
-            {
-                "id":"TODO",
-                "airline": "TODO",
-                "type": "TODO",
-                "priority": "TODO",
-                "origin": "TODO",
-                "destiny": "TODO",
-                "date": "TODO",
-                "time": "TODO",
-                "status": "TODO",
-            },
-             {
-                "id":"TODO",
-                "airline": "TODO",
-                "type": "TODO",
-                "priority": "TODO",
-                "origin": "TODO",
-                "destiny": "TODO",
-                "date": "TODO",
-                "time": "TODO",
-                "status": "TODO",
-            },
-             {
-                "id":"TODO",
-                "airline": "TODO",
-                "type": "TODO",
-                "priority": "TODO",
-                "origin": "TODO",
-                "destiny": "TODO",
-                "date": "TODO",
-                "time": "TODO",
-                "status": "TODO",
-            },
-        ]
-
+        
+        # instance variable to use in behaviour
+        self.labels = {}
         self.toplevel_window = None
         
         labelID = customtkinter.CTkLabel(master=self, text="\U0001F6EA Airplanes", font=("Helvetica", 18, "bold"))
         labelID.grid(row=0, column=0)
 
-        airplanesTable = customtkinter.CTkScrollableFrame(master=self)
-        airplanesTable.grid(row=1,column=0,padx=10,pady=10,sticky="nsew")
+        self.airplanesTable = customtkinter.CTkScrollableFrame(master=self)
+        self.airplanesTable.grid(row=1,column=0,padx=10,pady=10,sticky="nsew")
 
-        labelID = customtkinter.CTkLabel(master=airplanesTable, text="Airplane ID", font=("Helvetica", 12, "bold"))
+        labelID = customtkinter.CTkLabel(master=self.airplanesTable, text="Airplane ID", font=("Helvetica", 12, "bold"))
         labelID.grid(row=0, column=0, padx=10, pady=(0, 10))
-        labelTakeOff = customtkinter.CTkLabel(master=airplanesTable, text="Action", font=("Helvetica", 12, "bold"))
+        labelTakeOff = customtkinter.CTkLabel(master=self.airplanesTable, text="Action", font=("Helvetica", 12, "bold"))
         labelTakeOff.grid(row=0, column=1, padx=10, pady=(0, 10))
-        labelTakeOff = customtkinter.CTkLabel(master=airplanesTable, text="Status", font=("Helvetica", 12, "bold"))
+        labelTakeOff = customtkinter.CTkLabel(master=self.airplanesTable, text="Status", font=("Helvetica", 12, "bold"))
         labelTakeOff.grid(row=0, column=2, padx=10, pady=(0, 10))
-
-        for rowIndex, airplane in enumerate(airplanes):
-            labelID = customtkinter.CTkLabel(master=airplanesTable, text=airplane["id"])
-            labelID.grid(row=rowIndex+1, column=0, padx=10, pady=(0,10), sticky="ew")
-            if airplane["status"] == StatusType.IN_STATION: #StatusType.PARKED:
-                labelAction = customtkinter.CTkButton(master=airplanesTable, command=lambda airplaneID=airplane["id"]: self.requestToTakeOff(airplaneID))
-                labelAction.grid(row=rowIndex+1, column=1, padx=20, pady=(0,10))
-                labelAction.configure(text="Take Off")
-            elif airplane["status"] == StatusType.FLYING:
-                labelAction = customtkinter.CTkButton(master=airplanesTable, command=lambda airplaneID=airplane["id"]: self.requestToLand(airplaneID))
-                labelAction.grid(row=rowIndex+1, column=1, padx=20, pady=(0,10))
-                labelAction.configure(text="Land")
-            else:
-                labelAction = customtkinter.CTkLabel(master=airplanesTable, text="--None--")
-                labelAction.grid(row=rowIndex+1, column=1, padx=20, pady=(0,10))
-            labelID = customtkinter.CTkLabel(master=airplanesTable, text=self.airplaneStatus(airplane["status"]))
-            labelID.grid(row=rowIndex+1, column=2, padx=10, pady=(0,10), sticky="ew")
 
         createStationButton = customtkinter.CTkButton(self, text="Create Airplane", command=self.openCreateAirplanesForm)
         createStationButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")

@@ -1,49 +1,63 @@
-import uuid, datetime, random, json
-from spade import agent
+from spade.agent import Agent
+import random
+import datetime
 from GlobalTypes.Types import SpotType, StatusType, Priority
+from .behaviours.InformDashboardInitStateBehaviour import InformDashBoardInitStateBehaviour
 
-class AirplaneAgent(agent.Agent):
-
-    id : str = ""
-    airline : str = ""              # tap, ryanair
-    typeTransport : SpotType
-    origin : str = ""
-    destination : str = ""
-    datetime : datetime.datetime
-    status : StatusType
-    priority : Priority
-
-    def __init__(self, jid, password, id, airline, typeTransport, origin, destination, datetime, priority):
-        super.__init__(jid,password)
-        self.id = id
+class AirplaneAgent(Agent):
+    def __init__(
+            self, 
+            agent_name, 
+            password, 
+            airplaneID, 
+            airline,
+            typeTransport=None, 
+            origin=None, 
+            destination=None, 
+            date=None, 
+            priority=None, 
+            status:StatusType=StatusType.FLYING):
+        super().__init__(agent_name,password)
+        
+        self.airplaneID = airplaneID
         self.airline = airline
-        self.typeTransport = typeTransport
-        self.origin = origin
-        self.destination = destination
-        self.datetime = datetime
-        self.priority = priority
+        
+        if typeTransport == None:
+            self.typeTransport = self.getRandomTypeTransport()
+        else: self.typeTransport = typeTransport
+        
+        if origin is not None:
+            self.origin = origin
+       
+        if destination is not None:
+            self.destination = destination
+        
+        if date == None:
+            self.datetime = datetime.datetime.now()
+        else: self.datetime = datetime 
+
+        if priority == None:
+            self.priority = self.getRandomPriority()
+        else: self.priority = priority
+
+        self.status = status
 
     async def setup(self):
-        print("Agent {}".format(str(self.jid)) + " starting...")
+         informDashBoardInitStateBehaviour = InformDashBoardInitStateBehaviour()
+         self.add_behaviour(informDashBoardInitStateBehaviour)
 
-    def getRandomTypeTransport():
-        random = random.randint(0,9)
-        if random % 2 == 0:
+    def getRandomTypeTransport(self):
+        randomChoice = random.randint(0,9)
+        if randomChoice % 2 == 0:
             return SpotType.COMMERCIAL
         else:
             return SpotType.MERCHANDISE
         
-    def getRandomPriority():
-        random = random.randint(0,15)
-        if random % 3 == 0:
+    def getRandomPriority(self):
+        randomChoice = random.randint(0,15)
+        if randomChoice % 3 == 0:
             return Priority.LOW
-        elif random % 2 == 0:
+        elif randomChoice % 2 == 0:
             return Priority.MEDIUM
         else:
             return Priority.HIGH
-    
-    def getRandomOrigin(self, cities):
-        return random.choice(cities)
-
-    def getRandomDestiny(self, cities, origin):
-        return random.choice(cities.remove(origin))

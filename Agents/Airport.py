@@ -1,6 +1,7 @@
 from .StationManager.StationManager import StationManagerAgent
-from .RunwayManager.RunwayManager import RunwayManagerAgent
+#from .RunwayManager.RunwayManager import RunwayManagerAgent
 from .Airline.Airline import AirlineAgent
+from .Airplane.Airplane import AirplaneAgent
 import random, json, datetime
 from Conf import Conf
 
@@ -36,7 +37,6 @@ class Airport():
         )           
 
         # INIT Airlines
-        print("server:",Conf().get_openfire_server())
         self.airlines = []
         airlinesID = []
         for i in range(0,nAirlines):
@@ -56,32 +56,24 @@ class Airport():
         self.airplanes = []
         for i in range(0, nAirplanes):
             airplaneID = "Airplane_" + str(i)
-            airplane = AirlineAgent(
+            airplane = AirplaneAgent(
                 agent_name=airplaneID+"@" + Conf().get_openfire_server(),
                 password=Conf().get_openfire_password(),
+                airplaneID=airplaneID,
                 airline=random.choice(airlinesID),
-                typeTransport = None,
-                origin = None,
-                destination = None,
-                date = None,
-                time = None,
-                status = None,
-                priority = None
+                origin=random.choice(self.cities),
+                destination=random.choice(self.cities),
             )
-            airplane.typeTransport = airplane.getRandomTypeTransport()
-            airplane.origin = airplane.getRandomOrigin(self.cities)
-            airplane.destiny = airplane.getRandomDestiny(self.cities, airplane.origin)
-            airplane.datetime = datetime.datetime.now()
-            airplane.priority = airplane.getRandomPriority()
-
             self.airplanes.append(airplane)
 
+        '''
         # INIT Runways
         self.runwayManager:RunwayManagerAgent = RunwayManagerAgent(
             "runway@" + Conf().get_openfire_server(),
             Conf().get_openfire_password(),
             nRunways=nRunways                                     
         )    
+        '''
 
         # INIT Control Tower
         # TODO
@@ -91,3 +83,5 @@ class Airport():
         future.result()
         for airline in self.airlines:
             airline.start()
+        for airplane in self.airplanes:
+            airplane.start()

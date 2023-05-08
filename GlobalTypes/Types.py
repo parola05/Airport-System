@@ -23,6 +23,9 @@ class DashboardAirlineUpdate:
     INFO = 2
     UPDATE = 3
 
+class DashboardAirplaneUpdate:
+    INFO = 1
+
 class NegotiationStatus:
     PROPOSE = 1
     SUCCESS = 2
