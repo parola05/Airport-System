@@ -29,6 +29,9 @@ class DashboardAirplaneMessageType:
 class DashboardRunwayMessageType:
     INFO = 1
 
+class DashboardControlTowerMessageType:
+    AIRPLANE_REQUEST = 1
+
 class DashboardStationMessageType:
     INFO = 1
 

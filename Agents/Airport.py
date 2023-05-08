@@ -2,8 +2,10 @@ from .StationManager.StationManager import StationManagerAgent
 from .RunwayManager.RunwayManager import RunwayManagerAgent
 from .Airline.Airline import AirlineAgent
 from .Airplane.Airplane import AirplaneAgent
+from .ControlTower.ControlTower import ControlTower
 import random, json, datetime
 from Conf import Conf
+import time
 
 class Airport():
     _instance = None
@@ -22,6 +24,7 @@ class Airport():
             nAirlines = 5,
             nRunways = 5,
             nAirplanes = 10,
+            queueInTheAirMaxSize = 30,
         ) -> None:
 
         with open('cities.json') as f:
@@ -74,11 +77,16 @@ class Airport():
         )    
 
         # INIT Control Tower
-        # TODO
+        self.controlTower:ControlTower = ControlTower(
+            "controlTower@" + Conf().get_openfire_server(),
+            Conf().get_openfire_password(),
+            queueInTheAirMaxSize=queueInTheAirMaxSize
+        )
 
     def simulate(self):
         future = self.stationManager.start()
         future.result()
+        future = self.controlTower.start()
         for airline in self.airlines:
             airline.start()
         for airplane in self.airplanes:

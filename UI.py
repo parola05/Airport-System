@@ -3,6 +3,7 @@ from Agents.Dashboard.DashboardStation.DashboardStation import DashboardStation
 from Agents.Dashboard.DashboardAirline.DashboardAirline import DashboardAirline
 from Agents.Dashboard.DashboardRunway.DashboardRunway import DashboardRunway
 from Agents.Dashboard.DashboardAirplane.DashboardAirplane import DashboardAirplane
+from Agents.Dashboard.DashboardControlTower.DashboardControlTower import DashboardControlTower
 from Agents.Airport import Airport
 from Conf import Conf
 
@@ -66,10 +67,6 @@ class MainView(customtkinter.CTk):
         self.entry = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
         self.entry.grid(row=3, column=1, columnspan=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
-        # create textbox
-        self.textbox = customtkinter.CTkTextbox(self, width=250)
-        self.textbox.grid(row=0, column=1, columnspan=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
-
         # Station Component
         self.dashboardStation = DashboardStation("dashboardStation@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
         self.dashboardStation.view.grid(row=2, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
@@ -97,10 +94,16 @@ class MainView(customtkinter.CTk):
         self.dashboardRunway.view.grid_rowconfigure(1, weight=1)
         self.dashboardRunway.start()
 
+        # Control Tower Component
+        self.controlTower = DashboardControlTower("dashboardControlTower@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
+        self.controlTower.view.grid(row=0, column=1, padx=20, pady=(20, 0), sticky="nsew", columnspan=2)
+        self.controlTower.view.grid_columnconfigure(0, weight=1)
+        self.controlTower.view.grid_rowconfigure(1, weight=1)
+        self.controlTower.start()
+
         # set default values
         self.appearance_mode_optionemenu.set("Dark")
         self.scaling_optionemenu.set("100%")
-        self.textbox.insert("0.0", "CTkTextbox\n\n" + "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.\n\n" * 20)
 
     def openConfigureSimulation(self):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
@@ -135,19 +138,23 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
         self.title("Automatic Simulation")
-        self.geometry(f"{600}x{600}")
+        self.geometry(f"{700}x{600}")
 
         self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
 
         self.saveButton = customtkinter.CTkButton(self, command=self.save)
-        self.saveButton.grid(row=6, column=0, padx=20, pady=10)
+        self.saveButton.grid(row=0, column=1, padx=20, pady=10,sticky="nsew")
         self.saveButton.configure(text="Save")
+
+        self.titleLabel = customtkinter.CTkLabel(self, text="Airport Configuration", font=customtkinter.CTkFont(size=28, weight="bold"))
+        self.titleLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
 
         ################ Number of Stations ##################
 
         self.nStationsFrame = customtkinter.CTkFrame(master=self)
-        self.nStationsFrame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
+        self.nStationsFrame.grid(row=1, column=0, padx=(10, 10), pady=(10, 10),sticky="nsew")
 
         self.nStationsLabel = customtkinter.CTkLabel(self.nStationsFrame, text="Number of Stations", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nStationsLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
@@ -161,7 +168,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         ################ Merchandise Spots ##################
 
         self.nMerchandiseSpotsPerStationFrame = customtkinter.CTkFrame(master=self)
-        self.nMerchandiseSpotsPerStationFrame.grid(row=1, column=0, padx=(10, 10), pady=(10, 10))
+        self.nMerchandiseSpotsPerStationFrame.grid(row=1, column=1, padx=(10, 10), pady=(10, 10),sticky="nsew")
 
         self.nMerchandiseSpotsPerStationLabel = customtkinter.CTkLabel(self.nMerchandiseSpotsPerStationFrame, text="Number of Merchandise Spots per Station", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nMerchandiseSpotsPerStationLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
@@ -172,10 +179,10 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nMerchandiseSpotsPerStation = customtkinter.CTkSlider(self.nMerchandiseSpotsPerStationFrame, from_=10, to=50, number_of_steps=20)
         self.nMerchandiseSpotsPerStation.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
 
-        ################ Commercial Spots ##################
+        ################ Commercial Spots ###################
 
         self.nCommercialSpotsPerStationFrame = customtkinter.CTkFrame(master=self)
-        self.nCommercialSpotsPerStationFrame.grid(row=2, column=0, padx=(10, 10), pady=(10, 10))
+        self.nCommercialSpotsPerStationFrame.grid(row=2, column=0, padx=(10, 10), pady=(10, 10),sticky="nsew")
 
         self.nCommercialSpotsPerStationLabel = customtkinter.CTkLabel(self.nCommercialSpotsPerStationFrame, text="Number of Commercial Spots per Station", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nCommercialSpotsPerStationLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
@@ -189,7 +196,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         ################ Airlines ###########################
 
         self.nAirlinesFrame = customtkinter.CTkFrame(master=self)
-        self.nAirlinesFrame.grid(row=3, column=0, padx=(10, 10), pady=(10, 10))
+        self.nAirlinesFrame.grid(row=2, column=1, padx=(10, 10), pady=(10, 10),sticky="nsew")
 
         self.nAirlinesLabel = customtkinter.CTkLabel(self.nAirlinesFrame, text="Number of Airlines", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nAirlinesLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
@@ -203,7 +210,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         ################ Airplanes ###########################
 
         self.nAirplanesFrame = customtkinter.CTkFrame(master=self)
-        self.nAirplanesFrame.grid(row=4, column=0, padx=(10, 10), pady=(10, 10))
+        self.nAirplanesFrame.grid(row=3, column=0, padx=(10, 10), pady=(10, 10),sticky="nsew")
 
         self.nAirplanesLabel = customtkinter.CTkLabel(self.nAirplanesFrame, text="Number of Airplanes", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nAirplanesLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
@@ -217,7 +224,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         ################ Runway ###########################
 
         self.nRunwaysFrame = customtkinter.CTkFrame(master=self)
-        self.nRunwaysFrame.grid(row=5, column=0, padx=(10, 10), pady=(10, 10))
+        self.nRunwaysFrame.grid(row=3, column=1, padx=(10, 10), pady=(10, 10),sticky="nsew")
 
         self.nRunwaysLabel = customtkinter.CTkLabel(self.nRunwaysFrame, text="Number of Runways", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nRunwaysLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
@@ -228,6 +235,20 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nRunways = customtkinter.CTkSlider(self.nRunwaysFrame, from_=1, to=30, number_of_steps=30)
         self.nRunways.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
 
+        ############ Queue in the air max size ############
+
+        self.nQueueInTheAirFrame = customtkinter.CTkFrame(master=self)
+        self.nQueueInTheAirFrame.grid(row=4, column=0, padx=(10, 10), pady=(10, 10),sticky="nsew")
+
+        self.nQueueInTheAirLabel = customtkinter.CTkLabel(self.nQueueInTheAirFrame, text="Queue In The Air Max size", font=customtkinter.CTkFont(size=12, weight="bold"))
+        self.nQueueInTheAirLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
+
+        self.nQueueInTheAirLabel = customtkinter.CTkLabel(self.nQueueInTheAirFrame, text="15", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nQueueInTheAirLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
+        
+        self.nQueueInTheAir = customtkinter.CTkSlider(self.nQueueInTheAirFrame, from_=1, to=30, number_of_steps=30)
+        self.nQueueInTheAir.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
+
         ############### Callback functions for each slider
 
         self.nStations.configure(command=self.nStationsUpdate)
@@ -236,6 +257,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nAirlines.configure(command=self.nAirlinesUpdate)
         self.nAirplanes.configure(command=self.nAirplanesUpdate)
         self.nRunways.configure(command=self.nRunwaysUpdate)
+        self.nQueueInTheAir.configure(command=self.queueInTheAirUpdate)
 
     def nStationsUpdate(self,value):
         # Update label text
@@ -261,6 +283,10 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         # Update label text
         self.nRunwaysSelectedLabel.configure(text=str(int(value)))
 
+    def queueInTheAirUpdate(self,value):
+        # Update label text
+        self.nQueueInTheAirLabel.configure(text=str(int(value)))
+
     def save(self):
         # Instantiate airport with configuration values
         airport = Airport(
@@ -269,6 +295,7 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
             nCommercialSpotsPerStation=int(self.nCommercialSpotsPerStation.get()),
             nAirlines=int(self.nAirlines.get()),
             nAirplanes=int(self.nAirplanes.get()),
-            nRunways=int(self.nRunways.get())
+            nRunways=int(self.nRunways.get()),
+            queueInTheAirMaxSize=int(self.nQueueInTheAir.get())
         )
         self.destroy()

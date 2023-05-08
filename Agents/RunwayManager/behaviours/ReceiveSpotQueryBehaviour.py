@@ -14,7 +14,7 @@ from spade.message import Message
 
 class ReceiveSpotQueryBehaviour(CyclicBehaviour):
     async def on_start(self):
-        print("[RUNWAY] Starting Receive Spot Query Behaviour...")
+        print("[RunwayManager] Starting Receive Spot Query Behaviour")
         with open("output.txt", "w") as f:
             print("[RUNWAY] Starting Receive Spot Query Behaviour", file=f)
 

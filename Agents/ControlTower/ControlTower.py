@@ -1,4 +1,4 @@
-from spade import Agent
+from spade.agent import Agent
 from typing import Dict, List
 import sys, platform
 
@@ -10,13 +10,15 @@ else:
     print("Unsupported operating system")
     
 from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
+from .behaviours.ReceiveBehaviour import ReceiveBehaviour
 
 class ControlTower(Agent):
+    def __init__(self,agent_name,password,queueInTheAirMaxSize=30):
+        super().__init__(agent_name,password)
+        self.queueInTheAir: Dict[str:List[RequestFromAirplane]] = {}
+        self.requestsInProcess: Dict[str:RequestFromAirplane] = {}  # sender_name : RequestFromAirplane
+        self.queueInTheAirMaxSize = queueInTheAirMaxSize
 
-    def __init__(self, queueInTheAir, requestsInProcess):
-        self.queueInTheAir = queueInTheAir
-        self.requestsInProcess = requestsInProcess
-
-    async def setup(self):
-        self.queueInTheAir: Dict[str:List[RequestFromAirplane]]
-        self.requestsInProcess: Dict[str:RequestFromAirplane] # sender_name : RequestFromAirplane
+    async def setup(self): 
+        receiveBehaviour:ReceiveBehaviour = ReceiveBehaviour()
+        self.add_behaviour(receiveBehaviour)

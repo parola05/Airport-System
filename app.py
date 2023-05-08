@@ -5,11 +5,13 @@ import json
 if __name__ == "__main__":
     with open('conf.json') as f:
         conf = json.load(f)
+        
     Conf.initialize(
         openfireServer=conf["openfireServer"],
         openfirePassword=conf["openfirePassword"]
     )
-    print(Conf().get_openfire_server())
-    print(Conf().get_openfire_password())
+
+    print("Openfire server running at:" + Conf().get_openfire_server())
+
     ui = UI()
     ui.start()

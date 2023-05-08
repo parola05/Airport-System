@@ -2,6 +2,9 @@ from spade.behaviour import OneShotBehaviour
 from spade.message import Message
 from datetime import datetime, timedelta
 import sys, platform
+from Conf import Conf
+from GlobalTypes.Types import RequestType
+import jsonpickle
 
 if platform.system() == "Darwin":  # macOS
     sys.path.append("../")
@@ -13,17 +16,22 @@ else:
 from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
 
 class WantsToLandBehaviour(OneShotBehaviour):
-
     async def on_start(self):
-        pass
+        print("[Airplane] starting WantsToLandBehaviour")
 
     async def run(self):
-        msg = Message(to=self.get("control_tower_jid"))
+        msg = Message(to="controlTower@" + Conf().get_openfire_server())
         msg.set_metadata("performative", "request")
-        now = datetime.now()
 
-        requestToLand = RequestFromAirplane(1, self.agent.id, self.agent.typeTransport, self.agent.airline, now, self.agent.priority, None, None)
-        msg.body = requestToLand
+        requestToLand = RequestFromAirplane(
+            typeRequest=RequestType.LAND,
+            id=self.agent.airplaneID, 
+            spotType=self.agent.typeTransport, 
+            airlineID=self.agent.airline, 
+            requestTime=datetime.now(), 
+            priority=self.agent.priority,
+            )
+        msg.body = jsonpickle.encode(requestToLand)
 
         await self.send(msg)
 
