@@ -1,7 +1,7 @@
 from spade.behaviour import CyclicBehaviour
 import jsonpickle
 from MessagesProtocol.DashboardControlTowerMessage import DashboardControlTowerMessage
-from GlobalTypes.Types import DashboardControlTowerMessageType, RequestType
+from GlobalTypes.Types import DashboardControlTowerMessageType, RequestType, StatusType
 import customtkinter
 
 class ReceiveUpdatesBehaviour(CyclicBehaviour):
@@ -22,6 +22,9 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                     tag = "tag2"
                 elif dashboardControlTowerMessage.requestType == RequestType.TAKEOFF:
                     tag = "tag1"
+                elif dashboardControlTowerMessage.informStatus == StatusType.TO_ANOTHER_AIRPORT:
+                    tag = "tag3"
+                    
 
                 # add message in textbox
                 self.agent.view.tab_1.textbox.insert(str(self.agent.tab_1_line) + ".0", "> " + dashboardControlTowerMessage.requestText + "\n",tag)

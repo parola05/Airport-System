@@ -1,4 +1,4 @@
-from GlobalTypes.Types import DashboardControlTowerMessageType, RequestType
+from GlobalTypes.Types import DashboardControlTowerMessageType, RequestType, StatusType
 
 class DashboardControlTowerMessage():
     def __init__(
@@ -6,11 +6,12 @@ class DashboardControlTowerMessage():
             type:DashboardControlTowerMessageType,
             requestText:str=None,
             requestType:RequestType=None,
+            informStatus:StatusType=None,
             ) -> None:
         
         self.type: DashboardControlTowerMessageType = type 
 
-        # This variable will be active when type is UPDATE
+        # These variables will be active when type is UPDATE
         self.requestText = requestText
-        # This variable will be active when type is UPDATE
         self.requestType:RequestType = requestType
+        self.informStatus:StatusType = informStatus

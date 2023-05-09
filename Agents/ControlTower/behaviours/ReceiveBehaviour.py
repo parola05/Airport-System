@@ -14,7 +14,7 @@ from MessagesProtocol.StationAvailable import StationAvailable
 from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
 from MessagesProtocol.RunwayAvailable import RunwayAvailable
 from MessagesProtocol.DashboardControlTowerMessage import DashboardControlTowerMessage
-from GlobalTypes.Types import RequestType, DashboardControlTowerMessageType
+from GlobalTypes.Types import RequestType, DashboardControlTowerMessageType, StatusType
 import jsonpickle
 from Conf import Conf
 
@@ -56,7 +56,18 @@ class ReceiveBehaviour(CyclicBehaviour):
                         sendMsg.set_metadata("performative", "refuse")
                         sendMsg.body = "Go to another airport, the queue is full"
 
-                    ############### Update Dashboard ###############
+                        ############ Update Dashboard Control Tower ############
+                        msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
+                        msg.set_metadata("performative", "inform")
+                        bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
+                            type=DashboardControlTowerMessageType.AIRPLANE_REQUEST,
+                            informStatus=StatusType.TO_ANOTHER_AIRPORT, 
+                            requestText=str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is going to another airport" 
+                        )
+                        msg.body = jsonpickle.encode(bodyMessage)
+                        await self.send(msg)
+
+                    ############### Update Dashboard Control Tower ###############
                     msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
                     msg.set_metadata("performative", "inform")
                     bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
