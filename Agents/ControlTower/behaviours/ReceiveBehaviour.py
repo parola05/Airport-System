@@ -34,7 +34,7 @@ class ReceiveBehaviour(CyclicBehaviour):
         receiveMsg = await self.receive()
 
         if receiveMsg:
-            # sender_name = receiveMsg.sender
+            sender_name = receiveMsg.sender
             performative = receiveMsg.get_metadata('performative')
 
             if performative == 'request':
@@ -42,21 +42,19 @@ class ReceiveBehaviour(CyclicBehaviour):
 
                 # Recebe um pedido do avião para aterrar
                 if requestFromAirplane.typeRequest == RequestType.LAND:
-                    '''
                     isFull = self.isQueueFull(self.agent.queueInTheAir)
 
                     if not isFull:
                         self.agent.requestsInProcess[sender_name] = receiveMsg.body
 
-                        sendMsg = Message(to="station_manager_jid")
+                        sendMsg = Message(to="station@" + Conf().get_openfire_server())
                         sendMsg.set_metadata("performative", "query-if")
-                        sendMsg.body("Are there any stations available?")
+                        sendMsg.body = "Are there any stations available?"
 
                     else:
                         sendMsg = Message(to=sender_name)
                         sendMsg.set_metadata("performative", "refuse")
-                        sendMsg.body("Go to another airport, the queue is full.")
-                    '''
+                        sendMsg.body = "Go to another airport, the queue is full"
 
                     ############### Update Dashboard ###############
                     msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())

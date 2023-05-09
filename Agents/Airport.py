@@ -84,9 +84,10 @@ class Airport():
         )
 
     def simulate(self):
+        future2 = self.controlTower.start()
+        future2.result()
         future = self.stationManager.start()
         future.result()
-        future = self.controlTower.start()
         for airline in self.airlines:
             airline.start()
         for airplane in self.airplanes:
