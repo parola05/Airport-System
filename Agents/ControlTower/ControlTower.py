@@ -1,6 +1,8 @@
 from spade.agent import Agent
 from typing import Dict, List
 import sys, platform
+from GlobalTypes.Coord import Coord
+from math import dist
 
 if platform.system() == "Darwin":  # macOS
     sys.path.append("../")
@@ -22,3 +24,22 @@ class ControlTower(Agent):
     async def setup(self): 
         receiveBehaviour:ReceiveBehaviour = ReceiveBehaviour()
         self.add_behaviour(receiveBehaviour)
+
+    def removeAirplaneFromQueue(self,airline,airplaneID):
+        for request in self.queueInTheAir[airline]:
+            if request.id == airplaneID:
+                del self.queueInTheAir[airline][request]
+    
+    def closestStationToRunway(runwayCoord:Coord, stationsCoords:List[Coord]) -> Coord:
+        runwayCoordTuple = (runwayCoord.x, runwayCoord.y)
+        firstStationCoord = (stationsCoords[0].x, stationsCoords[0].y)
+        minDistance = dist(firstStationCoord, runwayCoordTuple)
+        minStation = stationsCoords[0]
+        for stationCoord in stationsCoords:
+            stationCoordTuple = (stationCoord.x, stationCoord.y)
+            distance = dist(stationCoordTuple, runwayCoordTuple)
+            if distance < minDistance:
+                minStation = stationCoord
+        return minStation
+
+
