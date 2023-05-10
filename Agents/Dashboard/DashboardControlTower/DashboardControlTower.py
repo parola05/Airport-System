@@ -56,6 +56,9 @@ class AirplanesRequests(customtkinter.CTkFrame):
         self.textbox.tag_config("tag1", foreground="blue")
         self.textbox.tag_config("tag2", foreground="green")
         self.textbox.tag_config("tag3", foreground="red")
+        self.textbox.tag_config("tag4", foreground="#a020f0")
+        self.textbox.tag_config("tag5", foreground="#013220")
+
 
 class QueueInTheAir(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):

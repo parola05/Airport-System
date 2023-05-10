@@ -13,6 +13,7 @@ class StatusType:
     WAITING_TAKEOFF = 4
     WAITING_LAND = 5
     TO_ANOTHER_AIRPORT = 6
+    TAKING_OFF = 7
 
 class Priority:
     HIGH = 1

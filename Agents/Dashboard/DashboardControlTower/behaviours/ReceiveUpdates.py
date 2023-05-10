@@ -24,6 +24,10 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                     tag = "tag1"
                 elif dashboardControlTowerMessage.informStatus == StatusType.TO_ANOTHER_AIRPORT:
                     tag = "tag3"
+                elif dashboardControlTowerMessage.informStatus == StatusType.TAKING_OFF:
+                    tag = "tag4"
+                elif dashboardControlTowerMessage.informStatus == StatusType.LANDING:
+                    tag = "tag5"
                     
 
                 # add message in textbox

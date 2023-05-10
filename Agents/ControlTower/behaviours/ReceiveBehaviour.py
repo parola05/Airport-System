@@ -45,7 +45,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                     isFull = self.isQueueFull(self.agent.queueInTheAir)
 
                     if not isFull:
-                        self.agent.requestsInProcess[sender_name] = receiveMsg.body
+                        self.agent.requestsInProcess[sender_name] = requestFromAirplane
 
                         sendMsg = Message(to="station@" + Conf().get_openfire_server())
                         sendMsg.set_metadata("performative", "query-if")
@@ -56,18 +56,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                         sendMsg.set_metadata("performative", "refuse")
                         sendMsg.body = "Go to another airport, the queue is full"
 
-                        ############ Update Dashboard Control Tower ############
-                        msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
-                        msg.set_metadata("performative", "inform")
-                        bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
-                            type=DashboardControlTowerMessageType.AIRPLANE_REQUEST,
-                            informStatus=StatusType.TO_ANOTHER_AIRPORT, 
-                            requestText=str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is going to another airport" 
-                        )
-                        msg.body = jsonpickle.encode(bodyMessage)
-                        await self.send(msg)
-
-                    ############### Update Dashboard Control Tower ###############
+                    ############### Update Dashboard ###############
                     msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
                     msg.set_metadata("performative", "inform")
                     bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
@@ -80,13 +69,12 @@ class ReceiveBehaviour(CyclicBehaviour):
 
                 # Recebe um pedido do avião para levantar voo
                 elif requestFromAirplane.typeRequest == RequestType.TAKEOFF:
-                    '''
-                    self.agent.requestsInProcess[sender_name] = receiveMsg.body
                     
-                    sendMsg = Message(to=self.get("runway_manager_jid"))
+                    self.agent.requestsInProcess[sender_name] = requestFromAirplane
+
+                    sendMsg = Message(to="runway@" + Conf().get_openfire_server())
                     sendMsg.set_metadata("performative", "query-if")
                     sendMsg.body("Are there any runways available?")
-                    '''
                     
                     ############### Update Dashboard ###############
                     msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
@@ -101,10 +89,21 @@ class ReceiveBehaviour(CyclicBehaviour):
 
             # Recebe informação de que o avião partiu para outro aeroporto
             elif performative == "cancel":
-                '''
+                
                 if sender_name in self.agent.requestsInProcess:
                     del self.agent.requestsInProcess[sender_name]
-                '''
+
+                ############ Update Dashboard ############
+                msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
+                msg.set_metadata("performative", "inform")
+                bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
+                    type=DashboardControlTowerMessageType.AIRPLANE_REQUEST,
+                    informStatus=StatusType.TO_ANOTHER_AIRPORT, 
+                    requestText=str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is going to another airport" 
+                )
+                msg.body = jsonpickle.encode(bodyMessage)
+                await self.send(msg)
+                
             
             # Recebe a informação de que não existem gares ou pistas disponíveis
             elif performative == "refuse":
@@ -121,27 +120,48 @@ class ReceiveBehaviour(CyclicBehaviour):
             # Recebe a informação de que existem gares ou pistas disponíveis
             elif performative == "confirm":
                 '''
+                requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
                 if isinstance(receiveMsg.body, StationAvailable):
-                    self.agent.requestsInProcess[sender_name].stationCoord = receiveMsg.body.coord
+                    self.agent.requestsInProcess[sender_name].stationCoord = requestFromAirplane.stationCoord
 
                     sendMsg = Message(to="runway_manager_jid")
                     sendMsg.set_metadata("performative", "query-if")
                     sendMsg.body("Are there any runways available?")
                 
                 elif isinstance(receiveMsg.body, RunwayAvailable):
-                    self.agent.requestsInProcess[sender_name].runwayCoord = receiveMsg.body.coord
+                    self.agent.requestsInProcess[sender_name].runwayCoord = requestFromAirplane.runwayCoord
 
                     sendMsg = Message(to=sender_name)
                     sendMsg.set_metadata("performative", "confirm")
-                    sendMsg.body = self.agent.requestsInProcess[sender_name]
-
-                    del self.agent.requestsInProcess[sender_name]
+                    sendMsg.body = jsonpickle.encode(self.agent.requestsInProcess[sender_name])
                 '''
                 pass
 
-            # Outras performativas
-            # inform do airplane - realizou ação, ou foi para outro aeroporto
-            else:
-                pass
+            # Recebe informação de que o avião completou a ação requerida
+            elif performative == 'inform':
+                requestReceived = self.agent.requestsInProcess[sender_name]
+
+                if sender_name in self.agent.requestsInProcess:
+                    del self.agent.requestsInProcess[sender_name]
+
+                ########### UPDATE DASHBOARD ###########
+                msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
+                msg.set_metadata("performative", "inform")
+                if requestReceived.typeRequest == RequestType.LAND:
+                    bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
+                        type=DashboardControlTowerMessageType.AIRPLANE_REQUEST,
+                        informStatus=StatusType.LANDING, 
+                        requestText=str(requestReceived.id) + " from " + str(requestReceived.airlineID) + " is landing in runway " + str(requestReceived.runwayCoord) + " and in station " + str(requestReceived.stationCoord)
+                    )
+                else:
+                    bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
+                        type=DashboardControlTowerMessageType.AIRPLANE_REQUEST,
+                        informStatus=StatusType.TAKING_OFF, 
+                        requestText=str(requestReceived.id) + " from " + str(requestReceived.airlineID) + " is taking off in runway " + str(requestReceived.runwayCoord) 
+                    )
+                msg.body = jsonpickle.encode(bodyMessage)
+                await self.send(msg)
+
+
 
             # await self.send(sendMsg)

@@ -1,10 +1,9 @@
 from spade.behaviour import OneShotBehaviour
 from spade.message import Message
 from datetime import datetime, timedelta
-import sys, platform
+import sys, platform, jsonpickle
 from Conf import Conf
 from GlobalTypes.Types import RequestType
-import jsonpickle
 
 if platform.system() == "Darwin":  # macOS
     sys.path.append("../")
@@ -27,10 +26,10 @@ class WantsToLandBehaviour(OneShotBehaviour):
             typeRequest=RequestType.LAND,
             id=self.agent.airplaneID, 
             spotType=self.agent.typeTransport, 
-            airlineID=self.agent.airline, 
+            airlineID=self.agent.airline,
             requestTime=datetime.now(), 
             priority=self.agent.priority,
-            )
+        )
         msg.body = jsonpickle.encode(requestToLand)
 
         await self.send(msg)

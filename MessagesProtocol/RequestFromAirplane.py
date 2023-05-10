@@ -7,7 +7,7 @@ elif platform.system() == "Windows":
 else:
     print("Unsupported operating system")
 
-from GlobalTypes.Types import SpotType, Priority, RequestType
+from GlobalTypes.Types import SpotType, Priority, RequestType, StatusType
 from GlobalTypes.Coord import Coord
 
 class RequestFromAirplane():
@@ -24,7 +24,7 @@ class RequestFromAirplane():
         self.id: str = id
         self.typeRequest: RequestType = typeRequest
         self.spotType: SpotType = spotType 
-        self.airlineID: str = airlineID 
+        self.airlineID: str = airlineID
         self.requestTime: datetime = requestTime 
         self.priority: Priority = priority
         self.stationCoord: Coord = stationCoord
