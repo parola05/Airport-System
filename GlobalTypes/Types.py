@@ -33,6 +33,7 @@ class DashboardRunwayMessageType:
 
 class DashboardControlTowerMessageType:
     AIRPLANE_REQUEST = 1
+    AIRPLANE_IN_QUEUE = 2
 
 class DashboardStationMessageType:
     INFO = 1

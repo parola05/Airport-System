@@ -11,7 +11,7 @@ from GlobalTypes.Types import SpotType, Priority, RequestType, StatusType
 from GlobalTypes.Coord import Coord
 
 class RequestFromAirplane():
-    def __init__(self, id: str, typeRequest: RequestType, spotType: SpotType, airlineID: str, requestTime: datetime, priority: Priority, stationCoord: Coord=None, runwayCoord: Coord=None) -> None:
+    def __init__(self, id: str, typeRequest: RequestType, spotType: SpotType, status: StatusType, airlineID: str, requestTime: datetime, priority: Priority, stationCoord: Coord=None, runwayCoord: Coord=None) -> None:
         '''
             typeRequest: levantar voo ou aterrar
             spotType: tipo da vaga requerida pelo avião (comercial ou mercadoria)
@@ -23,7 +23,8 @@ class RequestFromAirplane():
         '''
         self.id: str = id
         self.typeRequest: RequestType = typeRequest
-        self.spotType: SpotType = spotType 
+        self.spotType: SpotType = spotType
+        self.status: StatusType = status 
         self.airlineID: str = airlineID
         self.requestTime: datetime = requestTime 
         self.priority: Priority = priority

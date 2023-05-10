@@ -9,6 +9,9 @@ from Conf import Conf
 
 class ReceiveBehaviour(CyclicBehaviour):
 
+    async def on_start(self):
+        print("[Airplane] starting ReceiveBehaviour")
+
     async def run(self):
 
         receiveMsg = await self.receive(timeout=60)
@@ -22,9 +25,9 @@ class ReceiveBehaviour(CyclicBehaviour):
             if performative == 'refuse':
                 print("Agent {}".format(str(self.agent.jid)) + "is informed that queue in air is full")
                 self.agent.status = StatusType.TO_ANOTHER_AIRPORT
-
                 sendMsg.set_metadata("performative", "cancel")
                 sendMsg.body = "Going to another airport"
+                await self.send(sendMsg)
 
             # Recebe indicação de que deve esperar (porque não existe gare ou pista disponível)
             elif performative == 'inform':
@@ -36,26 +39,45 @@ class ReceiveBehaviour(CyclicBehaviour):
                     self.agent.status = StatusType.WAITING_TAKEOFF
 
             # Recebe informação da gare e da pista selecionadas para a aterragem ou a partida
-            elif performative == 'confirm':
+            elif performative == 'agree':
                 requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
+
                 if requestFromAirplane.requestType == RequestType.TAKEOFF:
+
                     self.agent.status = StatusType.TAKING_OFF
-                    time.sleep(10)
+                    requestFromAirplane.status = self.agent.status
+                    sendMsg.set_metadata("performative", "inform")
+                    sendMsg.body = jsonpickle.encode(requestFromAirplane)
+                    await self.send(sendMsg)
+
+                    time.sleep(15)
+
                     self.agent.status = StatusType.FLYING
+                    requestFromAirplane.status = self.agent.status
+                    sendMsg.set_metadata("performative", "inform")
+                    sendMsg.body = jsonpickle.encode(requestFromAirplane)
+                    await self.send(sendMsg)
+
                 else:
                     self.agent.status = StatusType.LANDING
+                    requestFromAirplane.status = self.agent.status
+                    sendMsg.set_metadata("performative", "inform")
+                    sendMsg.body = jsonpickle.encode(requestFromAirplane)
+                    await self.send(sendMsg)
+
                     time.sleep(10)
+
                     self.agent.status = StatusType.IN_STATION
-                sendMsg.set_metadata("performative", "inform")
-                sendMsg.body = "Action required completed!"
+                    requestFromAirplane.status = self.agent.status
+                    sendMsg.set_metadata("performative", "inform")
+                    sendMsg.body = jsonpickle.encode(requestFromAirplane)
+                    await self.send(sendMsg)
 
         else:
             print("Agent {}".format(str(self.agent.jid)) + "did not receive any message after 1 minute")
             self.agent.status = StatusType.TO_ANOTHER_AIRPORT
             sendMsg.set_metadata("performative", "cancel")
             sendMsg.body = "Going to another airport"
-
-        await self.send(sendMsg)
 
         ############ Update Dashboard ############
         msg = Message(to="dashboardAirplane@" + Conf().get_openfire_server())

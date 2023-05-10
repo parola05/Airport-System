@@ -25,7 +25,8 @@ class WantsToLandBehaviour(OneShotBehaviour):
         requestToLand = RequestFromAirplane(
             typeRequest=RequestType.LAND,
             id=self.agent.airplaneID, 
-            spotType=self.agent.typeTransport, 
+            spotType=self.agent.typeTransport,
+            status=self.agent.status,
             airlineID=self.agent.airline,
             requestTime=datetime.now(), 
             priority=self.agent.priority,

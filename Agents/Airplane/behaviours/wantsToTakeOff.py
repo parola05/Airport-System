@@ -25,8 +25,9 @@ class WantsToTakeOffBehaviour(OneShotBehaviour):
 
         requestToTakeOff = RequestFromAirplane(
             typeRequest=RequestType.TAKEOFF,
-            id=self.agent.id,
+            id=self.agent.airplaneID,
             spotType=self.agent.typeTransport,
+            status=self.agent.status,
             airlineID=self.agent.airline,
             requestTime=datetime.now(), 
             priority=self.agent.priority,
