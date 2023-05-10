@@ -16,6 +16,7 @@ from .behaviours.ReceiveSpotQueryBehaviour import ReceiveSpotQueryBehaviour
 from .behaviours.ReceiveAirlinesProposalsBehaviour import ReceiveAirlinesProposalsBehaviour
 from .behaviours.EvaluateAirlinesProposalsBehaviour import EvaluateAirlinesProposalsBehaviour
 from .behaviours.InformDashboardInitStateBehaviour import InformDashBoardInitStateBehaviour
+from .behaviours.UpdateStationAvailabilityBehaviour import UpdateStationAvailabilityBehaviour
 import datetime
 
 class Station():
@@ -104,16 +105,20 @@ class StationManagerAgent(Agent):
         evaluateAirlinesProposals = EvaluateAirlinesProposalsBehaviour(period=5,start_at=(datetime.datetime.now() + datetime.timedelta(seconds=5)))
         receiveSpotsQueryBehaviour = ReceiveSpotQueryBehaviour()
         informDashBoardInitStateBehaviour = InformDashBoardInitStateBehaviour()
+        updateStationAvailability = UpdateStationAvailabilityBehaviour()
 
         template1 = Template()
         template1.set_metadata("performative","propose")
         template2 = Template()
         template2.set_metadata("performative","query-if")
+        template3 = Template()
+        template3.set_metadata("performative","inform-ref")
         
         self.add_behaviour(receiveAirlinesProposals,template1)
         self.add_behaviour(evaluateAirlinesProposals)
         self.add_behaviour(receiveSpotsQueryBehaviour,template2)
         self.add_behaviour(informDashBoardInitStateBehaviour)
+        self.add_behaviour(updateStationAvailability,template3)
 
     def __init__(self, agent_name, password, nStations = None, nMerchandiseSpotsPerStation = None, nCommercialSpotsPerStation = None):
         super().__init__(agent_name,password)
@@ -140,11 +145,11 @@ class StationManagerAgent(Agent):
             - spotType: spot type (merchandise or commercial)
             - airlineID: identification of the airline
     '''
-    def getStationsAvailable(self, spotType: SpotType, airlineID: str):
-        spotsAvailable: List[str] = []
+    def getStationsAvailable(self, spotType: SpotType, airlineID: str) -> List[Station]:
+        spotsAvailable: List[Station] = []
         for station in self.stations:
-            if station.isSpotAvailable(spotType,airlineID):
-                spotsAvailable.append(station.id)
+            if self.stations[station].isSpotAvailable(spotType,airlineID):
+                spotsAvailable.append(self.stations[station])
         return spotsAvailable
     
     '''
@@ -180,4 +185,25 @@ class StationManagerAgent(Agent):
             spotsBoughtInStation += station.buySpots(nSpots,spotType,airlineID)
             nSpots = nSpots - spotsBoughtInStation
             if nSpots == 0:
-                return 
+                return
+
+    '''
+        Description: 
+            Update <spots_merchandise> or <spots_commercial> of station in case 
+            the spot has become available or occupied
+        Params: 
+            - isAvailable: spot available (true) or occupied (false)
+            - stationID: identification of the station
+            - spotType: spot type (merchandise or commercial)
+    '''      
+    def updateStationSpots(self,isAvailable,stationID,spotType):
+        if isAvailable:
+            if spotType == SpotType.COMMERCIAL:
+                self.stations[stationID].spots_commercial += 1
+            else:
+                self.stations[stationID].spots_merchandise += 1
+        else:
+            if spotType == SpotType.COMMERCIAL:
+                self.stations[stationID].spots_commercial -= 1
+            else:
+                self.stations[stationID].spots_merchandise -= 1
