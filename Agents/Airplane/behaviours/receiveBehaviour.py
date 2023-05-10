@@ -1,10 +1,12 @@
 import time, jsonpickle
 from spade.behaviour import CyclicBehaviour
 from spade.message import Message
-from Airplane.Airplane import AirplaneAgent
 from GlobalTypes.Types import StatusType, RequestType
 from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
+from MessagesProtocol.DashboardAirplaneMessage import DashboardAirplaneMessage, AirplaneInfo
+from GlobalTypes.Types import DashboardAirplaneMessageType
 from Conf import Conf
+
 class ReceiveBehaviour(CyclicBehaviour):
 
     async def run(self):
@@ -19,6 +21,8 @@ class ReceiveBehaviour(CyclicBehaviour):
             # Recebe informação de que a fila de espera está cheia ou quase cheia
             if performative == 'refuse':
                 print("Agent {}".format(str(self.agent.jid)) + "is informed that queue in air is full")
+                self.agent.status = StatusType.TO_ANOTHER_AIRPORT
+
                 sendMsg.set_metadata("performative", "cancel")
                 sendMsg.body = "Going to another airport"
 
@@ -52,3 +56,17 @@ class ReceiveBehaviour(CyclicBehaviour):
             sendMsg.body = "Going to another airport"
 
         await self.send(sendMsg)
+
+        ############ Update Dashboard ############
+        msg = Message(to="dashboardAirplane@" + Conf().get_openfire_server())
+        msg.set_metadata("performative", "inform")
+        bodyMessage:DashboardAirplaneMessage = DashboardAirplaneMessage(
+            type=DashboardAirplaneMessageType.INFO,
+            airplaneInfo=AirplaneInfo(
+                id=self.agent.airplaneID,
+                status=self.agent.status,
+                airlineID=self.agent.airline
+            )
+        )
+        msg.body = jsonpickle.encode(bodyMessage)
+        await self.send(msg)

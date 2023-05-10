@@ -10,7 +10,6 @@ elif platform.system() == "Windows":
 else:
     print("Unsupported operating system")
 
-from Airplane.Airplane import AirplaneAgent
 from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
 from GlobalTypes.Types import RequestType
 from Conf import Conf
