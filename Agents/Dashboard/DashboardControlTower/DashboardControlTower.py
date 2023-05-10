@@ -20,6 +20,7 @@ class DashboardControlTower(Agent):
         super().__init__(agent_name,password)
         self.view = ControlTowerComponentView(master=master)
         self.tab_1_line = 0
+        self.tab_2_line = 0
 
 class ControlTowerComponentView(customtkinter.CTkTabview):
     def __init__(self, master, **kwargs):
@@ -63,3 +64,15 @@ class AirplanesRequests(customtkinter.CTkFrame):
 class QueueInTheAir(customtkinter.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
+
+        progressbar = customtkinter.CTkProgressBar(master=self)
+        progressbar.grid(row=0, column=0, padx=2, pady=2, sticky="nsew")
+        progressbar.configure(mode="indeterminnate")
+        progressbar.start()
+
+        self.textbox = customtkinter.CTkTextbox(master=self)
+        self.textbox.grid(row=1,column=0,sticky="nsew")
+        
+        self.textbox.tag_config("tag1", foreground="blue")
+        self.textbox.tag_config("tag2", foreground="green")
+        self.textbox.tag_config("tag3", foreground="red")

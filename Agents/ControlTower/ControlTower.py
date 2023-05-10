@@ -30,16 +30,16 @@ class ControlTower(Agent):
             if request.id == airplaneID:
                 del self.queueInTheAir[airline][request]
     
-    def closestStationToRunway(runwayCoord:Coord, stationsCoords:List[Coord]) -> Coord:
+    def closestStationToRunway(runwayCoord:Coord, stations):
         runwayCoordTuple = (runwayCoord.x, runwayCoord.y)
-        firstStationCoord = (stationsCoords[0].x, stationsCoords[0].y)
+        firstStationCoord = (stations[0].coord.x, stations[0].coord.y)
         minDistance = dist(firstStationCoord, runwayCoordTuple)
-        minStation = stationsCoords[0]
-        for stationCoord in stationsCoords:
-            stationCoordTuple = (stationCoord.x, stationCoord.y)
+        minStation = stations[0]
+        for st in stations:
+            stationCoordTuple = (st.coord.x, st.coord.y)
             distance = dist(stationCoordTuple, runwayCoordTuple)
             if distance < minDistance:
-                minStation = stationCoord
-        return minStation
+                minStation = st
+        return minStation # objeto Station
 
 

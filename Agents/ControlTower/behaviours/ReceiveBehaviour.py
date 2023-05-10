@@ -1,7 +1,7 @@
 from typing import Dict, List
 from spade.behaviour import CyclicBehaviour
 from spade.message import Message
-import platform, sys
+import platform, sys, jsonpickle
 
 if platform.system() == "Darwin":  # macOS
     sys.path.append("../")
@@ -10,12 +10,11 @@ elif platform.system() == "Windows":
 else:
     print("Unsupported operating system")
 
-from MessagesProtocol.StationAvailable import StationAvailable
 from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
-from MessagesProtocol.RunwayAvailable import RunwayAvailable
 from MessagesProtocol.DashboardControlTowerMessage import DashboardControlTowerMessage
+from MessagesProtocol.IsRunwayAvailable import IsRunwayAvailable
+from MessagesProtocol.IsStationAvailable import IsStationAvailable
 from GlobalTypes.Types import RequestType, DashboardControlTowerMessageType, StatusType
-import jsonpickle
 from Conf import Conf
 
 
@@ -45,16 +44,20 @@ class ReceiveBehaviour(CyclicBehaviour):
                     isFull = self.isQueueFull(self.agent.queueInTheAir)
 
                     if not isFull:
+                        print("queue not full!")
                         self.agent.requestsInProcess[sender_name] = requestFromAirplane
 
                         sendMsg = Message(to="station@" + Conf().get_openfire_server())
                         sendMsg.set_metadata("performative", "query-if")
-                        sendMsg.body = "Are there any stations available?"
+                        sendMsg.body = jsonpickle.encode(requestFromAirplane)
+                        await self.send(sendMsg)
 
                     else:
+                        print("queue full!")
                         sendMsg = Message(to=sender_name)
                         sendMsg.set_metadata("performative", "refuse")
                         sendMsg.body = "Go to another airport, the queue is full"
+                        await self.send(sendMsg)
 
                     ############### Update Dashboard ###############
                     msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
@@ -69,12 +72,12 @@ class ReceiveBehaviour(CyclicBehaviour):
 
                 # Recebe um pedido do avião para levantar voo
                 elif requestFromAirplane.typeRequest == RequestType.TAKEOFF:
-                    
                     self.agent.requestsInProcess[sender_name] = requestFromAirplane
 
                     sendMsg = Message(to="runway@" + Conf().get_openfire_server())
                     sendMsg.set_metadata("performative", "query-if")
-                    sendMsg.body("Are there any runways available?")
+                    sendMsg.body = jsonpickle.encode(requestFromAirplane)
+                    await self.send(sendMsg)
                     
                     ############### Update Dashboard ###############
                     msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
@@ -89,7 +92,7 @@ class ReceiveBehaviour(CyclicBehaviour):
 
             # Recebe informação de que o avião partiu para outro aeroporto
             elif performative == "cancel":
-                
+                requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
                 if sender_name in self.agent.requestsInProcess:
                     del self.agent.requestsInProcess[sender_name]
 
@@ -107,39 +110,84 @@ class ReceiveBehaviour(CyclicBehaviour):
             
             # Recebe a informação de que não existem gares ou pistas disponíveis
             elif performative == "refuse":
-                '''
-                airlineID = receiveMsg.body.airlineID
-                self.agent.queueInTheAir[airlineID].append(receiveMsg.body)
+                requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
 
-                sendMsg = Message(to=sender_name)
+                airlineID = requestFromAirplane.airlineID
+                self.agent.queueInTheAir[airlineID].append(requestFromAirplane)
+
+                sendMsg = Message(to=requestFromAirplane.id + "@" + Conf().get_openfire_server())
                 sendMsg.set_metadata("performative", "inform")
                 sendMsg.body("Please, wait.")
-                '''
-                pass
+                await self.send(sendMsg)
+                
+                ############ Update Dashboard ############
+                msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
+                msg.set_metadata("performative", "inform")
+                if requestFromAirplane.typeRequest == RequestType.LAND:
+                    requestText=str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is waiting to land.." 
+                else:
+                    requestText=str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is waiting to take off.." 
+                bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
+                    type=DashboardControlTowerMessageType.AIRPLANE_IN_QUEUE,
+                    requestType=requestFromAirplane.typeRequest,
+                    requestText=requestText
+                )
+                msg.body = jsonpickle.encode(bodyMessage)
+                await self.send(msg)
 
             # Recebe a informação de que existem gares ou pistas disponíveis
             elif performative == "confirm":
-                '''
-                requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
-                if isinstance(receiveMsg.body, StationAvailable):
-                    self.agent.requestsInProcess[sender_name].stationCoord = requestFromAirplane.stationCoord
+                receiveMsgDecoded:tuple = jsonpickle.decode(receiveMsg)
+                airplane = receiveMsgDecoded[0]
+                airplane_addr = airplane + "@" + Conf().get_openfire_server()
+                airline = self.agent.requestsInProcess[airplane_addr].airlineID
 
-                    sendMsg = Message(to="runway_manager_jid")
+                if "station@" in str(sender_name):
+                    self.stationsAvailable = receiveMsgDecoded[1]
+                    sendMsg = Message(to="runway@" + Conf().get_openfire_server())
                     sendMsg.set_metadata("performative", "query-if")
-                    sendMsg.body("Are there any runways available?")
+                    sendMsg.body = jsonpickle.encode(self.agent.requestsInProcess[airplane_addr])
                 
-                elif isinstance(receiveMsg.body, RunwayAvailable):
-                    self.agent.requestsInProcess[sender_name].runwayCoord = requestFromAirplane.runwayCoord
+                elif "runway@" in str(sender_name):
+                    runwaysAvailable = receiveMsgDecoded[1]
+                    # atualizar o objeto do pedido com as coordenadas da pista escolhida aleatoriamente
+                    self.agent.requestsInProcess[airplane_addr].runway = runwaysAvailable[0]
+                    
+                    # se for para aterrar, calcular a gare mais perto da pista e atualizar o objeto do pedido com as suas coordenadas
+                    if self.agent.requestsInProcess[airplane_addr].typeRequest == RequestType.LAND:
+                        closestStation = self.agent.closestStationToRunway(runwaysAvailable[0].coord, self.stationsAvailable)
+                        self.agent.requestsInProcess[airplane_addr].station = closestStation
+                        # reservar um spot da station (será ocupada)
+                        sendMsg = Message(to="station@" + Conf().get_openfire_server())
+                        sendMsg.set_metadata("performative", "inform-ref")
+                        stationAvailabilityInfo = IsStationAvailable(
+                                                    isAvailable=False,
+                                                    stationInfo=closestStation,
+                                                    spotType=self.agent.requestsInProcess[airplane_addr].spotType
+                                                  )
+                        sendMsg.body = jsonpickle.encode(stationAvailabilityInfo)
+                        await self.send(sendMsg)
 
-                    sendMsg = Message(to=sender_name)
-                    sendMsg.set_metadata("performative", "confirm")
-                    sendMsg.body = jsonpickle.encode(self.agent.requestsInProcess[sender_name])
-                '''
-                pass
+                    # reservar a pista (será ocupada)
+                    sendMsg = Message(to="runway@" + Conf().get_openfire_server())
+                    sendMsg.set_metadata("performative", "inform-ref")
+                    runwayAvailabilityInfo = IsRunwayAvailable(
+                                                isAvailable=False,
+                                                runwayInfo=runwaysAvailable[0]
+                                             )
+                    sendMsg.body = jsonpickle.encode(runwayAvailabilityInfo)
+                    await self.send(sendMsg)
+                    
+                    # remove o avião da fila de espera (caso ele esteja na fila de espera)
+                    self.agent.removeAirplaneFromQueue(airline,airplane)
 
-            # Recebe informação de que o avião completou a ação requerida
+                    sendMsg = Message(to=airplane_addr)
+                    sendMsg.set_metadata("performative", "agree")
+                    sendMsg.body = jsonpickle.encode(self.agent.requestsInProcess[airplane_addr])
+
+            # Recebe informação do avião após ser permitido a sua aterragem ou partida
             elif performative == 'inform':
-                requestReceived = self.agent.requestsInProcess[sender_name]
+                requestFromAirplane = self.agent.requestsInProcess[sender_name]
 
                 if sender_name in self.agent.requestsInProcess:
                     del self.agent.requestsInProcess[sender_name]
@@ -147,21 +195,60 @@ class ReceiveBehaviour(CyclicBehaviour):
                 ########### UPDATE DASHBOARD ###########
                 msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
                 msg.set_metadata("performative", "inform")
-                if requestReceived.typeRequest == RequestType.LAND:
-                    bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
-                        type=DashboardControlTowerMessageType.AIRPLANE_REQUEST,
-                        informStatus=StatusType.LANDING, 
-                        requestText=str(requestReceived.id) + " from " + str(requestReceived.airlineID) + " is landing in runway " + str(requestReceived.runwayCoord) + " and in station " + str(requestReceived.stationCoord)
-                    )
-                else:
-                    bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
-                        type=DashboardControlTowerMessageType.AIRPLANE_REQUEST,
-                        informStatus=StatusType.TAKING_OFF, 
-                        requestText=str(requestReceived.id) + " from " + str(requestReceived.airlineID) + " is taking off in runway " + str(requestReceived.runwayCoord) 
-                    )
+
+                # tanto a pista, como a gare já foram reservadas na performativa "confirm"
+                if requestFromAirplane.status == StatusType.LANDING:
+                    informStatus = StatusType.LANDING
+                    requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is landing in runway " + str(requestFromAirplane.runway.coord)
+
+                # a pista fica livre quando o avião estaciona, mas a station permanece ocupada
+                elif requestFromAirplane.status == StatusType.IN_STATION:
+                    informStatus = StatusType.LANDING
+                    requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is parked in station " + str(requestFromAirplane.station.coord)
+                    
+                    sendMsg = Message(to="runway@" + Conf().get_openfire_server())
+                    sendMsg.set_metadata("performative", "inform-ref")
+                    runwayAvailabilityInfo = IsRunwayAvailable(
+                                                isAvailable=True,
+                                                runwayInfo=requestFromAirplane.runway
+                                             )
+                    sendMsg.body = jsonpickle.encode(runwayAvailabilityInfo)
+                    await self.send(sendMsg)
+                
+                # a pista já foi reservada na performativa "confirm", mas a station fica livre
+                elif requestFromAirplane.status == StatusType.TAKING_OFF:
+                    informStatus = StatusType.TAKING_OFF
+                    requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is taking off in runway " + str(requestFromAirplane.runway.coord)
+                    """
+                    sendMsg = Message(to="station@" + Conf().get_openfire_server())
+                        sendMsg.set_metadata("performative", "inform-ref")
+                        stationAvailabilityInfo = IsStationAvailable(
+                                                    isAvailable=True,
+                                                    stationInfo=??????????????,
+                                                    spotType=requestFromAirplane.spotType
+                                                  )
+                        sendMsg.body = jsonpickle.encode(stationAvailabilityInfo)
+                        await self.send(sendMsg)
+                    """
+
+                # a pista fica livre
+                elif requestFromAirplane.status == StatusType.FLYING:
+                    informStatus = StatusType.LANDING
+                    requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is flying"
+                    
+                    sendMsg = Message(to="runway@" + Conf().get_openfire_server())
+                    sendMsg.set_metadata("performative", "inform-ref")
+                    runwayAvailabilityInfo = IsRunwayAvailable(
+                                                isAvailable=True,
+                                                runwayInfo=requestFromAirplane.runway
+                                             )
+                    sendMsg.body = jsonpickle.encode(runwayAvailabilityInfo)
+                    await self.send(sendMsg)
+
+                bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
+                    type=DashboardControlTowerMessageType.AIRPLANE_REQUEST,
+                    informStatus=informStatus,
+                    requestText=requestText
+                )
                 msg.body = jsonpickle.encode(bodyMessage)
                 await self.send(msg)
-
-
-
-            # await self.send(sendMsg)
