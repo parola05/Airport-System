@@ -13,6 +13,7 @@ else:
     print("Unsupported operating system")
 
 from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
+from MessagesProtocol.DashboardAirplaneMessage import DashboardAirplaneMessage, DashboardAirplaneMessageType, AirplaneInfo
 
 class WantsToLandBehaviour(OneShotBehaviour):
     async def on_start(self):
@@ -32,6 +33,18 @@ class WantsToLandBehaviour(OneShotBehaviour):
             priority=self.agent.priority,
         )
         msg.body = jsonpickle.encode(requestToLand)
-
         await self.send(msg)
 
+        ############ Update Dashboard ############
+        msg = Message(to="dashboardAirplane@" + Conf().get_openfire_server())
+        msg.set_metadata("performative", "inform")
+        bodyMessage:DashboardAirplaneMessage = DashboardAirplaneMessage(
+            type=DashboardAirplaneMessageType.UPDATE,
+            airplaneInfo=AirplaneInfo(
+                id=self.agent.airplaneID,
+                status=self.agent.status,
+                airlineID=self.agent.airline
+            )
+        )
+        msg.body = jsonpickle.encode(bodyMessage)
+        await self.send(msg)

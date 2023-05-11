@@ -87,3 +87,9 @@ class CreateRunwayFormView(customtkinter.CTkToplevel):
         
         # Close the form window
         self.destroy()
+
+    def isAvailable(isAvailable):
+        if isAvailable:
+            return "Yes"
+        else:
+            return "No"

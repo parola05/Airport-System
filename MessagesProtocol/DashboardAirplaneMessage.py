@@ -11,7 +11,7 @@ class DashboardAirplaneMessage():
             self,
             type:DashboardAirplaneMessageType,
             airplaneInfo:AirplaneInfo=None,
-            ) -> None:
+        ) -> None:
         self.type:DashboardAirplaneMessageType = type 
 
         # This object will be active when type is INFO

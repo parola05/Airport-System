@@ -23,7 +23,7 @@ class ReceiveBehaviour(CyclicBehaviour):
 
             # Recebe informação de que a fila de espera está cheia ou quase cheia
             if performative == "refuse":
-                print("Agent {}".format(str(self.agent.jid)) + "is informed that queue in air is full")
+                print("Agent {}".format(str(self.agent.jid)) + " is informed that queue in air is full")
                 self.agent.status = StatusType.TO_ANOTHER_AIRPORT
                 sendMsg.set_metadata("performative", "cancel")
                 sendMsg.body = "Going to another airport"
@@ -31,7 +31,7 @@ class ReceiveBehaviour(CyclicBehaviour):
 
             # Recebe indicação de que deve esperar (porque não existe gare ou pista disponível)
             elif performative == "request":
-                print("Agent {}".format(str(self.agent.jid)) + "is waiting..")
+                print("Agent {}".format(str(self.agent.jid)) + " is waiting..")
                 requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
                 if requestFromAirplane.typeRequest == RequestType.LAND:
                     self.agent.status = StatusType.WAITING_LAND
@@ -74,7 +74,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                     await self.send(sendMsg)
 
         else:
-            print("Agent {}".format(str(self.agent.jid)) + "did not receive any message after 1 minute")
+            print("Agent {}".format(str(self.agent.jid)) + " did not receive any message after 1 minute")
             self.agent.status = StatusType.TO_ANOTHER_AIRPORT
             sendMsg.set_metadata("performative", "cancel")
             sendMsg.body = "Going to another airport"
@@ -83,7 +83,7 @@ class ReceiveBehaviour(CyclicBehaviour):
         msg = Message(to="dashboardAirplane@" + Conf().get_openfire_server())
         msg.set_metadata("performative", "inform")
         bodyMessage:DashboardAirplaneMessage = DashboardAirplaneMessage(
-            type=DashboardAirplaneMessageType.INFO,
+            type=DashboardAirplaneMessageType.UPDATE,
             airplaneInfo=AirplaneInfo(
                 id=self.agent.airplaneID,
                 status=self.agent.status,

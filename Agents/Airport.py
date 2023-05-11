@@ -58,7 +58,7 @@ class Airport():
         # INIT Airplanes
         self.airplanes = []
         for i in range(0, nAirplanes):
-            airplaneID = "airplane" + str(i)
+            airplaneID = "Airplane_" + str(i)
             airplane = AirplaneAgent(
                 agent_name=airplaneID+"@" + Conf().get_openfire_server(),
                 password=Conf().get_openfire_password(),

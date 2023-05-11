@@ -45,4 +45,4 @@ class ReceiveProposalAnswerBehaviour(CyclicBehaviour):
             elif performative == 'reject-proposal':
                 pass
         else:
-            print("Agent {}:".format(str(self.agent.jid)) + "Did not received any message after 10 seconds")
+            print("Agent {}".format(str(self.agent.jid)) + " did not received any message after 10 seconds")

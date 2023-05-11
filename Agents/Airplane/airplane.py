@@ -4,6 +4,7 @@ import datetime
 from GlobalTypes.Types import SpotType, StatusType, Priority
 from .behaviours.InformDashboardInitStateBehaviour import InformDashBoardInitStateBehaviour
 from .behaviours.wantsToLand import WantsToLandBehaviour
+from .behaviours.receiveBehaviour import ReceiveBehaviour
 
 class AirplaneAgent(Agent):
     def __init__(
@@ -46,11 +47,14 @@ class AirplaneAgent(Agent):
     async def setup(self):
         informDashBoardInitStateBehaviour:InformDashBoardInitStateBehaviour = InformDashBoardInitStateBehaviour()
         wantsToLandBehaviour:WantsToLandBehaviour = WantsToLandBehaviour()
+        receiveBehaviour:ReceiveBehaviour = ReceiveBehaviour()
 
         self.add_behaviour(informDashBoardInitStateBehaviour)
         
         # TODO add condition to only automatic airplanes generated add this behaviour in setup
         self.add_behaviour(wantsToLandBehaviour)
+
+        self.add_behaviour(receiveBehaviour)
 
     def getRandomTypeTransport(self):
         randomChoice = random.randint(0,9)

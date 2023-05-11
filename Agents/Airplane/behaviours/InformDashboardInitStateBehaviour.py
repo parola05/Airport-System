@@ -20,7 +20,7 @@ class InformDashBoardInitStateBehaviour(OneShotBehaviour):
         )
 
         body:DashboardAirplaneMessage = DashboardAirplaneMessage(
-            type=DashboardAirplaneMessageType.INFO,
+            type=DashboardAirplaneMessageType.CREATE,
             airplaneInfo=airplaneInfo
         )
             
