@@ -47,10 +47,12 @@ class Station():
     '''
     def isSpotAvailable(self, spotType: SpotType, airlineID: str):
         if spotType == SpotType.MERCHANDISE:
-            if self.spots_merchandise[airlineID]["spotsAvailable"] > 0: return True
+            if airlineID in self.spots_merchandise:
+                if self.spots_merchandise[airlineID]["spotsAvailable"] > 0: return True
             else: return False
         elif spotType == SpotType.COMMERCIAL:
-            if self.spots_commercial[airlineID]["spotsAvailable"] > 0: return True
+            if airlineID in self.spots_commercial:
+                if self.spots_commercial[airlineID]["spotsAvailable"] > 0: return True
             else: return False
         
     '''

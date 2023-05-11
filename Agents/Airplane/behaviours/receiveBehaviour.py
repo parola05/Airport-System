@@ -19,10 +19,10 @@ class ReceiveBehaviour(CyclicBehaviour):
         sendMsg = Message(to="controlTower@" + Conf().get_openfire_server())
 
         if receiveMsg:
-            performative = receiveMsg.get_metadata('performative')
+            performative = receiveMsg.get_metadata("performative")
 
             # Recebe informação de que a fila de espera está cheia ou quase cheia
-            if performative == 'refuse':
+            if performative == "refuse":
                 print("Agent {}".format(str(self.agent.jid)) + "is informed that queue in air is full")
                 self.agent.status = StatusType.TO_ANOTHER_AIRPORT
                 sendMsg.set_metadata("performative", "cancel")
@@ -30,7 +30,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                 await self.send(sendMsg)
 
             # Recebe indicação de que deve esperar (porque não existe gare ou pista disponível)
-            elif performative == 'inform':
+            elif performative == "request":
                 print("Agent {}".format(str(self.agent.jid)) + "is waiting..")
                 requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
                 if requestFromAirplane.typeRequest == RequestType.LAND:
@@ -39,7 +39,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                     self.agent.status = StatusType.WAITING_TAKEOFF
 
             # Recebe informação da gare e da pista selecionadas para a aterragem ou a partida
-            elif performative == 'agree':
+            elif performative == "agree":
                 requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
 
                 if requestFromAirplane.requestType == RequestType.TAKEOFF:

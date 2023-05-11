@@ -36,6 +36,7 @@ class ReceiveBehaviour(CyclicBehaviour):
             sender_name = receiveMsg.sender
             performative = receiveMsg.get_metadata('performative')
 
+            print("sender: "+str(sender_name))
             if performative == 'request':
                 requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
 
@@ -113,11 +114,13 @@ class ReceiveBehaviour(CyclicBehaviour):
                 requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
 
                 airlineID = requestFromAirplane.airlineID
-                self.agent.queueInTheAir[airlineID].append(requestFromAirplane)
+                if airlineID not in self.agent.queueInTheAir:
+                    self.agent.queueInTheAir[airlineID] = [requestFromAirplane]
+                else: self.agent.queueInTheAir[airlineID].append(requestFromAirplane)
 
-                sendMsg = Message(to=requestFromAirplane.id + "@" + Conf().get_openfire_server())
-                sendMsg.set_metadata("performative", "inform")
-                sendMsg.body("Please, wait.")
+                sendMsg = Message(to=str(requestFromAirplane.id) + "@" + Conf().get_openfire_server())
+                sendMsg.set_metadata("performative", "request")
+                sendMsg.body = jsonpickle.encode(requestFromAirplane)
                 await self.send(sendMsg)
                 
                 ############ Update Dashboard ############
