@@ -26,10 +26,12 @@ class DashboardAirlineMessageType:
     UPDATE = 3
 
 class DashboardAirplaneMessageType:
-    INFO = 1
+    CREATE = 1
+    UPDATE = 2
 
 class DashboardRunwayMessageType:
     INFO = 1
+    UPDATE = 2
 
 class DashboardControlTowerMessageType:
     AIRPLANE_REQUEST = 1
@@ -37,6 +39,7 @@ class DashboardControlTowerMessageType:
 
 class DashboardStationMessageType:
     INFO = 1
+    UPDATE = 2
 
 class NegotiationStatus:
     PROPOSE = 1
