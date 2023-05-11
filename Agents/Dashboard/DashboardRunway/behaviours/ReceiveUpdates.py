@@ -27,7 +27,7 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                     labelPosition.grid(row=self.agent.rowIndex, column=1, padx=20, pady=(0, 20),sticky="nsew")
 
                     # add label entry for runway available status
-                    labelAvailable = customtkinter.CTkLabel(master=self.agent.view.runwaysTable, text=str(runway.available))
+                    labelAvailable = customtkinter.CTkLabel(master=self.agent.view.runwaysTable, text=self.agent.view.isAvailable(runway.available))
                     labelAvailable.grid(row=self.agent.rowIndex, column=2, padx=20, pady=(0, 20),sticky="nsew")
                 
                     # update rowIndex for next label
@@ -36,3 +36,6 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                     # keep label of available status to eventually update some value in this label
                     self.agent.view.labels[runway.id] = {}
                     self.agent.view.labels[runway.id]["available"] = labelAvailable
+
+            elif dashboardRunwayMessage.type == DashboardRunwayMessageType.UPDATE:
+                self.agent.view.labels[dashboardRunwayMessage.runwayToUpdate.id]["available"].configure(text=self.agent.view.isAvailable(dashboardRunwayMessage.runwayToUpdate.available))

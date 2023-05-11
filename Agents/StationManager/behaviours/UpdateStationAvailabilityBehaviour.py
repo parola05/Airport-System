@@ -13,6 +13,8 @@ else:
     print("Unsupported operating system")
 
 from MessagesProtocol.IsStationAvailable import IsStationAvailable
+from MessagesProtocol.DashboardStationMessage import DashboardStationMessage, DashboardStationMessageType, StationInfo
+from Conf import Conf
 
 class UpdateStationAvailabilityBehaviour(CyclicBehaviour):
     async def on_start(self):
@@ -25,5 +27,18 @@ class UpdateStationAvailabilityBehaviour(CyclicBehaviour):
             stationInfo:IsStationAvailable = jsonpickle.decode(msg.body)
             self.agent.updateStationSpots(stationInfo.isAvailable, stationInfo.station.id, stationInfo.spotType)
         
+            ############ Update Dashboard ############
+            msg = Message(to="dashboardStation@" + Conf().get_openfire_server())
+            msg.set_metadata("performative", "inform")
+            bodyMessage:DashboardStationMessage = DashboardStationMessage(
+                type=DashboardStationMessageType.UPDATE,
+                stationToUpdate=StationInfo(
+                    id=stationInfo.station.id,
+                    commercial_capacity=stationInfo.station.spots_available_commercial,
+                    merchandise_capacity=stationInfo.station.spots_available_merchandise
+                )
+            )
+            msg.body = jsonpickle.encode(bodyMessage)
+            await self.send(msg)
         else:
             print("Agent {}".format(str(self.agent.jid)) + " did not received any message after 10 seconds")

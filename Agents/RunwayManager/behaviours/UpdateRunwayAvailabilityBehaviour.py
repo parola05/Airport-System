@@ -13,7 +13,7 @@ else:
     print("Unsupported operating system")
 
 from MessagesProtocol.IsRunwayAvailable import IsRunwayAvailable
-from MessagesProtocol.DashboardRunwayMessage import DashboardRunwayMessage, DashboardRunwayMessageType
+from MessagesProtocol.DashboardRunwayMessage import DashboardRunwayMessage, DashboardRunwayMessageType, RunwayInfo
 from Conf import Conf
 
 class UpdateRunwayAvailabilityBehaviour(CyclicBehaviour):
@@ -26,6 +26,20 @@ class UpdateRunwayAvailabilityBehaviour(CyclicBehaviour):
         if msg:
             runwayInfo:IsRunwayAvailable = jsonpickle.decode(msg.body)
             self.agent.updateRunwayAvailability(runwayInfo.isAvailable, runwayInfo.runway.id)
+            
+            ############ Update Dashboard ############
+            msg = Message(to="dashboardRunway@" + Conf().get_openfire_server())
+            msg.set_metadata("performative", "inform")
+            bodyMessage:DashboardRunwayMessage = DashboardRunwayMessage(
+                type=DashboardRunwayMessageType.UPDATE,
+                runwayToUpdate=RunwayInfo(
+                    id=runwayInfo.runway.id,
+                    coord=runwayInfo.runway.coord,
+                    available=runwayInfo.runway.available
+                )
+            )
+            msg.body = jsonpickle.encode(bodyMessage)
+            await self.send(msg)
 
         else:
             print("Agent {}".format(str(self.agent.jid)) + " did not received any message after 10 seconds")

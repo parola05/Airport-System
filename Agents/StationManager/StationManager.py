@@ -201,11 +201,11 @@ class StationManagerAgent(Agent):
     def updateStationSpots(self,isAvailable,stationID,spotType):
         if isAvailable:
             if spotType == SpotType.COMMERCIAL:
-                self.stations[stationID].spots_commercial += 1
+                self.stations[stationID].spots_available_commercial += 1
             else:
-                self.stations[stationID].spots_merchandise += 1
+                self.stations[stationID].spots_available_merchandise += 1
         else:
             if spotType == SpotType.COMMERCIAL:
-                self.stations[stationID].spots_commercial -= 1
+                self.stations[stationID].spots_available_commercial -= 1
             else:
-                self.stations[stationID].spots_merchandise -= 1
+                self.stations[stationID].spots_available_merchandise -= 1
