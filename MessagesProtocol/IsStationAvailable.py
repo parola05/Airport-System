@@ -1,7 +1,7 @@
 from GlobalTypes.Types import SpotType
 
 class IsStationAvailable():
-    def __init__(self, isAvailable: bool, stationInfo, spotType:SpotType) -> None:
+    def __init__(self, isAvailable: bool, stationInfo, airline:str, spotType:SpotType) -> None:
         '''
             isAvailable: ficou livre (true) ou ocupado (false)
             stationInfo: informações sobre a gare em questão
@@ -9,4 +9,5 @@ class IsStationAvailable():
         '''
         self.isAvailable: bool = isAvailable
         self.station = stationInfo # objeto Station
+        self.airline = airline
         self.spotType:SpotType = spotType

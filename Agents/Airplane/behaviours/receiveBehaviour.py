@@ -30,7 +30,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                 await self.send(sendMsg)
 
             # Recebe indicação de que deve esperar (porque não existe gare ou pista disponível)
-            elif performative == "request":
+            elif performative == "inform":
                 print("Agent {}".format(str(self.agent.jid)) + " is waiting..")
                 requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
                 if requestFromAirplane.typeRequest == RequestType.LAND:
@@ -59,13 +59,15 @@ class ReceiveBehaviour(CyclicBehaviour):
                     await self.send(sendMsg)
 
                 else:
+                    self.agent.stationPark = requestFromAirplane.station
+                    
                     self.agent.status = StatusType.LANDING
                     requestFromAirplane.status = self.agent.status
                     sendMsg.set_metadata("performative", "inform")
                     sendMsg.body = jsonpickle.encode(requestFromAirplane)
                     await self.send(sendMsg)
 
-                    time.sleep(10)
+                    time.sleep(15)
 
                     self.agent.status = StatusType.IN_STATION
                     requestFromAirplane.status = self.agent.status
@@ -87,7 +89,7 @@ class ReceiveBehaviour(CyclicBehaviour):
             airplaneInfo=AirplaneInfo(
                 id=self.agent.airplaneID,
                 status=self.agent.status,
-                airlineID=self.agent.airline
+                airlineID=self.agent.airline,
             )
         )
         msg.body = jsonpickle.encode(bodyMessage)

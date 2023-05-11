@@ -41,8 +41,10 @@ class AirplanesComponentView(customtkinter.CTkFrame):
         labelID.grid(row=0, column=0, padx=10, pady=(0, 10))
         # labelTakeOff = customtkinter.CTkLabel(master=self.airplanesTable, text="Action", font=("Helvetica", 12, "bold"))
         # labelTakeOff.grid(row=0, column=1, padx=10, pady=(0, 10))
+        labelID = customtkinter.CTkLabel(master=self.airplanesTable, text="Type", font=("Helvetica", 12, "bold"))
+        labelID.grid(row=0, column=1, padx=10, pady=(0, 10))
         labelTakeOff = customtkinter.CTkLabel(master=self.airplanesTable, text="Status", font=("Helvetica", 12, "bold"))
-        labelTakeOff.grid(row=0, column=1, padx=10, pady=(0, 10))
+        labelTakeOff.grid(row=0, column=2, padx=10, pady=(0, 10))
 
         createStationButton = customtkinter.CTkButton(self, text="Create Airplane", command=self.openCreateAirplanesForm)
         createStationButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
@@ -62,6 +64,12 @@ class AirplanesComponentView(customtkinter.CTkFrame):
             return "Going to another airport"
         elif statusType == 7:
             return "Taking Off"
+        
+    def airplaneType(self,spotType):
+        if spotType == 1:
+            return "Merchandise"
+        elif spotType == 2:
+            return "Commercial"
         
     def requestToTakeOff(self, airplaneID):
         print(f"Airplane {airplaneID} has request to take off")

@@ -30,7 +30,7 @@ class WantsToLandBehaviour(OneShotBehaviour):
             status=self.agent.status,
             airlineID=self.agent.airline,
             requestTime=datetime.now(), 
-            priority=self.agent.priority,
+            priority=self.agent.priority
         )
         msg.body = jsonpickle.encode(requestToLand)
         await self.send(msg)
@@ -43,7 +43,7 @@ class WantsToLandBehaviour(OneShotBehaviour):
             airplaneInfo=AirplaneInfo(
                 id=self.agent.airplaneID,
                 status=self.agent.status,
-                airlineID=self.agent.airline
+                airlineID=self.agent.airline,
             )
         )
         msg.body = jsonpickle.encode(bodyMessage)

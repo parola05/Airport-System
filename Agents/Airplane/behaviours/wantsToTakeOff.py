@@ -32,6 +32,7 @@ class WantsToTakeOffBehaviour(OneShotBehaviour):
             airlineID=self.agent.airline,
             requestTime=datetime.now(), 
             priority=self.agent.priority,
+            station=self.agent.station
         )
         msg.body = jsonpickle.encode(requestToTakeOff)
         await self.send(msg)

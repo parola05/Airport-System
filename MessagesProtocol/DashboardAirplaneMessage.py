@@ -1,10 +1,11 @@
-from GlobalTypes.Types import DashboardAirplaneMessageType, StatusType
+from GlobalTypes.Types import DashboardAirplaneMessageType, StatusType, SpotType
 
 class AirplaneInfo():
-    def __init__(self,id,status:StatusType,airlineID:str) -> None:
+    def __init__(self,id,status:StatusType,airlineID:str,typeTransport:SpotType=None) -> None:
         self.id = id 
         self.status = status
         self.airlineID = airlineID
+        self.typeTransport = typeTransport
 
 class DashboardAirplaneMessage():
     def __init__(

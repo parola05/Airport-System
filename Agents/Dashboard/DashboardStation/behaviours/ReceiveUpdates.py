@@ -23,6 +23,10 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                     labelMerchandiseSpots = customtkinter.CTkLabel(master=self.agent.view.stationsTable, text=str(station.commercial_capacity))
                     labelMerchandiseSpots.grid(row=rowIndex+1, column=2, padx=7, pady=(0, 20))
 
+                    self.agent.view.labels[station.id] = {}
+                    self.agent.view.labels[station.id]["Commercial Capacity"] = labelCommercialSpots
+                    self.agent.view.labels[station.id]["Merchandise Capacity"] = labelMerchandiseSpots
+
             elif dashboardStationMessage.type == DashboardStationMessageType.UPDATE:
                 self.agent.view.labels[dashboardStationMessage.stationToUpdate.id]["Commercial Capacity"].configure(text=str(dashboardStationMessage.stationToUpdate.commercial_capacity))
                 self.agent.view.labels[dashboardStationMessage.stationToUpdate.id]["Merchandise Capacity"].configure(text=str(dashboardStationMessage.stationToUpdate.merchandise_capacity))

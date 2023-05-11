@@ -36,7 +36,6 @@ class ReceiveBehaviour(CyclicBehaviour):
             sender_name = receiveMsg.sender
             performative = receiveMsg.get_metadata('performative')
 
-            print("sender: "+str(sender_name))
             if performative == 'request':
                 requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
 
@@ -119,7 +118,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                 else: self.agent.queueInTheAir[airlineID].append(requestFromAirplane)
 
                 sendMsg = Message(to=str(requestFromAirplane.id) + "@" + Conf().get_openfire_server())
-                sendMsg.set_metadata("performative", "request")
+                sendMsg.set_metadata("performative", "inform")
                 sendMsg.body = jsonpickle.encode(requestFromAirplane)
                 await self.send(sendMsg)
                 
@@ -166,6 +165,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                         stationAvailabilityInfo = IsStationAvailable(
                                                     isAvailable=False,
                                                     stationInfo=closestStation,
+                                                    airline=requestFromAirplane.airlineID,
                                                     spotType=self.agent.requestsInProcess[airplane_addr].spotType
                                                   )
                         sendMsg.body = jsonpickle.encode(stationAvailabilityInfo)
@@ -208,7 +208,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                 elif requestFromAirplane.status == StatusType.IN_STATION:
                     informStatus = StatusType.LANDING
                     requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is parked in station " + str(requestFromAirplane.station.coord)
-                    
+
                     sendMsg = Message(to="runway@" + Conf().get_openfire_server())
                     sendMsg.set_metadata("performative", "inform-ref")
                     runwayAvailabilityInfo = IsRunwayAvailable(
@@ -222,17 +222,15 @@ class ReceiveBehaviour(CyclicBehaviour):
                 elif requestFromAirplane.status == StatusType.TAKING_OFF:
                     informStatus = StatusType.TAKING_OFF
                     requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is taking off in runway " + str(requestFromAirplane.runway.coord)
-                    """
                     sendMsg = Message(to="station@" + Conf().get_openfire_server())
-                        sendMsg.set_metadata("performative", "inform-ref")
-                        stationAvailabilityInfo = IsStationAvailable(
-                                                    isAvailable=True,
-                                                    stationInfo=??????????????,
-                                                    spotType=requestFromAirplane.spotType
-                                                  )
-                        sendMsg.body = jsonpickle.encode(stationAvailabilityInfo)
-                        await self.send(sendMsg)
-                    """
+                    sendMsg.set_metadata("performative", "inform-ref")
+                    stationAvailabilityInfo = IsStationAvailable(
+                                                isAvailable=True,
+                                                stationInfo=requestFromAirplane.station,
+                                                spotType=requestFromAirplane.spotType
+                                            )
+                    sendMsg.body = jsonpickle.encode(stationAvailabilityInfo)
+                    await self.send(sendMsg)
 
                 # a pista fica livre
                 elif requestFromAirplane.status == StatusType.FLYING:

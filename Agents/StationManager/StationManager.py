@@ -20,7 +20,7 @@ from .behaviours.UpdateStationAvailabilityBehaviour import UpdateStationAvailabi
 import datetime
 
 class Station():
-    def __init__(self, id: str, coord: Coord, merchandise_spots: int, commercial_spots: int) -> None:
+    def __init__(self, id: str, coord: Coord, merchandise_spots: int, commercial_spots: int, commercial_capacity: int, merchandise_capacity: int) -> None:
         '''
             id: Station unique identifier
             coord: Station Location
@@ -35,6 +35,8 @@ class Station():
         self.spots_available_commercial: int = commercial_spots
         self.spots_merchandise: Dict[str, Dict[str,int]] = {}
         self.spots_commercial: Dict[str, Dict[str,int]] = {}
+        self.commercial_capacity: int = commercial_capacity
+        self.merchandise_capacity: int = merchandise_capacity
 
     '''
         Description: 
@@ -66,11 +68,11 @@ class Station():
         if spotType == SpotType.MERCHANDISE:
             for airline in self.spots_merchandise.values():
                 cont += airline["spotsBuy"]
-            return self.spots_available_merchandise - cont
+            return self.merchandise_capacity - cont
         elif spotType == SpotType.COMMERCIAL:
             for airline in self.spots_commercial.values():
                 cont += airline["spotsBuy"]
-            return self.spots_available_commercial - cont
+            return self.commercial_capacity - cont
 
     '''
         Description: 
@@ -131,7 +133,9 @@ class StationManagerAgent(Agent):
                     id = 'Station_' + str(i),
                     coord = Coord(),
                     merchandise_spots = nMerchandiseSpotsPerStation, 
-                    commercial_spots = nCommercialSpotsPerStation 
+                    commercial_spots = nCommercialSpotsPerStation,
+                    merchandise_capacity = nMerchandiseSpotsPerStation,
+                    commercial_capacity = nCommercialSpotsPerStation
                 ))
         self.airlinesProposals = []
         
@@ -196,16 +200,21 @@ class StationManagerAgent(Agent):
         Params: 
             - isAvailable: spot available (true) or occupied (false)
             - stationID: identification of the station
+            - airlineID: airline to whom the spot belongs to
             - spotType: spot type (merchandise or commercial)
     '''      
-    def updateStationSpots(self,isAvailable,stationID,spotType):
+    def updateStationSpots(self,isAvailable,stationID,airlineID,spotType):
         if isAvailable:
             if spotType == SpotType.COMMERCIAL:
                 self.stations[stationID].spots_available_commercial += 1
+                self.stations[stationID].spots_commercial[airlineID]["spotsAvailable"] += 1
             else:
                 self.stations[stationID].spots_available_merchandise += 1
+                self.stations[stationID].spots_merchandise[airlineID]["spotsAvailable"] += 1
         else:
             if spotType == SpotType.COMMERCIAL:
                 self.stations[stationID].spots_available_commercial -= 1
+                self.stations[stationID].spots_commercial[airlineID]["spotsAvailable"] -= 1
             else:
                 self.stations[stationID].spots_available_merchandise -= 1
+                self.stations[stationID].spots_merchandise[airlineID]["spotsAvailable"] -= 1

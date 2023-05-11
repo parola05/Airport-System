@@ -17,7 +17,8 @@ class AirplaneAgent(Agent):
             origin=None, 
             destination=None, 
             date=None, 
-            priority=None, 
+            priority=None,
+            stationPark=None, # objeto Station
             status:StatusType=StatusType.FLYING):
         super().__init__(agent_name,password)
         

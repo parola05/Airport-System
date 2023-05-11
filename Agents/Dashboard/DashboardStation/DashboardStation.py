@@ -44,7 +44,7 @@ class StationComponentView(customtkinter.CTkFrame):
         labelMerchandiseSpots = customtkinter.CTkLabel(master=self.stationsTable, text="Merchandise Capacity", font=("Helvetica", 12, "bold"))
         labelMerchandiseSpots.grid(row=0, column=2, padx=10, pady=(0, 20))
 
-        self.labelDict = {}
+        self.labels = {}
 
         # Create the n rows
         for rowIndex,station in enumerate(stations):

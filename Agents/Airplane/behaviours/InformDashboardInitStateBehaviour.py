@@ -16,7 +16,8 @@ class InformDashBoardInitStateBehaviour(OneShotBehaviour):
         airplaneInfo:AirplaneInfo = AirplaneInfo(
             id=self.agent.airplaneID,
             status=self.agent.status,
-            airlineID=self.agent.airline
+            airlineID=self.agent.airline,
+            typeTransport=self.agent.typeTransport
         )
 
         body:DashboardAirplaneMessage = DashboardAirplaneMessage(

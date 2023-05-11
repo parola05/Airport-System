@@ -25,7 +25,7 @@ class UpdateStationAvailabilityBehaviour(CyclicBehaviour):
 
         if msg:
             stationInfo:IsStationAvailable = jsonpickle.decode(msg.body)
-            self.agent.updateStationSpots(stationInfo.isAvailable, stationInfo.station.id, stationInfo.spotType)
+            self.agent.updateStationSpots(stationInfo.isAvailable, stationInfo.station.id, stationInfo.airline, stationInfo.spotType)
         
             ############ Update Dashboard ############
             msg = Message(to="dashboardStation@" + Conf().get_openfire_server())

@@ -24,7 +24,7 @@ class ReceiveSpotQueryBehaviour(CyclicBehaviour):
 
         if msg:
             requestFromAirplane:RequestFromAirplane = jsonpickle.decode(msg.body)
-            stationsAvailable:List[str] = self.agent.getStationsAvailable(requestFromAirplane.spotType, requestFromAirplane.airlineID)
+            stationsAvailable = self.agent.getStationsAvailable(requestFromAirplane.spotType, requestFromAirplane.airlineID)
             
             if len(stationsAvailable) != 0:
                 replyMsg = Message(to="controlTower@" + Conf().get_openfire_server())

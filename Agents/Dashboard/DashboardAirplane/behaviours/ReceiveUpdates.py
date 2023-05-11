@@ -36,8 +36,12 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                 """
 
                 # add label entry for airplane STATUS
-                labelStatus = customtkinter.CTkLabel(master=self.agent.view.airplanesTable, text=self.agent.view.airplaneStatus(dashboardAirplane.airplaneInfo.status))
+                labelStatus = customtkinter.CTkLabel(master=self.agent.view.airplanesTable, text=self.agent.view.airplaneType(dashboardAirplane.airplaneInfo.typeTransport))
                 labelStatus.grid(row=self.agent.rowIndex, column=1, padx=10, pady=(0,10), sticky="ew")
+                
+                # add label entry for airplane STATUS
+                labelStatus = customtkinter.CTkLabel(master=self.agent.view.airplanesTable, text=self.agent.view.airplaneStatus(dashboardAirplane.airplaneInfo.status))
+                labelStatus.grid(row=self.agent.rowIndex, column=2, padx=10, pady=(0,10), sticky="ew")
                 
                 # update rowIndex for next label
                 self.agent.rowIndex += 1
