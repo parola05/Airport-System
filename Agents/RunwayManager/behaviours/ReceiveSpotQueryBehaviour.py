@@ -32,6 +32,7 @@ class ReceiveSpotQueryBehaviour(CyclicBehaviour):
                 replyMsg = Message(to="controlTower@" + Conf().get_openfire_server())
                 replyMsg.set_metadata("performative","refuse")
                 replyMsg.body = jsonpickle.encode(requestFromAirplane)
+                print("refuse!")
                 await self.send(replyMsg)
         else:
             print("Agent {} ".format(str(self.agent.jid)) + " did not received any message after 10 seconds")

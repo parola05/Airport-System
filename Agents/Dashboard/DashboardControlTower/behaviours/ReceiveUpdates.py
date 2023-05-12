@@ -27,7 +27,7 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                 elif dashboardControlTowerMessage.informStatus == StatusType.TAKING_OFF or dashboardControlTowerMessage.informStatus == StatusType.FLYING:
                     tag = "tag1"
                 elif dashboardControlTowerMessage.informStatus == StatusType.LANDING or dashboardControlTowerMessage.informStatus == StatusType.IN_STATION:
-                    tag = "tag5"
+                    tag = "tag1"
                     
                 self.agent.view.tab_1.textbox.insert("end", "> " + dashboardControlTowerMessage.requestText + "\n",tag)
                 self.agent.tab_1_line += 1

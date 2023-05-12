@@ -32,7 +32,7 @@ class ReceiveBehaviour(CyclicBehaviour):
 
             # Recebe indicação de que deve esperar (porque não existe gare ou pista disponível)
             elif performative == "inform":
-                print("Agent {}".format(str(self.agent.jid)) + " is waiting..")
+                # print("Agent {}".format(str(self.agent.jid)) + " is waiting..")
                 requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
                 if requestFromAirplane.typeRequest == RequestType.LAND:
                     self.agent.status = StatusType.WAITING_LAND
@@ -51,6 +51,20 @@ class ReceiveBehaviour(CyclicBehaviour):
                     sendMsg.body = jsonpickle.encode(requestFromAirplane)
                     await self.send(sendMsg)
 
+                    ############ Update Dashboard with TAKING OFF STATE############
+                    msg = Message(to="dashboardAirplane@" + Conf().get_openfire_server())
+                    msg.set_metadata("performative", "inform")
+                    bodyMessage:DashboardAirplaneMessage = DashboardAirplaneMessage(
+                        type=DashboardAirplaneMessageType.UPDATE,
+                        airplaneInfo=AirplaneInfo(
+                            id=self.agent.airplaneID,
+                            status=self.agent.status,
+                            airlineID=self.agent.airline,
+                        )
+                    )
+                    msg.body = jsonpickle.encode(bodyMessage)
+                    await self.send(msg)
+
                     await asyncio.sleep(15)
 
                     self.agent.status = StatusType.FLYING
@@ -66,6 +80,20 @@ class ReceiveBehaviour(CyclicBehaviour):
                     sendMsg.set_metadata("performative", "inform")
                     sendMsg.body = jsonpickle.encode(requestFromAirplane)
                     await self.send(sendMsg)
+
+                    ############ Update Dashboard WITH LANDING STATE ############
+                    msg = Message(to="dashboardAirplane@" + Conf().get_openfire_server())
+                    msg.set_metadata("performative", "inform")
+                    bodyMessage:DashboardAirplaneMessage = DashboardAirplaneMessage(
+                        type=DashboardAirplaneMessageType.UPDATE,
+                        airplaneInfo=AirplaneInfo(
+                            id=self.agent.airplaneID,
+                            status=self.agent.status,
+                            airlineID=self.agent.airline,
+                        )
+                    )
+                    msg.body = jsonpickle.encode(bodyMessage)
+                    await self.send(msg)
 
                     await asyncio.sleep(15)
                     

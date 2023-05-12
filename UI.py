@@ -39,29 +39,50 @@ class MainView(customtkinter.CTk):
         self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
 
-        self.sidebar_frame.grid_rowconfigure(4, weight=1)
+        self.sidebar_frame.grid_rowconfigure((0,1,3,4,5), weight=1)
+        self.sidebar_frame.grid_rowconfigure((2,), weight=2)
         
         self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="Simulation", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-        self.sidebar_automatic = customtkinter.CTkButton(self.sidebar_frame, command=self.openConfigureSimulation)
+        self.buttonsFrame = customtkinter.CTkFrame(self.sidebar_frame, width=120, corner_radius=0,fg_color="transparent")
+        self.buttonsFrame.grid(row=1, column=0, padx=20, pady=10)
+        self.sidebar_automatic = customtkinter.CTkButton(self.buttonsFrame, command=self.openConfigureSimulation)
         self.sidebar_automatic.grid(row=1, column=0, padx=20, pady=10)
         self.sidebar_automatic.configure(text="Configure Simulation")
 
-        self.sidebar_automatic = customtkinter.CTkButton(self.sidebar_frame, command=self.simulate)
+        self.sidebar_automatic = customtkinter.CTkButton(self.buttonsFrame, command=self.simulate)
         self.sidebar_automatic.grid(row=2, column=0, padx=20, pady=10)
         self.sidebar_automatic.configure(text="Start Simulation")
 
-        self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
-        self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
-        self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark", "System"],
+        '''
+        self.conf_valuesFrame = customtkinter.CTkFrame(self.sidebar_frame, width=120, corner_radius=0)
+        self.conf_valuesFrame.grid(row=3, column=0, padx=20, pady=10)
+        self.nAirplanesToLandValue = customtkinter.CTkLabel(self.conf_valuesFrame, text="Nº Airplanes to land:")
+        self.nAirplanesToLandValue.grid(row=0, column=0, padx=20, pady=(10, 0))
+        self.nAirplanesToTakeOffValue = customtkinter.CTkLabel(self.conf_valuesFrame, text="Nº Airplanes to take-off:")
+        self.nAirplanesToTakeOffValue.grid(row=1, column=0, padx=20, pady=(10, 0))
+        self.nCirculationTimeValue = customtkinter.CTkLabel(self.conf_valuesFrame, text="Circulation Time in Runway:")
+        self.nCirculationTimeValue.grid(row=2, column=0, padx=20, pady=(10, 0))
+        self.nRunwaysValue = customtkinter.CTkLabel(self.conf_valuesFrame, text="Nº Runways:")
+        self.nRunwaysValue.grid(row=3, column=0, padx=20, pady=(10, 0))
+        '''
+        
+        self.appearanceFrame = customtkinter.CTkFrame(self.sidebar_frame, width=120, corner_radius=0,fg_color="transparent")
+        self.appearanceFrame.grid(row=4, column=0, padx=20, pady=10)
+        self.appearance_mode_label = customtkinter.CTkLabel(self.appearanceFrame, text="Appearance Mode:", anchor="w")
+        self.appearance_mode_label.grid(row=0, column=0, padx=20, pady=(10, 0))
+        self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.appearanceFrame, values=["Light", "Dark", "System"],
                                                                        command=self.change_appearance_mode_event)
-        self.appearance_mode_optionemenu.grid(row=7, column=0, padx=20, pady=(10, 10))
-        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
-        self.scaling_label.grid(row=8, column=0, padx=20, pady=(10, 0))
-        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["80%", "90%", "100%", "110%", "120%"],
+        self.appearance_mode_optionemenu.grid(row=1, column=0, padx=20, pady=(10, 10))
+
+        self.scaleFrame = customtkinter.CTkFrame(self.sidebar_frame, width=120, corner_radius=0,fg_color="transparent")
+        self.scaleFrame.grid(row=5, column=0, padx=20, pady=10)
+        self.scaling_label = customtkinter.CTkLabel(self.scaleFrame, text="UI Scaling:", anchor="w")
+        self.scaling_label.grid(row=0, column=0, padx=20, pady=(10, 0))
+        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.scaleFrame, values=["80%", "90%", "100%", "110%", "120%"],
                                                                command=self.change_scaling_event)
-        self.scaling_optionemenu.grid(row=9, column=0, padx=20, pady=(10, 20))
+        self.scaling_optionemenu.grid(row=1, column=0, padx=20, pady=(10, 20))
 
         # create main entry and button
         self.entry = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
