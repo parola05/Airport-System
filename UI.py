@@ -78,28 +78,32 @@ class MainView(customtkinter.CTk):
         # Airlines Component
         self.dashboardAirline = DashboardAirline("dashboardAirline@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
         self.dashboardAirline.view.grid(row=0, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
-        self.dashboardAirline.start()
+        future2 = self.dashboardAirline.start()
+        future2.result()
 
         # Airplanes Component
         self.dashboardAirplane = DashboardAirplane("dashboardAirplane@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
         self.dashboardAirplane.view.grid(row=2, column=1, padx=20, pady=(20, 0), sticky="nsew")
         self.dashboardAirplane.view.grid_columnconfigure(0, weight=1)
         self.dashboardAirplane.view.grid_rowconfigure(1, weight=1)
-        self.dashboardAirplane.start()
+        future3 = self.dashboardAirplane.start()
+        future3.result()
 
         # Runway Component
         self.dashboardRunway = DashboardRunway("dashboardRunway@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
         self.dashboardRunway.view.grid(row=2, column=2, padx=20, pady=(20, 0), sticky="nsew")
         self.dashboardRunway.view.grid_columnconfigure(0, weight=1)
         self.dashboardRunway.view.grid_rowconfigure(1, weight=1)
-        self.dashboardRunway.start()
+        future4 = self.dashboardRunway.start()
+        future4.result()
 
         # Control Tower Component
         self.controlTower = DashboardControlTower("dashboardControlTower@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)
         self.controlTower.view.grid(row=0, column=1, padx=20, pady=(20, 0), sticky="nsew", columnspan=2)
         self.controlTower.view.grid_columnconfigure(0, weight=1)
         self.controlTower.view.grid_rowconfigure(1, weight=1)
-        self.controlTower.start()
+        future5 = self.controlTower.start()
+        future5.result()
 
         # set default values
         self.appearance_mode_optionemenu.set("Dark")

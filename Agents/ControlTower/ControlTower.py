@@ -17,20 +17,24 @@ from .behaviours.ReceiveBehaviour import ReceiveBehaviour
 class ControlTower(Agent):
     def __init__(self,agent_name,password,queueInTheAirMaxSize=30):
         super().__init__(agent_name,password)
-        self.queueInTheAir: Dict[str:List[RequestFromAirplane]] = {}
-        self.requestsInProcess: Dict[str:RequestFromAirplane] = {}  # sender_name : RequestFromAirplane
+        self.queueInTheAir: Dict[str:List[RequestFromAirplane]] = {} # AirlineID : List[RequestFromAirplane]
+        self.requestsInProcess: Dict[str:RequestFromAirplane] = {}  # AirplaneID : RequestFromAirplane
         self.queueInTheAirMaxSize = queueInTheAirMaxSize
 
     async def setup(self): 
         receiveBehaviour:ReceiveBehaviour = ReceiveBehaviour()
         self.add_behaviour(receiveBehaviour)
 
-    def removeAirplaneFromQueue(self,airline,airplaneID):
-        for request in self.queueInTheAir[airline]:
+    def removeAirplaneFromQueue(self,airlineID,airplaneID):
+        indexToRemove = 0
+        index = 0
+        for request in self.queueInTheAir[airlineID]:
             if request.id == airplaneID:
-                del self.queueInTheAir[airline][request]
+                indexToRemove = index
+            index += 1
+        del self.queueInTheAir[airlineID][indexToRemove]
     
-    def closestStationToRunway(runwayCoord:Coord, stations):
+    def closestStationToRunway(self,runwayCoord:Coord, stations):
         runwayCoordTuple = (runwayCoord.x, runwayCoord.y)
         firstStationCoord = (stations[0].coord.x, stations[0].coord.y)
         minDistance = dist(firstStationCoord, runwayCoordTuple)
@@ -41,5 +45,3 @@ class ControlTower(Agent):
             if distance < minDistance:
                 minStation = st
         return minStation # objeto Station
-
-

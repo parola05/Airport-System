@@ -52,6 +52,12 @@ class RunwayComponentView(customtkinter.CTkFrame):
         else:
             self.toplevel_window.focus()  
 
+    def isAvailable(self,isAvailable):
+        if isAvailable:
+            return "Yes"
+        else:
+            return "No"
+
 class CreateRunwayFormView(customtkinter.CTkToplevel):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)

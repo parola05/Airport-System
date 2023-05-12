@@ -1,6 +1,7 @@
 from spade.behaviour import PeriodicBehaviour
 from spade.message import Message
 from MessagesProtocol.DashboardAirlinesMessage import DashboardAirlinesMessage
+from MessagesProtocol.NewSpotsAvailable import NewSpotsAvailable
 from GlobalTypes.Types import DashboardAirlineMessageType, NegotiationStatus
 import jsonpickle
 from Conf import Conf
@@ -43,6 +44,17 @@ class EvaluateAirlinesProposalsBehaviour(PeriodicBehaviour):
                     type=DashboardAirlineMessageType.NEGOTIATION,
                     negotiationStatus=NegotiationStatus.SUCCESS,
                     negotiationText="Accepted proposal by " + proposal["proposal"].airlineID
+                )
+                msg.body = jsonpickle.encode(bodyMessage)
+                await self.send(msg)
+
+                # Inform Control Tower that airline has more spots
+                msg = Message("controlTower@" + Conf().get_openfire_server())
+                msg.set_metadata("performative","inform-if")
+                bodyMessage:NewSpotsAvailable = NewSpotsAvailable(
+                    airline=proposal["proposal"].airlineID,
+                    spotType=proposal["proposal"].spotType,
+                    nSpots=proposal["proposal"].n_spots
                 )
                 msg.body = jsonpickle.encode(bodyMessage)
                 await self.send(msg)

@@ -22,18 +22,16 @@ class ReceiveSpotQueryBehaviour(CyclicBehaviour):
 
         if msg:
             requestFromAirplane:RequestFromAirplane = jsonpickle.decode(msg.body)
-            runwaysAvailable:List[str] = self.agent.getRunwaysAvailable()
+            runwaysAvailable = self.agent.getRunwaysAvailable()
             if len(runwaysAvailable) != 0:
                 replyMsg = Message(to="controlTower@" + Conf().get_openfire_server())
                 replyMsg.set_metadata("performative","confirm")
                 replyMsg.body = jsonpickle.encode((requestFromAirplane.id, runwaysAvailable))
-                self.send(replyMsg)
-                print("Existem pistas disponíveis!")
+                await self.send(replyMsg)
             else:
                 replyMsg = Message(to="controlTower@" + Conf().get_openfire_server())
                 replyMsg.set_metadata("performative","refuse")
                 replyMsg.body = jsonpickle.encode(requestFromAirplane)
-                self.send(replyMsg)
-                print("Não existem pistas disponíveis!")
+                await self.send(replyMsg)
         else:
             print("Agent {} ".format(str(self.agent.jid)) + " did not received any message after 10 seconds")

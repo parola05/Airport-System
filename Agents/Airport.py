@@ -18,12 +18,12 @@ class Airport():
     
     def __init__ (
             self,
-            nStations = 3, 
-            nMerchandiseSpotsPerStation = 10, 
-            nCommercialSpotsPerStation = 10,
-            nAirlines = 5,
+            nStations = 4, 
+            nMerchandiseSpotsPerStation = 20, 
+            nCommercialSpotsPerStation = 20,
+            nAirlines = 4,
             nRunways = 5,
-            nAirplanes = 10,
+            nAirplanes = 15,
             queueInTheAirMaxSize = 30,
         ) -> None:
 
@@ -84,10 +84,10 @@ class Airport():
         )
 
     def simulate(self):
-        future2 = self.controlTower.start()
-        future2.result()
-        future = self.stationManager.start()
+        future = self.controlTower.start()
         future.result()
+        future2 = self.stationManager.start()
+        future2.result()
         for airline in self.airlines:
             airline.start()
         for airplane in self.airplanes:

@@ -32,7 +32,7 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                 self.agent.view.tab_1.textbox.insert(str(self.agent.tab_1_line) + ".0", "> " + dashboardControlTowerMessage.requestText + "\n",tag)
                 self.agent.tab_1_line += 1
 
-            else:
+            elif dashboardControlTowerMessage.type == DashboardControlTowerMessageType.AIRPLANE_IN_QUEUE:
                 if dashboardControlTowerMessage.requestType == RequestType.LAND:
                     tag = "tag2"
                 elif dashboardControlTowerMessage.requestType == RequestType.TAKEOFF:
@@ -40,3 +40,8 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                 
                 self.agent.view.tab_2.textbox.insert(str(self.agent.tab_2_line) + ".0", "> " + dashboardControlTowerMessage.requestText + "\n",tag)
                 self.agent.tab_2_line += 1
+
+            elif dashboardControlTowerMessage.type == DashboardControlTowerMessageType.PERMISSION_DENIED:
+                tag = "tag3"
+                self.agent.view.tab_1.textbox.insert(str(self.agent.tab_1_line) + ".0", "> " + dashboardControlTowerMessage.permissionText + "\n",tag)
+                self.agent.tab_1_line += 1

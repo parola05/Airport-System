@@ -35,7 +35,7 @@ class UpdateRunwayAvailabilityBehaviour(CyclicBehaviour):
                 runwayToUpdate=RunwayInfo(
                     id=runwayInfo.runway.id,
                     coord=runwayInfo.runway.coord,
-                    available=runwayInfo.runway.available
+                    available=runwayInfo.isAvailable
                 )
             )
             msg.body = jsonpickle.encode(bodyMessage)

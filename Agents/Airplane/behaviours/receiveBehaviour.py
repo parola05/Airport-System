@@ -6,6 +6,7 @@ from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
 from MessagesProtocol.DashboardAirplaneMessage import DashboardAirplaneMessage, AirplaneInfo
 from GlobalTypes.Types import DashboardAirplaneMessageType
 from Conf import Conf
+import asyncio
 
 class ReceiveBehaviour(CyclicBehaviour):
 
@@ -42,7 +43,7 @@ class ReceiveBehaviour(CyclicBehaviour):
             elif performative == "agree":
                 requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
 
-                if requestFromAirplane.requestType == RequestType.TAKEOFF:
+                if requestFromAirplane.typeRequest == RequestType.TAKEOFF:
 
                     self.agent.status = StatusType.TAKING_OFF
                     requestFromAirplane.status = self.agent.status
@@ -50,7 +51,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                     sendMsg.body = jsonpickle.encode(requestFromAirplane)
                     await self.send(sendMsg)
 
-                    time.sleep(15)
+                    await asyncio.sleep(15)
 
                     self.agent.status = StatusType.FLYING
                     requestFromAirplane.status = self.agent.status
@@ -60,21 +61,20 @@ class ReceiveBehaviour(CyclicBehaviour):
 
                 else:
                     self.agent.stationPark = requestFromAirplane.station
-                    
                     self.agent.status = StatusType.LANDING
                     requestFromAirplane.status = self.agent.status
                     sendMsg.set_metadata("performative", "inform")
                     sendMsg.body = jsonpickle.encode(requestFromAirplane)
                     await self.send(sendMsg)
 
-                    time.sleep(15)
-
+                    await asyncio.sleep(15)
+                    
                     self.agent.status = StatusType.IN_STATION
                     requestFromAirplane.status = self.agent.status
                     sendMsg.set_metadata("performative", "inform")
                     sendMsg.body = jsonpickle.encode(requestFromAirplane)
                     await self.send(sendMsg)
-
+                    
         else:
             print("Agent {}".format(str(self.agent.jid)) + " did not receive any message after 1 minute")
             self.agent.status = StatusType.TO_ANOTHER_AIRPORT
