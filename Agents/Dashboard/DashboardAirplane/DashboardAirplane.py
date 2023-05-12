@@ -46,8 +46,8 @@ class AirplanesComponentView(customtkinter.CTkFrame):
         labelTakeOff = customtkinter.CTkLabel(master=self.airplanesTable, text="Status", font=("Helvetica", 12, "bold"))
         labelTakeOff.grid(row=0, column=2, padx=10, pady=(0, 10))
 
-        createStationButton = customtkinter.CTkButton(self, text="Create Airplane", command=self.openCreateAirplanesForm)
-        createStationButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
+        #createStationButton = customtkinter.CTkButton(self, text="Create Airplane", command=self.openCreateAirplanesForm)
+        #createStationButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
 
     def airplaneStatus(self,statusType):
         if statusType == 1:

@@ -15,7 +15,7 @@ from Conf import Conf
 
 class ReceiveSpotQueryBehaviour(CyclicBehaviour):
     async def on_start(self):
-        print("[RunwayManager] Starting Receive Spot Query Behaviour")
+        print("[RunwayManager] Starting ReceiveSpotQueryBehaviour")
 
     async def run(self):
         msg = await self.receive(timeout=100) 

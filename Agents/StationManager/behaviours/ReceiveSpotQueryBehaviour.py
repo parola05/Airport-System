@@ -31,14 +31,12 @@ class ReceiveSpotQueryBehaviour(CyclicBehaviour):
                 replyMsg.set_metadata("performative","confirm")
                 replyMsg.body = jsonpickle.encode((requestFromAirplane.id, stationsAvailable))
                 await self.send(replyMsg)
-                print("Há lugar na station!")
             
             else:
                 replyMsg = Message(to="controlTower@" + Conf().get_openfire_server())
                 replyMsg.set_metadata("performative","refuse")
                 replyMsg.body = jsonpickle.encode(requestFromAirplane)
                 await self.send(replyMsg)
-                print("Não há lugar na station")
         
         else:
             print("Agent {}".format(str(self.agent.jid)) + " did not received any message after 10 seconds")

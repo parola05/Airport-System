@@ -15,12 +15,18 @@ from MessagesProtocol.DashboardControlTowerMessage import DashboardControlTowerM
 from MessagesProtocol.IsRunwayAvailable import IsRunwayAvailable
 from MessagesProtocol.IsStationAvailable import IsStationAvailable
 from MessagesProtocol.NewSpotsAvailable import NewSpotsAvailable
+from GlobalTypes.Types import Priority
 from GlobalTypes.Types import RequestType, DashboardControlTowerMessageType, StatusType, SpotType, Priority
 from Conf import Conf
 
 class ReceiveBehaviour(CyclicBehaviour):
     async def on_start(self):
         print("[Control Tower] starting ReceiveBehaviour")
+
+    def priorityToString(self,priority:Priority=None):
+        if priority == Priority.HIGH: return "HIGH"
+        if priority == Priority.MEDIUM: return "MEDIUM"
+        if priority == Priority.LOW: return "LOW"
 
     def isQueueFull(self,queueInTheAir: Dict):
         amountWaiting = 0
@@ -62,7 +68,6 @@ class ReceiveBehaviour(CyclicBehaviour):
                     isFull = self.isQueueFull(self.agent.queueInTheAir)
 
                     if not isFull:
-                        print("queue not full!")
                         self.agent.requestsInProcess[requestFromAirplane.id] = requestFromAirplane
 
                         sendMsg = Message(to="station@" + Conf().get_openfire_server())
@@ -83,7 +88,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                     bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
                         type=DashboardControlTowerMessageType.AIRPLANE_REQUEST,
                         requestType=RequestType.LAND, 
-                        requestText=str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " request to land at " + str(requestFromAirplane.requestTime) 
+                        requestText=str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " request to land at " + str(requestFromAirplane.requestTime.strftime("%H:%M:%S"))+ " with priority " + self.priorityToString(requestFromAirplane.priority)
                     )
                     msg.body = jsonpickle.encode(bodyMessage)
                     await self.send(msg)
@@ -103,7 +108,7 @@ class ReceiveBehaviour(CyclicBehaviour):
                     bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
                         type=DashboardControlTowerMessageType.AIRPLANE_REQUEST,
                         requestType=RequestType.TAKEOFF, 
-                        requestText=str(requestFromAirplane.id) + " request to take-off" 
+                        requestText=str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " request to take-off at " + str(requestFromAirplane.requestTime.strftime("%H:%M:%S")) + " with priority " +  self.priorityToString(requestFromAirplane.priority)
                     )
                     msg.body = jsonpickle.encode(bodyMessage)
                     await self.send(msg)
@@ -142,7 +147,10 @@ class ReceiveBehaviour(CyclicBehaviour):
                 ############ Update Dashboard Tab Request ############
                 msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
                 msg.set_metadata("performative", "inform")
-                permissionText="permission denied for " + str(requestFromAirplane.airlineID) + " -> Airplane go to the queue in the air" 
+                if requestFromAirplane.typeRequest == RequestType.LAND:
+                    permissionText="permission denied for " + str(requestFromAirplane.id) + " -> Airplane should stay in air waiting for updates" 
+                else:
+                    permissionText="permission denied for " + str(requestFromAirplane.id) + " -> Airplane should stay in the station waiting for updates" 
                 bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
                     type=DashboardControlTowerMessageType.PERMISSION_DENIED,
                     permissionText=permissionText
@@ -178,7 +186,6 @@ class ReceiveBehaviour(CyclicBehaviour):
                     await self.send(sendMsg)
                 
                 elif "runway@" in str(sender_name):
-                    print("runway that confimed!")
                     runwaysAvailable = receiveMsgDecoded[1]
                     # put a random runway in the message to the airplane know the runway to land (the request will be the message to send back to airplane)
                     self.agent.requestsInProcess[airplaneID].runway = runwaysAvailable[0]
@@ -219,7 +226,22 @@ class ReceiveBehaviour(CyclicBehaviour):
                     sendMsg.body = jsonpickle.encode(self.agent.requestsInProcess[airplaneID])
                     await self.send(sendMsg)
 
-            # Recebe informação do avião após ser permitido a sua aterragem ou partida
+                    ############ Update Dashboard Tab Request ############
+                    if (self.agent.requestsInProcess[airplaneID].typeRequest == RequestType.LAND):
+                        permissionText="permission accepted for " + str(self.agent.requestsInProcess[airplaneID].id) + " -> Airplane can land in runway " + self.agent.requestsInProcess[airplaneID].runway.id + ". Spot available in " +  self.agent.requestsInProcess[airplaneID].station.id
+                    elif (self.agent.requestsInProcess[airplaneID].typeRequest == RequestType.TAKEOFF):
+                        permissionText="permission accepted for " + str(self.agent.requestsInProcess[airplaneID].id) + " -> Airplane can take-off in runway " + self.agent.requestsInProcess[airplaneID].runway.id 
+
+                    msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
+                    msg.set_metadata("performative", "inform")
+                    bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
+                        type=DashboardControlTowerMessageType.PERMISSION_ACCEPTED,
+                        permissionText=permissionText
+                    )
+                    msg.body = jsonpickle.encode(bodyMessage)
+                    await self.send(msg)
+
+            # Receives information from the airplane after being allowed to land or take off
             elif performative == 'inform':
                 requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
                 
@@ -227,15 +249,15 @@ class ReceiveBehaviour(CyclicBehaviour):
                 msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
                 msg.set_metadata("performative", "inform")
 
-                # tanto a pista, como a gare já foram reservadas na performativa "confirm"
+                # both runway and station already reserved in "confirm" performative
                 if requestFromAirplane.status == StatusType.LANDING:
                     informStatus = StatusType.LANDING
-                    requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is landing in runway " + str(requestFromAirplane.runway.id)
+                    requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " confirm that receive the permission and is landing in runway " + str(requestFromAirplane.runway.id)
 
-                # a pista fica livre quando o avião estaciona, mas a station permanece ocupada
+                # runway become free when airplane park, but the station stays occuped
                 elif requestFromAirplane.status == StatusType.IN_STATION:
                     informStatus = StatusType.IN_STATION
-                    requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is parked in station " + str(requestFromAirplane.station.id)
+                    requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " confim that is parked in station " + str(requestFromAirplane.station.id)
 
                     sendMsg = Message(to="runway@" + Conf().get_openfire_server())
                     sendMsg.set_metadata("performative", "inform-ref")
@@ -249,21 +271,22 @@ class ReceiveBehaviour(CyclicBehaviour):
                     msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
                     msg.set_metadata("performative", "inform")
                 
-                # a pista já foi reservada na performativa "confirm", mas a station fica livre
+                # runway already reserved in "confirm" performative, however the station must be free
                 elif requestFromAirplane.status == StatusType.TAKING_OFF:
                     informStatus = StatusType.TAKING_OFF
-                    requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is taking off in runway " + str(requestFromAirplane.runway.coord)
+                    requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " confirm that receive the permission and is taking off in runway " + str(requestFromAirplane.runway.id)
                     sendMsg = Message(to="station@" + Conf().get_openfire_server())
                     sendMsg.set_metadata("performative", "inform-ref")
                     stationAvailabilityInfo = IsStationAvailable(
-                                                isAvailable=True,
-                                                stationInfo=requestFromAirplane.station,
-                                                spotType=requestFromAirplane.spotType
-                                            )
+                        isAvailable=True,
+                        stationInfo=requestFromAirplane.station,
+                        spotType=requestFromAirplane.spotType,
+                        airline=requestFromAirplane.airlineID
+                    )
                     sendMsg.body = jsonpickle.encode(stationAvailabilityInfo)
                     await self.send(sendMsg)
 
-                # a pista fica livre
+                # runway must be free
                 elif requestFromAirplane.status == StatusType.FLYING:
                     informStatus = StatusType.FLYING
                     requestText = str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " is flying"
@@ -286,9 +309,9 @@ class ReceiveBehaviour(CyclicBehaviour):
                 msg.body = jsonpickle.encode(bodyMessage)
                 await self.send(msg)
 
-            # Recebe a informação de que uma companhia aérea comprou novas vagas nos gares. Logo, se algum avião
-            # desta companhia estiver no ar na fila de espera, ele então terá a chance de aterrar uma vez que
-            # há lugar para tal!
+            # Receives the information that an airline has purchased new parking spots at the stations. 
+            # Therefore, if any airplane from this airline is in the air and in the waiting queue, 
+            # it will have the chance to land since there is space available for it!
             elif performative == 'inform-if':
                 newSpotsAvailable:NewSpotsAvailable = jsonpickle.decode(receiveMsg.body)
                 

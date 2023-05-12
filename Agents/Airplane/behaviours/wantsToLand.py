@@ -1,4 +1,4 @@
-from spade.behaviour import OneShotBehaviour
+from spade.behaviour import TimeoutBehaviour
 from spade.message import Message
 from datetime import datetime, timedelta
 import sys, platform, jsonpickle
@@ -15,7 +15,7 @@ else:
 from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
 from MessagesProtocol.DashboardAirplaneMessage import DashboardAirplaneMessage, DashboardAirplaneMessageType, AirplaneInfo
 
-class WantsToLandBehaviour(OneShotBehaviour):
+class WantsToLandBehaviour(TimeoutBehaviour):
     async def on_start(self):
         print("[Airplane] starting WantsToLandBehaviour")
 

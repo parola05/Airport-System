@@ -56,8 +56,8 @@ class StationComponentView(customtkinter.CTkFrame):
             labelMerchandiseSpots.grid(row=rowIndex+1, column=2, padx=7, pady=(0, 20))
 
         # Create the button to add more stations
-        createStationButton = customtkinter.CTkButton(self, text="Add Station", command=self.openAddStationsForm)
-        createStationButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
+        # createStationButton = customtkinter.CTkButton(self, text="Add Station", command=self.openAddStationsForm)
+        # createStationButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
 
     def openAddStationsForm(self):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():

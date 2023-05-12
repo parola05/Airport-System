@@ -16,8 +16,8 @@ class InformDashBoardInitStateBehaviour(OneShotBehaviour):
         
         airlineInfo:AirlineInfo = AirlineInfo(
             id=self.agent.airlineID,
-            nSpotsCommercial=0,
-            nSpotsMerchandise=0,
+            nSpotsCommercial=self.agent.nSpotsCommercialStart,
+            nSpotsMerchandise=self.agent.nSpotsMerchandiseStart
         )
 
         body:DashboardAirlinesMessage = DashboardAirlinesMessage(

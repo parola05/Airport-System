@@ -26,7 +26,7 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                     tag = "tag3"
 
                 # add message in textbox
-                self.agent.view.tab_2.textbox.insert(str(self.agent.line) + ".0", "> " + dashboardAirlines.negotiationtext + "\n",tag)
+                self.agent.view.tab_2.textbox.insert("end", "> " + dashboardAirlines.negotiationtext + "\n",tag)
                 
                 # update line for next message
                 self.agent.line += 1 

@@ -26,13 +26,14 @@ class ControlTower(Agent):
         self.add_behaviour(receiveBehaviour)
 
     def removeAirplaneFromQueue(self,airlineID,airplaneID):
-        indexToRemove = 0
-        index = 0
-        for request in self.queueInTheAir[airlineID]:
-            if request.id == airplaneID:
-                indexToRemove = index
-            index += 1
-        del self.queueInTheAir[airlineID][indexToRemove]
+        if airlineID in self.queueInTheAir:
+            indexToRemove = 0
+            index = 0
+            for request in self.queueInTheAir[airlineID]:
+                if request.id == airplaneID:
+                    indexToRemove = index
+                index += 1
+            del self.queueInTheAir[airlineID][indexToRemove]
     
     def closestStationToRunway(self,runwayCoord:Coord, stations):
         runwayCoordTuple = (runwayCoord.x, runwayCoord.y)

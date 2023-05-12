@@ -62,8 +62,8 @@ class Airlines(customtkinter.CTkFrame):
         labelID.grid(row=0, column=2, padx=10, pady=(0, 20))
 
         # Create the button to add more airline
-        createAirlineButton = customtkinter.CTkButton(self, text="Add Airline", command=self.openAddAirlineForm)
-        createAirlineButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
+        # createAirlineButton = customtkinter.CTkButton(self, text="Add Airline", command=self.openAddAirlineForm)
+        # createAirlineButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
 
     def openAddAirlineForm(self):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():

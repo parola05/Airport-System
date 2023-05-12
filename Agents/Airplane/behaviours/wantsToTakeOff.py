@@ -1,4 +1,4 @@
-from spade.behaviour import OneShotBehaviour
+from spade.behaviour import TimeoutBehaviour
 from spade.message import Message
 
 import sys, platform, datetime, jsonpickle
@@ -15,7 +15,7 @@ from MessagesProtocol.DashboardAirplaneMessage import DashboardAirplaneMessage, 
 from GlobalTypes.Types import RequestType
 from Conf import Conf
 
-class WantsToTakeOffBehaviour(OneShotBehaviour):
+class WantsToTakeOffBehaviour(TimeoutBehaviour):
 
     async def on_start(self):
         print("[Airplane] starting WantsToTakeOffBehaviour")
@@ -30,9 +30,9 @@ class WantsToTakeOffBehaviour(OneShotBehaviour):
             spotType=self.agent.typeTransport,
             status=self.agent.status,
             airlineID=self.agent.airline,
-            requestTime=datetime.now(), 
+            requestTime=datetime.datetime.now(), 
             priority=self.agent.priority,
-            station=self.agent.station
+            station=self.agent.stationPark
         )
         msg.body = jsonpickle.encode(requestToTakeOff)
         await self.send(msg)

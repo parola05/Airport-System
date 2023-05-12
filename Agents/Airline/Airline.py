@@ -12,9 +12,11 @@ class AirlineAgent(Agent):
         self.add_behaviour(buySpotsBehaviour)
         self.add_behaviour(informDashBoardInitStateBehaviour)
 
-    def __init__(self,agent_name,password,airlineID,n_spots=None,price_per_spot=None,spotType=None) -> None:
+    def __init__(self,agent_name,password,airlineID,n_spots=None,price_per_spot=None,spotType=None,nSpotsCommercialStart=None,nSpotsMerchandiseStart=None) -> None:
         super().__init__(agent_name,password)
         self.airlineID = airlineID
         self.n_spots: int = n_spots
         self.price_per_spot: float = price_per_spot
         self.spotType = spotType 
+        self.nSpotsCommercialStart = nSpotsCommercialStart
+        self.nSpotsMerchandiseStart = nSpotsMerchandiseStart

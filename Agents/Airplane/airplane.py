@@ -5,6 +5,7 @@ from GlobalTypes.Types import SpotType, StatusType, Priority
 from .behaviours.InformDashboardInitStateBehaviour import InformDashBoardInitStateBehaviour
 from .behaviours.wantsToLand import WantsToLandBehaviour
 from .behaviours.receiveBehaviour import ReceiveBehaviour
+from .behaviours.wantsToTakeOff import WantsToTakeOffBehaviour
 
 class AirplaneAgent(Agent):
     def __init__(
@@ -19,7 +20,7 @@ class AirplaneAgent(Agent):
             date=None, 
             priority=None,
             stationPark=None, # objeto Station
-            status:StatusType=StatusType.FLYING):
+            status:StatusType=None):
         super().__init__(agent_name,password)
         
         self.airplaneID = airplaneID
@@ -43,19 +44,23 @@ class AirplaneAgent(Agent):
             self.priority = self.getRandomPriority()
         else: self.priority = priority
 
+        self.stationPark = stationPark
+
         self.status = status
 
     async def setup(self):
         informDashBoardInitStateBehaviour:InformDashBoardInitStateBehaviour = InformDashBoardInitStateBehaviour()
-        wantsToLandBehaviour:WantsToLandBehaviour = WantsToLandBehaviour()
+        wantsToLandBehaviour:WantsToLandBehaviour = WantsToLandBehaviour(start_at=(datetime.datetime.now() + datetime.timedelta(seconds=random.randint(5,10))))
         receiveBehaviour:ReceiveBehaviour = ReceiveBehaviour()
+        wantsToTakeOffBehaviour:WantsToTakeOffBehaviour = WantsToTakeOffBehaviour(start_at=(datetime.datetime.now() + datetime.timedelta(seconds=random.randint(5,10))))
 
         self.add_behaviour(informDashBoardInitStateBehaviour)
-        
-        # TODO add condition to only automatic airplanes generated add this behaviour in setup
-        self.add_behaviour(wantsToLandBehaviour)
-
         self.add_behaviour(receiveBehaviour)
+        
+        if self.status == StatusType.FLYING:
+            self.add_behaviour(wantsToLandBehaviour)
+        if self.status == StatusType.IN_STATION:
+            self.add_behaviour(wantsToTakeOffBehaviour)
 
     def getRandomTypeTransport(self):
         randomChoice = random.randint(0,9)

@@ -17,22 +17,20 @@ class ReceiveProposalAnswerBehaviour(CyclicBehaviour):
             performative = msg.get_metadata('performative')
             
             # If Airline bought spots -> inform DashboardAirline to update the view
-            # with the new value of spots bought
+            # with the new value of spots 
             if performative == 'agree':
                 msg = Message(to="dashboardAirline@" + Conf().get_openfire_server())
                 msg.set_metadata("performative", "inform")
 
-                nSpotsCommercial = 0
-                nSpotsMerchandise = 0
                 if self.agent.spotType == SpotType.COMMERCIAL:
-                    nSpotsCommercial = self.agent.n_spots
+                    self.agent.nSpotsCommercialStart += self.agent.n_spots
                 if self.agent.spotType == SpotType.MERCHANDISE:
-                    nSpotsMerchandise = self.agent.n_spots
+                    self.agent.nSpotsMerchandiseStart += self.agent.n_spots
 
                 airlineInfo:AirlineInfo = AirlineInfo(
                     id=self.agent.airlineID,
-                    nSpotsCommercial=nSpotsCommercial,
-                    nSpotsMerchandise=nSpotsMerchandise,
+                    nSpotsCommercial=self.agent.nSpotsCommercialStart,
+                    nSpotsMerchandise=self.agent.nSpotsMerchandiseStart,
                 )
 
                 body:DashboardAirlinesMessage = DashboardAirlinesMessage(

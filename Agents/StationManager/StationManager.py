@@ -106,7 +106,7 @@ class Station():
 class StationManagerAgent(Agent):
     async def setup(self):
         receiveAirlinesProposals = ReceiveAirlinesProposalsBehaviour()
-        evaluateAirlinesProposals = EvaluateAirlinesProposalsBehaviour(period=5,start_at=(datetime.datetime.now() + datetime.timedelta(seconds=5)))
+        evaluateAirlinesProposals = EvaluateAirlinesProposalsBehaviour(period=5,start_at=(datetime.datetime.now() + datetime.timedelta(seconds=15)))
         receiveSpotsQueryBehaviour = ReceiveSpotQueryBehaviour()
         informDashBoardInitStateBehaviour = InformDashBoardInitStateBehaviour()
         updateStationAvailability = UpdateStationAvailabilityBehaviour()
@@ -184,14 +184,19 @@ class StationManagerAgent(Agent):
             The airline will buy the spots in the first Station in the <self.stations>.
             If this Station does not have enough spots, the rest of the purchases 
             will be made at the next stations, and so on.
+        Return:
+            List of Stations where airline buy spots
     '''
     def buySpots(self,nSpots,spotType,airlineID):
         spotsBoughtInStation = 0
+        stationsBought = []
         for station in self.stations.values():
             spotsBoughtInStation += station.buySpots(nSpots,spotType,airlineID)
             nSpots = nSpots - spotsBoughtInStation
+            if (spotsBoughtInStation > 0):
+                stationsBought.append(station)
             if nSpots == 0:
-                return
+                return stationsBought
 
     '''
         Description: 

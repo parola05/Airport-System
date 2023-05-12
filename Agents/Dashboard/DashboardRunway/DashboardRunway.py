@@ -43,8 +43,8 @@ class RunwayComponentView(customtkinter.CTkFrame):
         labelAvailable = customtkinter.CTkLabel(master=self.runwaysTable, text="Available", font=("Helvetica", 12, "bold"))
         labelAvailable.grid(row=0, column=2, padx=20, pady=(0, 20),sticky="nsew")
 
-        createStationButton = customtkinter.CTkButton(self, text="Add Runway", command=self.openAddRunwaysForm)
-        createStationButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
+        #createStationButton = customtkinter.CTkButton(self, text="Add Runway", command=self.openAddRunwaysForm)
+        #createStationButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
 
     def openAddRunwaysForm(self):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():

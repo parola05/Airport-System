@@ -19,17 +19,17 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                 # SET tag for text color
                 tag = ""
                 if dashboardControlTowerMessage.requestType == RequestType.LAND:
-                    tag = "tag2"
+                    tag = "tag6"
                 elif dashboardControlTowerMessage.requestType == RequestType.TAKEOFF:
-                    tag = "tag1"
+                    tag = "tag6"
                 elif dashboardControlTowerMessage.informStatus == StatusType.TO_ANOTHER_AIRPORT:
-                    tag = "tag3"
-                elif dashboardControlTowerMessage.informStatus == StatusType.TAKING_OFF or dashboardControlTowerMessage.informStatus == StatusType.FLYING:
                     tag = "tag4"
+                elif dashboardControlTowerMessage.informStatus == StatusType.TAKING_OFF or dashboardControlTowerMessage.informStatus == StatusType.FLYING:
+                    tag = "tag1"
                 elif dashboardControlTowerMessage.informStatus == StatusType.LANDING or dashboardControlTowerMessage.informStatus == StatusType.IN_STATION:
                     tag = "tag5"
                     
-                self.agent.view.tab_1.textbox.insert(str(self.agent.tab_1_line) + ".0", "> " + dashboardControlTowerMessage.requestText + "\n",tag)
+                self.agent.view.tab_1.textbox.insert("end", "> " + dashboardControlTowerMessage.requestText + "\n",tag)
                 self.agent.tab_1_line += 1
 
             elif dashboardControlTowerMessage.type == DashboardControlTowerMessageType.AIRPLANE_IN_QUEUE:
@@ -38,10 +38,15 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                 elif dashboardControlTowerMessage.requestType == RequestType.TAKEOFF:
                     tag = "tag1"
                 
-                self.agent.view.tab_2.textbox.insert(str(self.agent.tab_2_line) + ".0", "> " + dashboardControlTowerMessage.requestText + "\n",tag)
+                self.agent.view.tab_2.textbox.insert("end", "> " + dashboardControlTowerMessage.requestText + "\n",tag)
                 self.agent.tab_2_line += 1
 
             elif dashboardControlTowerMessage.type == DashboardControlTowerMessageType.PERMISSION_DENIED:
                 tag = "tag3"
-                self.agent.view.tab_1.textbox.insert(str(self.agent.tab_1_line) + ".0", "> " + dashboardControlTowerMessage.permissionText + "\n",tag)
+                self.agent.view.tab_1.textbox.insert("end", "> " + dashboardControlTowerMessage.permissionText + "\n",tag)
+                self.agent.tab_1_line += 1
+
+            elif dashboardControlTowerMessage.type == DashboardControlTowerMessageType.PERMISSION_ACCEPTED:
+                tag = "tag2"
+                self.agent.view.tab_1.textbox.insert("end", "> " + dashboardControlTowerMessage.permissionText + "\n",tag)
                 self.agent.tab_1_line += 1
