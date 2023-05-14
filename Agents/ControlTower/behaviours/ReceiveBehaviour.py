@@ -230,10 +230,9 @@ class ReceiveBehaviour(CyclicBehaviour):
         ############## Finish Process Request
 
     async def handlerCancel(self,receiveMsg):
-        sender_name = receiveMsg.sender
         requestFromAirplane:RequestFromAirplane = jsonpickle.decode(receiveMsg.body)
 
-        if sender_name in self.agent.requestsInProcess:
+        if requestFromAirplane.id in self.agent.requestsInProcess:
             del self.agent.requestsInProcess[requestFromAirplane.id]
 
         ############### Init Update Dashboard Control Tower
@@ -514,7 +513,7 @@ class ReceiveBehaviour(CyclicBehaviour):
         spotTypeAvailable:SpotType = newSpotsAvailable.spotType
 
         ############ Init Update Dashboard Control Tower 
-        text=airlineID + " bought " + str(numberOfSpotsAvailable) + "-> check if airplanes in the air from the airline can land"
+        text=airlineID + " bought " + str(numberOfSpotsAvailable) + " spots -> check if airplanes in the air from the airline can land"
         msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
         msg.set_metadata("performative", "inform")
         bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
