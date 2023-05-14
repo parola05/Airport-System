@@ -20,6 +20,7 @@ class ControlTower(Agent):
         self.queueInTheAir: Dict[str:List[RequestFromAirplane]] = {} # AirlineID : List[RequestFromAirplane]
         self.requestsInProcess: Dict[str:RequestFromAirplane] = {}  # AirplaneID : RequestFromAirplane
         self.queueInTheAirMaxSize = queueInTheAirMaxSize
+        self.lockRequests: Dict[str:RequestFromAirplane] = {} 
 
     async def setup(self): 
         receiveBehaviour:ReceiveBehaviour = ReceiveBehaviour()

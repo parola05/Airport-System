@@ -7,7 +7,7 @@ from Agents.Dashboard.DashboardControlTower.DashboardControlTower import Dashboa
 from Agents.Airport import Airport
 from Conf import Conf
 
-customtkinter.set_appearance_mode("System") 
+customtkinter.set_appearance_mode("Light") 
 customtkinter.set_default_color_theme("green")
 
 class UI():

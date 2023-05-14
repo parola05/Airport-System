@@ -73,6 +73,8 @@ class ReceiveBehaviour(CyclicBehaviour):
                     sendMsg.body = jsonpickle.encode(requestFromAirplane)
                     await self.send(sendMsg)
 
+                    self.kill(exit_code=10)
+
                 else:
                     self.agent.stationPark = requestFromAirplane.station
                     self.agent.status = StatusType.LANDING
@@ -102,6 +104,8 @@ class ReceiveBehaviour(CyclicBehaviour):
                     sendMsg.set_metadata("performative", "inform")
                     sendMsg.body = jsonpickle.encode(requestFromAirplane)
                     await self.send(sendMsg)
+
+                    self.kill(exit_code=10)
                     
         else:
             print("Agent {}".format(str(self.agent.jid)) + " did not receive any message after 1 minute")
