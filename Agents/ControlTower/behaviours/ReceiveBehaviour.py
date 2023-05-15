@@ -18,6 +18,7 @@ from MessagesProtocol.NewSpotsAvailable import NewSpotsAvailable
 from GlobalTypes.Types import Priority
 from GlobalTypes.Types import RequestType, DashboardControlTowerMessageType, StatusType, SpotType, Priority
 from Conf import Conf
+import datetime
 
 class ReceiveBehaviour(CyclicBehaviour):
     async def on_start(self):
@@ -98,7 +99,6 @@ class ReceiveBehaviour(CyclicBehaviour):
             elif performative == 'inform-if':
                 await self.handlerQueryIf(receiveMsg=receiveMsg)
                        
-
     async def processMostPriorityRequest(self,runway=None,requests=None):
         # process the most priority request
         request = self.getRequestWithMorePriority(requests)
@@ -321,7 +321,6 @@ class ReceiveBehaviour(CyclicBehaviour):
 
         # If Station confirm, control tower should question runwayManager about runways
         if "station@" in str(sender_name):
-            print("station confirm")
             self.stationsAvailable = receiveMsgDecoded[1]
             sendMsg = Message(to="runway@" + Conf().get_openfire_server())
             sendMsg.set_metadata("performative", "query-if")
@@ -333,12 +332,14 @@ class ReceiveBehaviour(CyclicBehaviour):
             # put a random runway in the message to the airplane know the runway to land (the request will be the message to send back to airplane)
             self.agent.requestsInProcess[airplaneID].runway = runwaysAvailable[0]
             
-            # if airplane want to land, calculate staton closest to the runway, put the station in the message to the airplane know the station and reserve Station
+            # if airplane want to land, calculate staton closest to the runway, 
+            # put the station in the message to the airplane know the station and reserve Station
+            # and update timeInQueueInTheAir
             if self.agent.requestsInProcess[airplaneID].typeRequest == RequestType.LAND:
                 closestStation = self.agent.closestStationToRunway(runwaysAvailable[0].coord, self.stationsAvailable)
                 self.agent.requestsInProcess[airplaneID].station = closestStation
                 
-                # reserve the station spot (will be busy)
+                # reserve the station spot 
                 sendMsg = Message(to="station@" + Conf().get_openfire_server())
                 sendMsg.set_metadata("performative", "inform-ref")
                 stationAvailabilityInfo = IsStationAvailable(
@@ -349,6 +350,23 @@ class ReceiveBehaviour(CyclicBehaviour):
                 )
                 sendMsg.body = jsonpickle.encode(stationAvailabilityInfo)
                 await self.send(sendMsg)
+
+                # Update avg time in queue and send the value to dashboard
+                self.agent.numberOfAirplaneThatLand += 1
+                delta_time = datetime.datetime.now() - self.agent.requestsInProcess[airplaneID].requestTime
+                average_time = (delta_time.total_seconds() + self.agent.avgTimeInQueueInTheAir) / float(self.agent.numberOfAirplaneThatLand)
+                self.agent.avgTimeInQueueInTheAir = average_time
+                
+                msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
+                msg.set_metadata("performative", "inform")
+
+                bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
+                    type=DashboardControlTowerMessageType.AVG_TIME_IN_QUEUE,
+                    avgTimeInQueue=self.agent.avgTimeInQueueInTheAir
+                )
+
+                msg.body = jsonpickle.encode(bodyMessage)
+                await self.send(msg)
 
             # reserve the runway
             sendMsg = Message(to="runway@" + Conf().get_openfire_server())
@@ -513,12 +531,12 @@ class ReceiveBehaviour(CyclicBehaviour):
         spotTypeAvailable:SpotType = newSpotsAvailable.spotType
 
         ############ Init Update Dashboard Control Tower 
-        text=airlineID + " bought " + str(numberOfSpotsAvailable) + " spots -> check if airplanes in the air from the airline can land"
+        text=airlineID + " bought " + str(numberOfSpotsAvailable) + " spots -> evaluate again requests if airplanes in the air from the airline"
         msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
         msg.set_metadata("performative", "inform")
         bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
-            type=DashboardControlTowerMessageType.PERMISSION_ACCEPTED,
-            permissionText=text
+            type=DashboardControlTowerMessageType.NEW_SPOTS,
+            newSpotsText=text
         )
         msg.body = jsonpickle.encode(bodyMessage)
         await self.send(msg)

@@ -7,7 +7,7 @@ from Agents.Dashboard.DashboardControlTower.DashboardControlTower import Dashboa
 from Agents.Airport import Airport
 from Conf import Conf
 
-customtkinter.set_appearance_mode("Light") 
+customtkinter.set_appearance_mode("Dark") 
 customtkinter.set_default_color_theme("green")
 
 class UI():
@@ -28,7 +28,6 @@ class MainView(customtkinter.CTk):
         self.geometry(f"{1400}x{780}")
 
         # configure grid layout (4x4)
-        self.grid_rowconfigure(0, weight=2)
         self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
         self.grid_columnconfigure(3, weight=1)
@@ -85,8 +84,10 @@ class MainView(customtkinter.CTk):
         self.scaling_optionemenu.grid(row=1, column=0, padx=20, pady=(10, 20))
 
         # create main entry and button
-        self.entry = customtkinter.CTkEntry(self, placeholder_text="CTkEntry")
-        self.entry.grid(row=3, column=1, columnspan=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.bottomFrame = customtkinter.CTkFrame(self, fg_color="transparent")
+        self.bottomFrame.grid(row=3, column=1, columnspan=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.label = customtkinter.CTkLabel(self.bottomFrame, text="👥 Criado por Ana Henriques e Henrique Parola", font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         # Station Component
         self.dashboardStation = DashboardStation("dashboardStation@" + Conf().get_openfire_server(),Conf().get_openfire_password(),master=self)

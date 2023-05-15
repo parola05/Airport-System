@@ -106,6 +106,6 @@ class SpotsNegotiation(customtkinter.CTkFrame):
         self.textbox = customtkinter.CTkTextbox(master=self)
         self.textbox.grid(row=1,column=0,sticky="nsew")
         
-        self.textbox.tag_config("tag1", foreground="blue")
-        self.textbox.tag_config("tag2", foreground="green")
+        self.textbox.tag_config("tag1", foreground="#5D78FF")
+        self.textbox.tag_config("tag2", foreground="#73FF3A")
         self.textbox.tag_config("tag3", foreground="red")

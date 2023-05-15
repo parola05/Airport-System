@@ -7,7 +7,9 @@ class DashboardControlTowerMessage():
             requestText:str=None,
             requestType:RequestType=None,
             informStatus:StatusType=None,
-            permissionText:str=None
+            permissionText:str=None,
+            newSpotsText:str=None,
+            avgTimeInQueue:float=None
             ) -> None:
         
         self.type: DashboardControlTowerMessageType = type 
@@ -17,3 +19,5 @@ class DashboardControlTowerMessage():
         self.requestType:RequestType = requestType
         self.informStatus:StatusType = informStatus
         self.permissionText:permissionText = permissionText
+        self.newSpotsText:str = newSpotsText
+        self.avgTimeInQueue:float = avgTimeInQueue

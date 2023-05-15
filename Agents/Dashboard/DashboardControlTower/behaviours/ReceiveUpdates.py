@@ -50,3 +50,11 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                 tag = "tag2"
                 self.agent.view.tab_1.textbox.insert("end", "> " + dashboardControlTowerMessage.permissionText + "\n",tag)
                 self.agent.tab_1_line += 1
+
+            elif dashboardControlTowerMessage.type == DashboardControlTowerMessageType.NEW_SPOTS:
+                tag = "tag7"
+                self.agent.view.tab_1.textbox.insert("end", "> " + dashboardControlTowerMessage.newSpotsText + "\n",tag)
+                self.agent.tab_1_line += 1
+
+            elif dashboardControlTowerMessage.type == DashboardControlTowerMessageType.AVG_TIME_IN_QUEUE:
+                self.agent.view.tab_3.timeInTheAirValue.configure(text=str(round(dashboardControlTowerMessage.avgTimeInQueue,2)) + " seconds")

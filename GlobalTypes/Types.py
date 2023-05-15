@@ -38,6 +38,8 @@ class DashboardControlTowerMessageType:
     AIRPLANE_IN_QUEUE = 2
     PERMISSION_DENIED = 3
     PERMISSION_ACCEPTED = 4
+    NEW_SPOTS = 5
+    AVG_TIME_IN_QUEUE = 6
 
 class DashboardStationMessageType:
     INFO = 1
