@@ -20,21 +20,6 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                 labelId.grid(row=self.agent.rowIndex, column=0, padx=20, pady=(0,10))
                 labelId.configure(text=dashboardAirplane.airplaneInfo.id)
 
-                """
-                # add button to activate airplane actions (land, request to fly, etc)
-                if dashboardAirplane.airplaneInfo.status == StatusType.IN_STATION: 
-                    labelAction = customtkinter.CTkButton(master=self.agent.view.airplanesTable, command=lambda airplaneID=dashboardAirplane.airplaneInfo.id: self.agent.view.requestToTakeOff(airplaneID))
-                    labelAction.grid(row=self.agent.rowIndex, column=1, padx=20, pady=(0,10))
-                    labelAction.configure(text="Take Off")
-                elif dashboardAirplane.airplaneInfo.status == StatusType.FLYING:
-                    labelAction = customtkinter.CTkButton(master=self.agent.view.airplanesTable, command=lambda airplaneID=dashboardAirplane.airplaneInfo.id: self.agent.view.requestToLand(airplaneID))
-                    labelAction.grid(row=self.agent.rowIndex, column=1, padx=20, pady=(0,10))
-                    labelAction.configure(text="Land")
-                else:
-                    labelAction = customtkinter.CTkLabel(master=self.agent.view.airplanesTable, text="--None--")
-                    labelAction.grid(row=self.agent.rowIndex, column=1, padx=20, pady=(0,10))
-                """
-
                 # add label entry for airplane STATUS
                 labelStatus = customtkinter.CTkLabel(master=self.agent.view.airplanesTable, text=self.agent.view.airplaneType(dashboardAirplane.airplaneInfo.typeTransport))
                 labelStatus.grid(row=self.agent.rowIndex, column=1, padx=10, pady=(0,10), sticky="ew")
