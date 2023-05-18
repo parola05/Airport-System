@@ -40,6 +40,7 @@ class DashboardControlTowerMessageType:
     PERMISSION_ACCEPTED = 4
     NEW_SPOTS = 5
     AVG_TIME_IN_QUEUE = 6
+    TO_ANOTHER_AIRPORT = 7
 
 class DashboardStationMessageType:
     INFO = 1

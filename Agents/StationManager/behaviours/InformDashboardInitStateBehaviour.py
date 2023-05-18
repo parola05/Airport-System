@@ -18,8 +18,10 @@ class InformDashBoardInitStateBehaviour(OneShotBehaviour):
             dashboardStationMessage.stations.append(
                 StationInfo(
                     id=station.id,
-                    merchandise_capacity=station.spots_available_merchandise,  
-                    commercial_capacity=station.spots_available_commercial
+                    merchandise_capacity=station.merchandise_capacity,  
+                    commercial_capacity=station.commercial_capacity,
+                    merchandise_available=station.spots_available_merchandise,  
+                    commercial_available=station.spots_available_commercial,
                 )
             )
             

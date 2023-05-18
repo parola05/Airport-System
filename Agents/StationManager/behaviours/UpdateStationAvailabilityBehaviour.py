@@ -28,14 +28,16 @@ class UpdateStationAvailabilityBehaviour(CyclicBehaviour):
             self.agent.updateStationSpots(stationInfo.isAvailable, stationInfo.station.id, stationInfo.airline, stationInfo.spotType)
         
             ############ Update Dashboard ############
+            print()
             msg = Message(to="dashboardStation@" + Conf().get_openfire_server())
             msg.set_metadata("performative", "inform")
+            print("update avaiable!" + str(self.agent.stations[stationInfo.station.id].spots_available_commercial))
             bodyMessage:DashboardStationMessage = DashboardStationMessage(
                 type=DashboardStationMessageType.UPDATE,
                 stationToUpdate=StationInfo(
                     id=stationInfo.station.id,
-                    commercial_capacity=stationInfo.station.spots_available_commercial,
-                    merchandise_capacity=stationInfo.station.spots_available_merchandise
+                    commercial_available=self.agent.stations[stationInfo.station.id].spots_available_commercial,
+                    merchandise_available=self.agent.stations[stationInfo.station.id].spots_available_merchandise
                 )
             )
             msg.body = jsonpickle.encode(bodyMessage)

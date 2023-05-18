@@ -1,4 +1,6 @@
 import customtkinter
+from tkinter import *
+import tkinter
 import sys
 import platform
 from spade.agent import Agent

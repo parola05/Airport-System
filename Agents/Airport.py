@@ -20,8 +20,8 @@ class Airport():
     def __init__ (
             self,
             nStations = 1, 
-            nMerchandiseSpotsPerStation = 20, 
-            nCommercialSpotsPerStation = 20,
+            nMerchandiseSpotsPerStation = 10, 
+            nCommercialSpotsPerStation = 10,
             nAirlines = 1,
             nRunways = 1,
             nAirplanesToLand = 2,
@@ -52,7 +52,7 @@ class Airport():
                 agent_name=airlineID+"@" + Conf().get_openfire_server(),
                 password=Conf().get_openfire_password(),
                 airlineID=airlineID,
-                n_spots=random.randint(1, 10),
+                n_spots=random.randint(2, 6),
                 price_per_spot=random.randint(1000, 10000),
                 spotType=random.randint(1,2),
                 nSpotsCommercialStart=0,
@@ -94,6 +94,9 @@ class Airport():
                 airlineID=airlineID,
                 spotType=typeTransport
             )
+
+            # Reserve the Station
+            self.stationManager.updateStationSpots(isAvailable=False,stationID=stations[0].id,airlineID=airlineID,spotType=typeTransport)
 
             # Increment number of spots of the airline selected
             if typeTransport == SpotType.COMMERCIAL:

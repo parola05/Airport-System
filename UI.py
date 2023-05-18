@@ -241,10 +241,10 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nAirplanesToLandLabel = customtkinter.CTkLabel(self.nAirplanesToLandFrame, text="Number of Airplanes to Land", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nAirplanesToLandLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
 
-        self.nAirplanesToLandSelectedLabel = customtkinter.CTkLabel(self.nAirplanesToLandFrame, text="15", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nAirplanesToLandSelectedLabel = customtkinter.CTkLabel(self.nAirplanesToLandFrame, text="5", font=customtkinter.CTkFont(size=18, weight="bold"))
         self.nAirplanesToLandSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
         
-        self.nAirplanesToLand = customtkinter.CTkSlider(self.nAirplanesToLandFrame, from_=1, to=30, number_of_steps=30)
+        self.nAirplanesToLand = customtkinter.CTkSlider(self.nAirplanesToLandFrame, from_=1, to=10, number_of_steps=10)
         self.nAirplanesToLand.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
 
         ################ Airplanes to Take-off ########################
@@ -255,10 +255,10 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nAirplanesToTakeOffLabel = customtkinter.CTkLabel(self.nAirplanesToTakeOffFrame, text="Number of Airplanes to Take-off", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nAirplanesToTakeOffLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
 
-        self.nAirplanesToTakeOffSelectedLabel = customtkinter.CTkLabel(self.nAirplanesToTakeOffFrame, text="15", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nAirplanesToTakeOffSelectedLabel = customtkinter.CTkLabel(self.nAirplanesToTakeOffFrame, text="5", font=customtkinter.CTkFont(size=18, weight="bold"))
         self.nAirplanesToTakeOffSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
         
-        self.nAirplanesToTakeOff = customtkinter.CTkSlider(self.nAirplanesToTakeOffFrame, from_=1, to=30, number_of_steps=30)
+        self.nAirplanesToTakeOff = customtkinter.CTkSlider(self.nAirplanesToTakeOffFrame, from_=1, to=10, number_of_steps=10)
         self.nAirplanesToTakeOff.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
 
         ################ Runway ###########################
@@ -269,10 +269,10 @@ class ConfigureSimulationView(customtkinter.CTkToplevel):
         self.nRunwaysLabel = customtkinter.CTkLabel(self.nRunwaysFrame, text="Number of Runways", font=customtkinter.CTkFont(size=12, weight="bold"))
         self.nRunwaysLabel.grid(row=0, column=0, padx=(10, 10), pady=(10, 10))
 
-        self.nRunwaysSelectedLabel = customtkinter.CTkLabel(self.nRunwaysFrame, text="15", font=customtkinter.CTkFont(size=18, weight="bold"))
+        self.nRunwaysSelectedLabel = customtkinter.CTkLabel(self.nRunwaysFrame, text="10", font=customtkinter.CTkFont(size=18, weight="bold"))
         self.nRunwaysSelectedLabel.grid(row=0, column=1, padx=(10, 10), pady=(10, 10))
         
-        self.nRunways = customtkinter.CTkSlider(self.nRunwaysFrame, from_=1, to=30, number_of_steps=30)
+        self.nRunways = customtkinter.CTkSlider(self.nRunwaysFrame, from_=1, to=20, number_of_steps=20)
         self.nRunways.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="ew")
 
         ############ Queue in the air max size ############

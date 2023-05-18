@@ -39,25 +39,20 @@ class StationComponentView(customtkinter.CTkFrame):
         # Create the first row
         labelID = customtkinter.CTkLabel(master=self.stationsTable, text="Station ID", font=("Helvetica", 12, "bold"))
         labelID.grid(row=0, column=0, padx=10, pady=(0, 20))
-        labelCommercialSpots = customtkinter.CTkLabel(master=self.stationsTable, text="Commercial Capacity", font=("Helvetica", 12, "bold"))
+        
+        labelCommercialSpots = customtkinter.CTkLabel(master=self.stationsTable, text="C-Capacity", font=("Helvetica", 12, "bold"))
         labelCommercialSpots.grid(row=0, column=1, padx=10, pady=(0, 20))
-        labelMerchandiseSpots = customtkinter.CTkLabel(master=self.stationsTable, text="Merchandise Capacity", font=("Helvetica", 12, "bold"))
+        
+        labelMerchandiseSpots = customtkinter.CTkLabel(master=self.stationsTable, text="M-Capacity", font=("Helvetica", 12, "bold"))
         labelMerchandiseSpots.grid(row=0, column=2, padx=10, pady=(0, 20))
+        
+        labelCommercialSpotsAvailable = customtkinter.CTkLabel(master=self.stationsTable, text="C-Available", font=("Helvetica", 12, "bold"))
+        labelCommercialSpotsAvailable.grid(row=0, column=3, padx=10, pady=(0, 20))
+        
+        labelMerchandiseSpotsAvailable = customtkinter.CTkLabel(master=self.stationsTable, text="M-Available", font=("Helvetica", 12, "bold"))
+        labelMerchandiseSpotsAvailable.grid(row=0, column=4, padx=10, pady=(0, 20))
 
         self.labels = {}
-
-        # Create the n rows
-        for rowIndex,station in enumerate(stations):
-            labelID = customtkinter.CTkLabel(master=self.stationsTable, text=station["id"])
-            labelID.grid(row=rowIndex+1, column=0, padx=7, pady=(0, 20))
-            labelCommercialSpots = customtkinter.CTkLabel(master=self.stationsTable, text=str(station["commercialSpots"]))
-            labelCommercialSpots.grid(row=rowIndex+1, column=1, padx=7, pady=(0, 20))
-            labelMerchandiseSpots = customtkinter.CTkLabel(master=self.stationsTable, text=str(station["merchandiseSpots"]))
-            labelMerchandiseSpots.grid(row=rowIndex+1, column=2, padx=7, pady=(0, 20))
-
-        # Create the button to add more stations
-        # createStationButton = customtkinter.CTkButton(self, text="Add Station", command=self.openAddStationsForm)
-        # createStationButton.grid(row=2,column=0, padx=10, pady=10,sticky="nsew")
 
     def openAddStationsForm(self):
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():

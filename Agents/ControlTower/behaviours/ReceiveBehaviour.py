@@ -183,7 +183,7 @@ class ReceiveBehaviour(CyclicBehaviour):
         requestText = "" 
         
         if requestFromAirplane.typeRequest == RequestType.LAND:
-            requestText=str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " ("+ self.spotTypeToString(requestFromAirplane.spotType)+" airplane) request to land at " + str(requestFromAirplane.requestTime.strftime("%H:%M:%S"))+ " with priority " + self.priorityToString(requestFromAirplane.priority)
+            requestText=str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " request to land at " + str(requestFromAirplane.requestTime.strftime("%H:%M:%S"))+ " with priority " + self.priorityToString(requestFromAirplane.priority)
         elif requestFromAirplane.typeRequest == RequestType.TAKEOFF:
             requestText=str(requestFromAirplane.id) + " from " + str(requestFromAirplane.airlineID) + " request to take-off at " + str(requestFromAirplane.requestTime.strftime("%H:%M:%S")) + " with priority " +  self.priorityToString(requestFromAirplane.priority)
 
@@ -338,7 +338,6 @@ class ReceiveBehaviour(CyclicBehaviour):
             if self.agent.requestsInProcess[airplaneID].typeRequest == RequestType.LAND:
                 closestStation = self.agent.closestStationToRunway(runwaysAvailable[0].coord, self.stationsAvailable)
                 self.agent.requestsInProcess[airplaneID].station = closestStation
-                
                 # reserve the station spot 
                 sendMsg = Message(to="station@" + Conf().get_openfire_server())
                 sendMsg.set_metadata("performative", "inform-ref")

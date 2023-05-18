@@ -36,7 +36,8 @@ class ControlTower(Agent):
                 if request.id == airplaneID:
                     indexToRemove = index
                 index += 1
-            del self.queueInTheAir[airlineID][indexToRemove]
+            if index < len(self.queueInTheAir[airlineID]): 
+                del self.queueInTheAir[airlineID][indexToRemove]
     
     def closestStationToRunway(self,runwayCoord:Coord, stations):
         runwayCoordTuple = (runwayCoord.x, runwayCoord.y)

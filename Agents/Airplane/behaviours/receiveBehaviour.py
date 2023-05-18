@@ -4,7 +4,8 @@ from spade.message import Message
 from GlobalTypes.Types import StatusType, RequestType
 from MessagesProtocol.RequestFromAirplane import RequestFromAirplane
 from MessagesProtocol.DashboardAirplaneMessage import DashboardAirplaneMessage, AirplaneInfo
-from GlobalTypes.Types import DashboardAirplaneMessageType
+from MessagesProtocol.DashboardControlTowerMessage import DashboardControlTowerMessage
+from GlobalTypes.Types import DashboardAirplaneMessageType, DashboardControlTowerMessageType
 from Conf import Conf
 import asyncio
 
@@ -29,6 +30,16 @@ class ReceiveBehaviour(CyclicBehaviour):
                 sendMsg.set_metadata("performative", "cancel")
                 sendMsg.body = "Going to another airport"
                 await self.send(sendMsg)
+
+                ############ Update Control Tower Dashboard ############
+                msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
+                msg.set_metadata("performative", "inform")
+                bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
+                    type=DashboardControlTowerMessageType.TO_ANOTHER_AIRPORT,
+                    cancelText="Airplane " + self.agent.airplaneID + " going to another airport"
+                )
+                msg.body = jsonpickle.encode(bodyMessage)
+                await self.send(msg)
 
             # Recebe indicação de que deve esperar (porque não existe gare ou pista disponível)
             elif performative == "inform":
@@ -112,6 +123,16 @@ class ReceiveBehaviour(CyclicBehaviour):
             self.agent.status = StatusType.TO_ANOTHER_AIRPORT
             sendMsg.set_metadata("performative", "cancel")
             sendMsg.body = "Going to another airport"
+
+            ############ Update Control Tower Dashboard ############
+            msg = Message(to="dashboardControlTower@" + Conf().get_openfire_server())
+            msg.set_metadata("performative", "inform")
+            bodyMessage:DashboardControlTowerMessage = DashboardControlTowerMessage(
+                type=DashboardControlTowerMessageType,
+                cancelText="Airplane " + self.agent.airplaneID + " going to another airport"
+            )
+            msg.body = jsonpickle.encode(bodyMessage)
+            await self.send(msg)
 
         ############ Update Dashboard ############
         msg = Message(to="dashboardAirplane@" + Conf().get_openfire_server())

@@ -1,7 +1,7 @@
 from spade.behaviour import OneShotBehaviour
 from MessagesProtocol.BuySpots import BuySpots
 from MessagesProtocol.DashboardAirlinesMessage import DashboardAirlinesMessage
-from GlobalTypes.Types import DashboardAirlineMessageType, NegotiationStatus
+from GlobalTypes.Types import DashboardAirlineMessageType, NegotiationStatus, SpotType
 from spade.message import Message
 import jsonpickle
 from Conf import Conf
@@ -30,7 +30,11 @@ class BuySpotsBehaviour(OneShotBehaviour):
         bodyMessage:DashboardAirlinesMessage = DashboardAirlinesMessage(
             type=DashboardAirlineMessageType.NEGOTIATION,
             negotiationStatus=NegotiationStatus.PROPOSE,
-            negotiationText=self.agent.airlineID + " proposal " + str(self.agent.price_per_spot) + " for " + str(self.agent.n_spots) + " spots" 
+            negotiationText=self.agent.airlineID + " proposal " + str(self.agent.price_per_spot) + "Є for " + str(self.agent.n_spots) + " spots of type " + self.spotTypeToString(self.agent.spotType)
         )
         msg.body = jsonpickle.encode(bodyMessage)
         await self.send(msg)
+
+    def spotTypeToString(self,spotType:SpotType=None):
+        if spotType == SpotType.COMMERCIAL: return "Comercial"
+        if spotType == SpotType.MERCHANDISE: return "Merchandise"

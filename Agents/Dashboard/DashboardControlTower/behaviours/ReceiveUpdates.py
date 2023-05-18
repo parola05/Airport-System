@@ -57,4 +57,9 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                 self.agent.tab_1_line += 1
 
             elif dashboardControlTowerMessage.type == DashboardControlTowerMessageType.AVG_TIME_IN_QUEUE:
-                self.agent.view.tab_3.timeInTheAirValue.configure(text=str(round(dashboardControlTowerMessage.avgTimeInQueue,2)) + " seconds")
+                self.agent.view.tab_3.timeInTheAirValue.configure(text=str(round(dashboardControlTowerMessage.avgTimeInQueue,1)) + " seconds")
+
+            elif dashboardControlTowerMessage.type == DashboardControlTowerMessageType.TO_ANOTHER_AIRPORT:
+                tag = "tag8"
+                self.agent.view.tab_1.textbox.insert("end", "> " + dashboardControlTowerMessage.cancelText + "\n",tag)
+                self.agent.tab_1_line += 1
