@@ -28,7 +28,6 @@ class StationComponentView(customtkinter.CTkFrame):
 
         stations = []
 
-        # Create the Title of the Frame
         labelID = customtkinter.CTkLabel(master=self, text="\U0001F689 Stations", font=("Helvetica", 18, "bold"))
         labelID.grid(row=0, column=0)
 
@@ -54,43 +53,10 @@ class StationComponentView(customtkinter.CTkFrame):
 
         self.labels = {}
 
-    def openAddStationsForm(self):
-        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
-            self.toplevel_window = CreateStationFormView(self)  
-        else:
-            self.toplevel_window.focus()  
-
-class CreateStationFormView(customtkinter.CTkToplevel):
-    def __init__(self, master=None, **kwargs):
-        super().__init__(master, **kwargs)
-        
-        self.title("Create a new station")
-
-        # Create the form widgets
-        self.labelStationID = customtkinter.CTkLabel(self, text="Station ID")
-        self.entryStationID = customtkinter.CTkEntry(self)
-        self.labelCommercialSpotsCapacity = customtkinter.CTkLabel(self, text="No. commercial spots")
-        self.entryCommercialSpotsCapacity = customtkinter.CTkEntry(self)
-        self.labelMerchandiseSpotsCapacity = customtkinter.CTkLabel(self, text="No. merchandise spots")
-        self.entryMerchandiseSpotsCapacity = customtkinter.CTkEntry(self)
-        self.buttonCreateStation = customtkinter.CTkButton(self, text="Create Station", command=self.sendForm)
-        
-        # Lay out the form widgets using grid
-        self.labelStationID.grid(row=0, column=0, padx=10, pady=10)
-        self.entryStationID.grid(row=0, column=1, padx=10, pady=10)
-        self.labelCommercialSpotsCapacity.grid(row=1, column=0, padx=10, pady=10)
-        self.entryCommercialSpotsCapacity.grid(row=1, column=1, padx=10, pady=10)
-        self.labelMerchandiseSpotsCapacity.grid(row=2, column=0, padx=10, pady=10)
-        self.entryMerchandiseSpotsCapacity.grid(row=2, column=1, padx=10, pady=10)
-        self.buttonCreateStation.grid(row=3, column=1, padx=10, pady=10)
-        
-    def sendForm(self):
-        # Get the form data
-        stationID = self.entryStationID.get()
-        commericialSpotsCapacity = self.entryCommercialSpotsCapacity.get()
-        merchandiseSpotsCapacity = self.entryMerchandiseSpotsCapacity.get()
-        
-        # TODO: Send the form data to a server or do something else with it
-        
-        # Close the form window
-        self.destroy()
+        for rowIndex,station in enumerate(stations):
+            labelID = customtkinter.CTkLabel(master=self.stationsTable, text=station["id"])
+            labelID.grid(row=rowIndex+1, column=0, padx=7, pady=(0, 20))
+            labelCommercialSpots = customtkinter.CTkLabel(master=self.stationsTable, text=str(station["commercialSpots"]))
+            labelCommercialSpots.grid(row=rowIndex+1, column=1, padx=7, pady=(0, 20))
+            labelMerchandiseSpots = customtkinter.CTkLabel(master=self.stationsTable, text=str(station["merchandiseSpots"]))
+            labelMerchandiseSpots.grid(row=rowIndex+1, column=2, padx=7, pady=(0, 20))
