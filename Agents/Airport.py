@@ -19,13 +19,13 @@ class Airport():
     
     def __init__ (
             self,
-            nStations = 1, 
+            nStations = 2, 
             nMerchandiseSpotsPerStation = 10, 
             nCommercialSpotsPerStation = 10,
-            nAirlines = 1,
-            nRunways = 1,
-            nAirplanesToLand = 2,
-            nAirplanesToTakeOff = 2,
+            nAirlines = 2,
+            nRunways = 2,
+            nAirplanesToLand = 3,
+            nAirplanesToTakeOff = 3,
             queueInTheAirMaxSize = 30,
         ) -> None:
 

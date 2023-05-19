@@ -25,10 +25,10 @@ class ReceiveUpdatesBehaviour(CyclicBehaviour):
                     labelMerchandiseSpots = customtkinter.CTkLabel(master=self.agent.view.stationsTable, text=str(station.commercial_capacity))
                     labelMerchandiseSpots.grid(row=rowIndex+1, column=2, padx=7, pady=(0, 20))
 
-                    labelCommercialSpotsAvailable = customtkinter.CTkLabel(master=self.agent.view.stationsTable, text=str(station.merchandise_available))
+                    labelCommercialSpotsAvailable = customtkinter.CTkLabel(master=self.agent.view.stationsTable, text=str(station.commercial_available))
                     labelCommercialSpotsAvailable.grid(row=rowIndex+1, column=3, padx=7, pady=(0, 20))
                     
-                    labelMerchandiseSpotsAvailable = customtkinter.CTkLabel(master=self.agent.view.stationsTable, text=str(station.commercial_available))
+                    labelMerchandiseSpotsAvailable = customtkinter.CTkLabel(master=self.agent.view.stationsTable, text=str(station.merchandise_available))
                     labelMerchandiseSpotsAvailable.grid(row=rowIndex+1, column=4, padx=7, pady=(0, 20))
 
                     self.agent.view.labels[station.id] = {}
