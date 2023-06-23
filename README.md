@@ -17,3 +17,7 @@ python3.9 app.py
 * spade
 * jsonpickle
 * pytz
+
+## Classification
+
+- `Final Classification` : 20/20
